@@ -135,16 +135,28 @@ assumir — o usuário pode querer auditar o outro produto ou ambos.
    squad. **Continua sendo o hub, mas deixou de ser o único lugar** (decisão do dono do produto,
    2026-09-09; ver `TASK-060` no GeoCloudAI).
 
-   Todo `GT-NNNN` gerado ganha um `TASK-NNN` correspondente em
-   `<repo-de-produto>/.agents/tasks/backlog/`, no template **daquele** repositório, com
-   referência cruzada obrigatória nos dois sentidos. Ver
+   Todo `GT-NNNN` gerado ganha um par de **mesmo número** em
+   `<repo-de-produto>/.agents/tasks/backlog/GT-NNNN-{slug}.md`, no template **daquele**
+   repositório, com referência cruzada obrigatória nos dois sentidos (`contraparte:` no
+   front-matter de cada um). Ver
    `squads/guardian/agents/task-curator/tasks/gerar-tasks.md`, passo 5.
 
-   A divisão de trabalho entre os dois: o `GT` responde **por que isto entrou na fila** (achado,
-   evidência, severidade, run de origem) e vive junto do histórico de auditoria que lhe dá
-   sentido; o `TASK` responde **como será feito** e vive ao lado do código, versionado, para ser
-   revisado no mesmo PR. As duas numerações são independentes — `GT-0041` e `TASK-0041` não são o
-   mesmo documento, e alinhá-las daria a impressão contrária.
+   **O prefixo `GT` também no repo de produto não é cosmético.** Aquela pasta é compartilhada
+   com o orquestrador `bootstrap-*`, que cria `TASK-NNN` e mantém a própria sequência — o
+   Matheus e o Victor trabalham por ali. Duas fontes numerando na mesma sequência colidem no dia
+   em que as duas criam na mesma janela: as duas nascem válidas e só brigam no merge. Prefixos
+   distintos tornam a colisão **impossível**, não improvável. **O Guardian nunca cria
+   `TASK-NNN`; o orquestrador nunca cria `GT`.**
+
+   Um item de trabalho, um número, dois arquivos com papéis diferentes: o `GT` do **hub**
+   responde *por que isto entrou na fila* (achado, evidência, severidade, run de origem) e vive
+   junto do histórico de auditoria que lhe dá sentido; o `GT` do **repo de produto** responde
+   *como será feito e como foi feito* e vive ao lado do código, versionado, revisado no mesmo PR.
+   Nenhum dos dois é resumo do outro.
+
+   A sequência `GT` é **global ao Guardian**, não por repositório: ao numerar, varrer o hub e o
+   `.agents/tasks/` de cada repositório de produto em escopo. Um `GT-0041` no GeoCloudAI e outro
+   no E-LIMS seriam dois trabalhos distintos com o mesmo nome.
 
    A regra anterior dizia "nunca `.agents/` do repositório alvo". Ela caiu porque o efeito
    prático era o registro do trabalho ficar invisível para quem revisa: `.agents/` é ignorado por
