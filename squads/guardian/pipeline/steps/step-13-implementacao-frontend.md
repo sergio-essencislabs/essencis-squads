@@ -43,6 +43,8 @@ Load these files before executing:
 5. Verificar que nenhuma validação de permissão do frontend é tratada como barreira de segurança real — a barreira real é sempre o backend; o frontend apenas reflete a permissão para UX.
 6. Abrir um Pull Request por branch (NUNCA push direto em main/master), com título e descrição linkando a issue correspondente (`issue_url` da task); se o componente integra um fluxo já documentado, sinalizar para a Documentation Architect.
 7. Atualizar, na própria `GT-NNNN.md` em `tasks/active/`, as seções "Registro de execução" e "Validação" — com comando e resultado reais.
+
+> **Onde escrever o Registro de execução:** se a `GT-NNNN` tem `contraparte` no front-matter, o Registro de execução e a Validação vão **no par do repositório de produto** (`<repo>/.agents/tasks/active/GT-NNNN.md`) — é ele que viaja na branch e é revisado no mesmo PR do código. O GT do hub guarda o porquê (achado, evidência, severidade) e **não** recebe registro de execução. Sem `contraparte`, tudo no hub, como antes. Ver `agents/task-curator/tasks/gerar-tasks.md`, passo 5.
 8. Consolidar o resultado de todas as tasks frontend implementadas nesta execução no arquivo de saída, um bloco por task.
 
 ## Output Format

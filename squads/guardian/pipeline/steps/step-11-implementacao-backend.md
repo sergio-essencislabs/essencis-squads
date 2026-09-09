@@ -37,6 +37,8 @@ Load these files before executing:
 5. Rodar architecture-validator/regression-analysis antes de considerar a implementação concluída para aquela task.
 6. Abrir um Pull Request por branch (NUNCA push direto em main/master), com título e descrição linkando a issue correspondente (`issue_url` da task); se a task altera contrato de API ou schema, sinalizar explicitamente para Flávia Frontend e/ou Rui Register no corpo do PR.
 7. Atualizar, na própria `GT-NNNN.md` em `tasks/active/`, as seções "Registro de execução" (Alterações realizadas, Arquivos principais, Decisões, Divergências, Pendências) e "Validação" — com comando e resultado reais, nunca uma caixa marcada sem evidência.
+
+> **Onde escrever o Registro de execução:** se a `GT-NNNN` tem `contraparte` no front-matter, o Registro de execução e a Validação vão **no par do repositório de produto** (`<repo>/.agents/tasks/active/GT-NNNN.md`) — é ele que viaja na branch e é revisado no mesmo PR do código. O GT do hub guarda o porquê (achado, evidência, severidade) e **não** recebe registro de execução. Sem `contraparte`, tudo no hub, como antes. Ver `agents/task-curator/tasks/gerar-tasks.md`, passo 5.
 8. Consolidar o resultado de todas as tasks backend implementadas nesta execução no arquivo de saída, um bloco por task.
 
 ## Output Format

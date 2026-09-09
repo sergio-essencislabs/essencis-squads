@@ -14,6 +14,29 @@ Implementa a correção de frontend roteada pelo Jarvis para um achado aprovado 
 
 > `duplicate-detector` = metodologia em `C:\Software\ClaudeCode\squads\guardian\reference\{geocloud|elims}\skills\duplicate-detector\SKILL.md` (caminho absoluto, conforme produto do achado) — ler e aplicar diretamente, sem depender de `.claude`/`.cursor` do produto.
 
+
+## Onde a task vive — o par `contraparte`
+
+Desde 2026-09-09 (TASK-060 no GeoCloudAI), toda `GT-NNNN` gerada para um repositório de produto
+que tenha `.agents/` versionado ganha um **par de mesmo número** lá, e o front-matter dos dois
+aponta um para o outro em `contraparte:`.
+
+Os dois têm papéis diferentes, e **não são cópia**:
+
+| Arquivo | Responde | Quem escreve |
+|---|---|---|
+| `squads/guardian/tasks/…/GT-NNNN.md` (hub) | *por que isto entrou na fila* — achado, evidência, severidade, `run_origem` | Tomás, no Step 07 |
+| `<repo-de-produto>/.agents/tasks/…/GT-NNNN.md` | *como será feito e como foi feito* — RN, CA, plano, **Registro de execução**, **Validação** | quem implementa e quem revisa |
+
+**Regra operacional:** se a task tem `contraparte`, o Registro de execução, a Validação e o
+fechamento acontecem **no par do repositório de produto** — é ele que viaja na branch e é revisado
+no mesmo PR do código. O GT do hub não recebe registro de execução; ele guarda o porquê.
+
+Se a task **não** tem `contraparte` (trabalho sobre o próprio squad, ou repositório de produto sem
+`.agents/` versionado — hoje o E-LIMS), tudo acontece no hub, como antes.
+
+Autoridade: `squads/guardian/agents/task-curator/tasks/gerar-tasks.md`, passo 5.
+
 ## Process
 
 1. Rodar duplicate-detector em `shared/`, `shared-modules/` e `ui/` antes de criar qualquer componente novo; se existir componente equivalente ou próximo, consolidar em vez de duplicar.
