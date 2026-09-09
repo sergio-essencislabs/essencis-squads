@@ -1,19 +1,19 @@
 ---
 id: GT-0047
 title: "Fronteira do visualizador avançado é enforçada só na UI: os endpoints de dado carregam chave do Core"
-status: backlog
+status: completed
 type: decision
 severidade: media
 owner: Sergio
 created_at: 2026-09-09
 updated_at: 2026-09-09
 origem: "geocloud-permission-auditor, na revisão da GT-0045 (2026-09-09) — achado 2.1, pré-existente à GT-0045"
-contraparte: C:\Software\GeoCloud\GeoCloudAI\.agents\tasks\backlog\GT-0047-fronteira-do-visualizador-so-na-ui.md
+contraparte: C:\Software\GeoCloud\GeoCloudAI\.agents\tasks\completed\GT-0047-fronteira-do-visualizador-so-na-ui.md
 issue: 457
-branch: a definir
+branch: feature/fix/refactor-08_09-11_09
 affected_modules: ["Back.API", "Back.Persistence"]
 related_use_cases: []
-related_adrs: ["ADR-003", "ADR-005"]
+related_adrs: ["ADR-003", "ADR-005", "ADR-008"]
 ---
 
 # GT-0047 — Fronteira do visualizador avançado é enforçada só na UI
@@ -100,14 +100,15 @@ três:
 
 ## Critérios de aceitação
 
-- [ ] CA-01: decisão registrada em `.agents/decisions/`, com o custo da alternativa rejeitada.
-- [ ] CA-02: se (1) ou (2), a ADR-003 e `api/docs/system/permission-rules.md` dizem explicitamente
+- [x] CA-01: decisão registrada em `.agents/decisions/`, com o custo da alternativa rejeitada.
+- [x] CA-02: se (1) ou (2), a ADR-003 e `api/docs/system/permission-rules.md` dizem explicitamente
       quais telas têm fronteira de dado e quais têm só de interface. Sem isso, a próxima auditoria
       levanta o mesmo achado.
-- [ ] CA-03: se (2), `drillHoleView3D.getByAccount` mapeado ao `advanced-viewer` por migração, com
+- [x] CA-03: se (2), `drillHoleView3D.getByAccount` mapeado ao `advanced-viewer` por migração, com
       prova de que nenhuma conta que tem o módulo perde acesso.
-- [ ] CA-04: confirmação por HTTP do achado — o eixo que o auditor deixou **inconclusivo**, porque
-      só leu o código.
+- [ ] CA-04: confirmação por HTTP — **continua aberta**. O achado e a correção foram verificados por
+      leitura de código e consulta ao banco, não por chamada autenticada à API. É o mesmo limite que
+      o auditor declarou, e não vale marcá-lo como feito por semelhança.
 
 ## Impacto técnico
 
@@ -128,9 +129,9 @@ Em (2), migração de mapeamento — só `modulefunctionality`, nunca `profilefu
 
 - [x] Etapa 1: levantamento de quais endpoints pertencem a cada tela — **feito** (ver acima), e
       antes da decisão de propósito: sem ele, (b) teria sido escolhida sobre premissa errada.
-- [ ] Etapa 2: pergunta ao dono do produto — (1), (2) ou (3)?
-- [ ] Etapa 3: registrar a decisão em `.agents/decisions/`.
-- [ ] Etapa 4: só em (2), a migração de uma linha, com o teste de que ninguém perde acesso.
+- [x] Etapa 2: pergunta ao dono do produto — (1), (2) ou (3)?
+- [x] Etapa 3: registrar a decisão em `.agents/decisions/`.
+- [x] Etapa 4: só em (2), a migração de uma linha, com o teste de que ninguém perde acesso.
 
 ## Estratégia de testes
 
@@ -145,11 +146,61 @@ O risco de (b) é tirar acesso de quem tem — mapear uma chave a mais derruba t
 pagante. Rollback é apagar as linhas de `modulefunctionality`, que o portão relê a cada resolução.
 
 ## Registro de execução
+
 ### Alterações realizadas
+
+Migração `M20260909190753` move `drillHoleView3D.getByAccount` do Core para o `advanced-viewer` —
+concedendo antes de retirar, para que uma falha no meio deixe a chave nos dois módulos (todo mundo
+enxerga) em vez de em nenhum. `View3dModuleBoundaryTests` prova as duas metades e a contraprova.
+ADR-008 registra a decisão; `permission-rules.md` ganhou a tabela de qual tela tem fronteira de dado
+e qual tem de interface.
+
 ### Arquivos principais
+- `api/src/Back.Persistence/Migrations/M20260909190753_View3dDataKeyToAdvancedViewer.cs` (novo)
+- `api/tests/Back.IntegrationTests/Repositories/View3dModuleBoundaryTests.cs` (novo)
+- `api/tests/Back.IntegrationTests/Repositories/ModuleBackfillTests.cs` — invariante atualizado
+- `.agents/decisions/008-fronteira-do-visualizador-avancado.md` (novo)
+- `api/docs/system/permission-rules.md`
+
 ### Decisões
+
+1. **Saída (2), do dono do produto**: fechar só o que é fechável. O parcial é escolha — é tudo o que
+   pode ser fechado sem tirar acesso de quem tem.
+2. **O levantamento veio antes da decisão**, invertendo a ordem do plano original. Foi o que impediu
+   a saída (b) de ser escolhida sobre premissa errada: ela teria tirado a guia Images de toda conta
+   só com Core.
+
 ### Divergências
+
+- **`ModuleBackfillTests` teve de mudar.** Ele codificava "o Core tem tudo menos as quatro chaves de
+  capacidade", e a decisão torna isso falso. Falhou antes de eu atualizá-lo, que é o comportamento
+  pretendido: mover a próxima chave para fora do Core exige acrescentá-la ali e dizer por quê.
+- **Uma correção factual de outra task, descoberta aqui.** Um teste desta GT falhou numa asserção
+  que eu esperava trivial, e a investigação mostrou que a **suíte de integração roda migrations** —
+  `IntegrationCollection.cs:31` chama `ApplyPendingMigrations` depois de restaurar o dump. A GT-0046
+  afirmava o contrário, em três lugares (ADR-006, registro da task, comentário de
+  `ModuleTimeConversionTests`). O erro foi meu: li `MySqlTestDatabase`, vi o dump, e parei antes de
+  abrir o arquivo da fixture. Corrigido nos três.
+
 ### Pendências
+
+**CA-04 continua aberta**: nada aqui foi confirmado por HTTP. Leitura de código e consulta ao banco
+provam o mapeamento e a resolução de chaves; não provam o comportamento de uma requisição
+autenticada de ponta a ponta. É o mesmo limite que o auditor declarou, e marcá-lo como feito por
+semelhança seria o tipo de afirmação que esta sprint passou o dia removendo.
+
+## Validação
+```bash
+cd api && dotnet build Back.sln && dotnet test Back.sln
+```
+
+```
+Back.UnitTests          276 aprovados   (inalterado)
+Back.IntegrationTests    48 aprovados   (eram 46)
+```
+
+## Handoff
+Nenhum.
 
 ## Validação
 ```bash

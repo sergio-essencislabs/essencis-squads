@@ -306,9 +306,21 @@ depois do prefixo, travado por teste.
 
 ### Pendências
 
-Nenhuma. Fica anotado para quem chegar depois: a suíte de integração **não roda migrations** — a
-fixture restaura um dump do banco de desenvolvimento. Toda migração nova que mexa em dado precisa da
-prova em separado, como `ModuleTimeConversionTests` fez aqui.
+Nenhuma de código.
+
+**Uma correção factual, feita no mesmo dia.** Este registro afirmava que a suíte de integração *não
+roda migrations*. É falso, e o erro foi meu: li `MySqlTestDatabase`, vi o dump do banco de
+desenvolvimento sendo restaurado, e parei ali — sem abrir `IntegrationCollection.cs`, onde
+`IntegrationDbFixture` chama `provider.ApplyPendingMigrations(configuration)` logo em seguida
+(`IntegrationCollection.cs:31`). A migração `M20260909171226` **foi** executada pelos 46 testes.
+
+Descoberto ao investigar por que um teste da GT-0047 falhava numa asserção que eu esperava trivial:
+o banco de teste já estava no estado **pós**-migração. Corrigido aqui, na ADR-006 e no comentário de
+`ModuleTimeConversionTests`.
+
+O que continua valendo, e é o motivo de o teste existir: aplicar a migração prova que ela **roda**,
+não que está **certa**. Deslocamento exato, nulo preservado e simetria da ida e volta não são
+observáveis num `UPDATE` sem `WHERE` sobre o dump de um desenvolvedor.
 
 ## Validação
 ```bash
