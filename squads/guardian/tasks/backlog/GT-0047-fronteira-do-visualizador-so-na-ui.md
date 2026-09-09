@@ -4,11 +4,12 @@ title: "Fronteira do visualizador avançado é enforçada só na UI: os endpoint
 status: backlog
 type: decision
 severidade: media
-owner: a definir
+owner: Sergio
 created_at: 2026-09-09
 updated_at: 2026-09-09
 origem: "geocloud-permission-auditor, na revisão da GT-0045 (2026-09-09) — achado 2.1, pré-existente à GT-0045"
 contraparte: C:\Software\GeoCloud\GeoCloudAI\.agents\tasks\backlog\GT-0047-fronteira-do-visualizador-so-na-ui.md
+issue: 457
 branch: a definir
 affected_modules: ["Back.API", "Back.Persistence"]
 related_use_cases: []
@@ -56,16 +57,41 @@ pertencem a quais telas.
 
 Fronteira do módulo pago aplicada só pela UI, via `GET api/Module/capabilities`.
 
+## Levantamento (feito em 2026-09-09, antes da decisão)
+
+Mapeando os serviços que cada tela consome — a Etapa 3 antecipada, porque sem ela a decisão seria
+tomada sobre uma premissa errada:
+
+| Capacidade | Endpoints exclusivos da tela | Compartilhados com telas do **Core** |
+|---|---|---|
+| `viewer.singleView` | **nenhum** | `drillBox.*`, `drillCore.*`, as nove de anotação, `lithology.*`, `fractureType.*` |
+| `viewer.multiView` | **nenhum** | as mesmas |
+| `viewer.coreView` | **nenhum** | `drillCore.*` + anotações |
+| `viewer.view3D` | `drillHoleView3D.getByAccount` | `drillBox.*`, `terrain.*` (este também é do Mine 3D) |
+
+`DrillBoxService` é consumido por **12 componentes**, entre eles `drill-boxes` (lista),
+`drill-box-view-images` (guia Images) e `deposit-view` — todos Core. `DrillCoreService`, pela guia
+Images também.
+
+**Consequência para a decisão:** mapear `drillBox.*` ou `drillCore.*` ao `advanced-viewer` tiraria
+a guia Images e a lista de caixas de toda conta que só tem o Core. É o que a RN-01 proíbe. A saída
+(b) original **não é implementável como estava escrita**.
+
+Sobra **um** endpoint exclusivo de tela paga no produto inteiro: `drillHoleView3D.getByAccount`.
+
 ## Comportamento esperado
 
-Uma decisão registrada em `.agents/decisions/`. As duas respostas defensáveis:
+Uma decisão registrada em `.agents/decisions/`. O levantamento acima transformou duas saídas em
+três:
 
-- **(a) É de propósito.** O visualizador avançado é conveniência de interface, e cobrar por
-  interface é legítimo. Nesse caso o que falta é dizer isso onde alguém procuraria — na ADR-003 e
-  em `permission-rules.md` — para ninguém "corrigir" isso depois achando que é lacuna.
-- **(b) É lacuna.** Os endpoints das telas do módulo passam a exigir chave mapeada ao
-  `advanced-viewer`. Custa uma migração de mapeamento e uma varredura de endpoints, e tem risco
-  real: mapear a mais tira acesso de quem tem hoje.
+- **(1) É de propósito.** O visualizador avançado é conveniência de interface, e cobrar por
+  interface é legítimo. Falta dizer isso onde alguém procuraria — ADR-003 e `permission-rules.md` —
+  para ninguém "corrigir" depois achando que é lacuna.
+- **(2) Fechar só o que é fechável.** Mapear `drillHoleView3D.getByAccount` ao módulo. Custo baixo,
+  ganho parcial e honesto: uma das quatro telas ganha fronteira de dado, e as outras três seguem
+  sendo de interface — declaradamente.
+- **(3) Separar os endpoints por tela** para poder gatear de verdade. Refatoração grande de API,
+  risco alto de tirar acesso de quem tem, e não cabe numa task de dívida técnica.
 
 ## Regras de negócio
 
@@ -75,33 +101,36 @@ Uma decisão registrada em `.agents/decisions/`. As duas respostas defensáveis:
 ## Critérios de aceitação
 
 - [ ] CA-01: decisão registrada em `.agents/decisions/`, com o custo da alternativa rejeitada.
-- [ ] CA-02: se (a), a ADR-003 e `api/docs/system/permission-rules.md` passam a dizer explicitamente
-      que a fronteira do visualizador é de interface.
-- [ ] CA-03: se (b), levantamento de quais endpoints pertencem a cada uma das quatro telas, com
-      prova de que nenhuma conta com o módulo perde acesso.
-- [ ] CA-04: se (b), confirmação por HTTP — o eixo que o auditor deixou **inconclusivo por HTTP**,
-      porque só leu o código.
+- [ ] CA-02: se (1) ou (2), a ADR-003 e `api/docs/system/permission-rules.md` dizem explicitamente
+      quais telas têm fronteira de dado e quais têm só de interface. Sem isso, a próxima auditoria
+      levanta o mesmo achado.
+- [ ] CA-03: se (2), `drillHoleView3D.getByAccount` mapeado ao `advanced-viewer` por migração, com
+      prova de que nenhuma conta que tem o módulo perde acesso.
+- [ ] CA-04: confirmação por HTTP do achado — o eixo que o auditor deixou **inconclusivo**, porque
+      só leu o código.
 
 ## Impacto técnico
 
 ### Backend
-Nenhum em (a). Em (b), `modulefunctionality` ganha linhas e endpoints hoje livres passam a ser
-negados por módulo.
+Nenhum em (1). Em (2), uma linha em `modulefunctionality` e um endpoint hoje livre passa a ser
+negado por módulo. Em (3), refatoração de API — fora do escopo desta task.
 
 ### Frontend
 Nenhum. A UI já esconde as abas.
 
 ### Banco de dados
-Em (b), migração de mapeamento — só `modulefunctionality`, nunca `profilefunctionality`.
+Em (2), migração de mapeamento — só `modulefunctionality`, nunca `profilefunctionality`.
 
 ### Segurança
-É o eixo de receita, não o de tenant. Em (b), passa pelo `geocloud-permission-auditor`.
+É o eixo de receita, não o de tenant. Em (2), passa pelo `geocloud-permission-auditor`.
 
 ## Plano de implementação
 
-- [ ] Etapa 1: pergunta ao dono do produto — a fronteira é de interface ou de dado?
-- [ ] Etapa 2: registrar a decisão.
-- [ ] Etapa 3: só se (b), levantamento e migração.
+- [x] Etapa 1: levantamento de quais endpoints pertencem a cada tela — **feito** (ver acima), e
+      antes da decisão de propósito: sem ele, (b) teria sido escolhida sobre premissa errada.
+- [ ] Etapa 2: pergunta ao dono do produto — (1), (2) ou (3)?
+- [ ] Etapa 3: registrar a decisão em `.agents/decisions/`.
+- [ ] Etapa 4: só em (2), a migração de uma linha, com o teste de que ninguém perde acesso.
 
 ## Estratégia de testes
 
