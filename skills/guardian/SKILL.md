@@ -12,6 +12,19 @@ não vive neste repositório. Ele vive no projeto Opensquad, em:
 C:\Software\ClaudeCode
 ```
 
+> **Onde os arquivos realmente vivem** (desde 2026-09-09): em
+> `C:\Software\EssencisSquads\squads\guardian\`, no repositório privado
+> `sergio-essencislabs/essencis-squads`. `C:\Software\ClaudeCode\squads\guardian` é uma
+> **junção de diretório** que aponta para lá, e este próprio `SKILL.md` é
+> `skills/guardian/SKILL.md` daquele repositório, alcançado por outra junção.
+>
+> Ou seja: os caminhos abaixo continuam corretos e não precisam mudar — mas agora o que
+> você edita está versionado. Antes disso o squad inteiro vivia fora de controle de
+> versão, e o `opensquad`, que seria o home natural, é público demais para achado de
+> segurança e documentação interna de cliente. Contexto: `TASK-060` no GeoCloudAI.
+>
+> Numa máquina nova, rode os `mklink` do README daquele repositório uma vez após o clone.
+
 **Regra central: todo caminho relativo mencionado nos arquivos abaixo
 (`squads/{name}/...`, `_opensquad/...`) é relativo a `C:\Software\ClaudeCode`,
 NUNCA ao working directory atual da sessão.** Se a sessão foi aberta em
