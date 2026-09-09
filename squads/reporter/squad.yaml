@@ -1,0 +1,18 @@
+code: "reporter"
+name: "Reporter"
+description: "Squad de pesquisa semanal que monitora concorrentes do GeoCloudAI e do E-LIMS, além de novidades em exploração mineral e análise laboratorial, e mantém um documento de capacidades de produto sempre atualizado a partir da branch main de cada repositório, para comparação justa."
+
+skills:
+  - web_search
+  - web_fetch
+  - file_read_write
+  - code_execution
+
+data:
+  - pipeline/data/research-brief.md
+  - pipeline/data/domain-framework.md
+  - pipeline/data/quality-criteria.md
+  - pipeline/data/output-examples.md
+  - pipeline/data/anti-patterns.md
+
+pipeline: pipeline/pipeline.yaml

@@ -1,0 +1,6 @@
+id,name,title,icon,execution,path
+product-curator,Paulo Produto,Curador de Conhecimento do Produto,📋,subagent,./agents/product-curator.agent.md
+competitor-researcher,Rita Radar,Pesquisadora de Concorrentes e Mercado,🔍,subagent,./agents/competitor-researcher.agent.md
+data-analyst,Diego Dados,Analista de Dados Competitivos,📊,subagent,./agents/data-analyst.agent.md
+writer,Beatriz Briefing,Redatora do Resumo Executivo,✍️,inline,./agents/writer.agent.md
+reviewer,Vitor Veredito,Revisor Final,🔎,inline,./agents/reviewer.agent.md

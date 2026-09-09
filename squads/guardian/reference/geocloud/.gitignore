@@ -1,0 +1,4 @@
+# Artefatos de verificação (baselines de integridade, grandes e regeneráveis) —
+# ver scripts/verify-sources-untouched.ps1. Nunca versionar: são snapshots locais,
+# não histórico técnico do framework.
+_verification/

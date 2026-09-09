@@ -1,0 +1,21 @@
+---
+description: Sempre verificar travamento de tarefas delegadas a subagentes em segundo plano, especialmente as longas
+alwaysApply: true
+---
+
+# Detecção de travamento em subagentes em segundo plano (Multitask Mode)
+
+Nunca confie apenas em notificações de conclusão/erro para saber se uma tarefa delegada está progredindo. Elas só avisam quando a tarefa termina ou cai com erro — uma tarefa pode ficar **travada em loop por horas sem nunca gerar notificação nenhuma** (ex.: presa tentando repetir um comando bloqueado por aprovação que nunca chega, já que não há humano presente em execução assíncrona).
+
+## Regra
+
+- Ao delegar qualquer tarefa a um subagente em segundo plano (`run_in_background: true`), **sempre agende uma checagem de progresso** proporcional à duração esperada — não confie só na estimativa de tempo que o próprio subagente der.
+  - Tarefas curtas (minutos): uma checagem via `AwaitShell`/verificação de estado ao final já basta.
+  - Tarefas longas (>30 min, builds, ports de código, migrações) ou que ficarão **sem supervisão direta por muito tempo** (ex.: o usuário vai sair/dormir): agende um lembrete programado (`Shell` com `Start-Sleep`/`sleep` + `notify_on_output`, ou equivalente) para verificar de fato o estado real (git status, arquivos modificados, processos ativos) — não apenas esperar passivamente.
+- Se uma tarefa **já demonstrou sinal de travamento uma vez** (progresso parado, retry loop, erro de conexão), trate isso como sinal de alerta permanente para essa tarefa: ao retomá-la, agende checagens mais frequentes até ver progresso real de novo.
+- Sinais de travamento a verificar ativamente (não esperar a tarefa se auto-diagnosticar):
+  - Contagem de arquivos alterados (`git status --porcelain`) parada por muito mais tempo do que o esperado.
+  - Nenhum processo relevante ativo (build, script) quando deveria haver.
+  - Tempo decorrido muito acima da própria estimativa do subagente, sem justificativa clara.
+- Ao detectar sinal de travamento, **interrompa o subagente** (`Task` com `interrupt: true`) e peça diagnóstico direto antes de deixá-lo continuar às escuras.
+- Se o motivo do travamento for um comando que precisa de aprovação manual (ex.: bloqueio de "smart mode" por script externo não visível), oriente o subagente a evitar esse padrão (preferir comandos inline/visíveis a arquivos de script externos) antes de retomar.

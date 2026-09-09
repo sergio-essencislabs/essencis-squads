@@ -1,0 +1,17 @@
+code: "guardian"
+name: "Guardian"
+description: "Squad que audita dívida técnica, drift de documentação e segurança no GeoCloudAI e E-LIMS (com material de referência interno em `reference/`), cria backlog no GitHub Project Essencis-Labs e executa as correções aprovadas via PR."
+
+skills:
+  - file_read_write
+  - code_execution
+  - gh_cli
+
+data:
+  - pipeline/data/research-brief.md
+  - pipeline/data/domain-framework.md
+  - pipeline/data/quality-criteria.md
+  - pipeline/data/output-examples.md
+  - pipeline/data/anti-patterns.md
+
+pipeline: pipeline/pipeline.yaml

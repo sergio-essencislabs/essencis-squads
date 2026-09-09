@@ -1,0 +1,22 @@
+squad: "reporter"
+steps:
+  - step: 1
+    file: pipeline/steps/step-01-foco-da-pesquisa-semanal.md
+  - step: 2
+    file: pipeline/steps/step-02-atualizacao-de-conhecimento-do-produto.md
+  - step: 3
+    file: pipeline/steps/step-03-pesquisa-de-concorrentes-e-mercado.md
+  - step: 4
+    file: pipeline/steps/step-04-estruturacao-dos-achados.md
+  - step: 5
+    file: pipeline/steps/step-05-resumo-executivo.md
+  - step: 6
+    file: pipeline/steps/step-06-revisao-final.md
+  - step: 7
+    file: pipeline/steps/step-07-aprovacao-final.md
+  - step: 8
+    file: pipeline/steps/step-08-licoes-aprendidas.md
+checkpoints:
+  - step: 1
+  - step: 7
+  - step: 8

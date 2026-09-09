@@ -1,0 +1,54 @@
+squad: "guardian"
+steps:
+  - step: 1
+    file: pipeline/steps/step-01-escopo-da-auditoria.md
+  - step: 2
+    file: pipeline/steps/step-02-planejamento-da-implementacao.md
+  - step: 3
+    file: pipeline/steps/step-03-auditoria-de-divida-tecnica.md
+  - step: 4
+    file: pipeline/steps/step-04-auditoria-de-seguranca.md
+  - step: 5
+    file: pipeline/steps/step-05-auditoria-de-documentacao.md
+  - step: 6
+    file: pipeline/steps/step-06-revisao.md
+  - step: 7
+    file: pipeline/steps/step-07-geracao-de-tasks.md
+  - step: 8
+    file: pipeline/steps/step-08-gate-de-promocao.md
+  - step: 9
+    file: pipeline/steps/step-09-roteamento.md
+  - step: 10
+    file: pipeline/steps/step-10-criacao-de-issues.md
+  - step: 11
+    file: pipeline/steps/step-11-implementacao-backend.md
+  - step: 12
+    file: pipeline/steps/step-12-arbitragem-pos-backend.md
+  - step: 13
+    file: pipeline/steps/step-13-implementacao-frontend.md
+  - step: 14
+    file: pipeline/steps/step-14-arbitragem-pos-frontend.md
+  - step: 15
+    file: pipeline/steps/step-15-implementacao-database.md
+  - step: 16
+    file: pipeline/steps/step-16-arbitragem-pos-database.md
+  - step: 17
+    file: pipeline/steps/step-17-revisao-dos-prs.md
+  - step: 18
+    file: pipeline/steps/step-18-aprovar-prs.md
+  - step: 19
+    file: pipeline/steps/step-19-fechamento-atualizacao-de-docs-knowledge.md
+  - step: 20
+    file: pipeline/steps/step-20-sincronizacao-llml.md
+  - step: 21
+    file: pipeline/steps/step-21-resumo-final.md
+  - step: 22
+    file: pipeline/steps/step-22-licoes-aprendidas.md
+checkpoints:
+  - step: 1
+  - step: 6
+  - step: 8
+  - step: 18
+  - step: 20
+  - step: 21
+  - step: 22

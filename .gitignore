@@ -1,0 +1,13 @@
+# Estado de execução dos squads.
+#
+# Mesma lógica que `.agents/context|handoffs|quarantine` no repositório de produto:
+# cresce a cada run, encheria o diff de ruído e daria conflito entre sessões
+# paralelas. O que define o squad — agentes, pipeline, decisões, tasks, memória e
+# conhecimento — é versionado.
+squads/*/output/
+squads/*/_build/
+squads/*/state.json
+
+node_modules/
+.env
+*.log

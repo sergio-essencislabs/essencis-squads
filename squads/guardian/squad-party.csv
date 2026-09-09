@@ -1,0 +1,11 @@
+id,name,title,icon,execution,path
+chief-architect,Jarvis,Roteamento e Arbitragem Cross-Cutting,🧭,inline,./agents/chief-architect.agent.md
+tech-debt-auditor,Dante Debit,Auditor de Dívida Técnica,🧹,subagent,./agents/tech-debt-auditor.agent.md
+security-auditor,Selma Security,Auditora de Segurança e Permissões,🛡️,subagent,./agents/security-auditor.agent.md
+documentation-architect,Marta Documentation,Arquiteta de Documentação e Knowledge Base,📚,subagent,./agents/documentation-architect.agent.md
+task-curator,Tomás Ticket,Curador de Backlog,🎫,subagent,./agents/task-curator.agent.md
+backend-architect,Breno Backend,Arquiteto Backend,⚙️,subagent,./agents/backend-architect.agent.md
+frontend-architect,Flávia Frontend,Arquiteta Frontend,🎨,subagent,./agents/frontend-architect.agent.md
+database-architect,Rui Register,Arquiteto de Banco de Dados,🗄️,subagent,./agents/database-architect.agent.md
+reviewer,Otávio Review,Revisor Final,🔎,inline,./agents/reviewer.agent.md
+librarian,Lívia Librarian,Curadora da LLM Library,📖,inline,./agents/librarian.agent.md
