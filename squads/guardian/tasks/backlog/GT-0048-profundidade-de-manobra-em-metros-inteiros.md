@@ -9,6 +9,7 @@ created_at: 2026-09-09
 updated_at: 2026-09-09
 origem: "achado adjacente da GT-0043, ao mapear caixa→manobra por profundidade"
 contraparte: C:\Software\GeoCloud\GeoCloudAI\.agents\tasks\backlog\GT-0048-profundidade-de-manobra-em-metros-inteiros.md
+issue: 461
 branch: a definir
 affected_modules: ["Back.Persistence", "Back.Domain"]
 related_use_cases: []
