@@ -292,6 +292,53 @@ oferecer o pago, porque o Core toda conta já tem — passou para
   geradas contra a `main`, e ele vive na branch. O que entrou foi a nota das duas regras
   transversais do portão, mais o registro de que a seção falta. Anotado no próprio documento.
 
+### Revisão do auditor de permissão
+
+A CA-06 é decisão de autorização, e a seção de Segurança desta task exigia passagem pelo
+`geocloud-permission-auditor` antes do merge. Rodou sobre o commit `da971353`. Veredicto:
+**nada do que a GT-0045 mudou altera o que o backend autoriza.**
+
+O que ele confirmou por leitura de código, em vez de aceitar o que a ADR-005 afirma:
+- a troca do predicado por `Denies()` é comportamentalmente idêntica, incluindo o comparador —
+  `IReadOnlySet<string>` faz `.Contains` despachar para `HashSet<string>.Contains` e usar o
+  `OrdinalIgnoreCase` da instância. Com `IEnumerable<string>` teria caído em
+  `Enumerable.Contains`, case-**sensitive**, e virado fail-open silencioso;
+- nenhuma chave `viewer.*` aparece em `[RequiredPermission]` algum, e `capabilities` é consumido
+  só pelo frontend — rastreando cada consumidor, não confiando na ADR;
+- `functionality` é catálogo **global**: não há `accountId` na tabela, então `GetCapabilityKeys`
+  sem filtro de conta não tem o que vazar. O escopo por conta está um salto adiante, em `Denies`;
+- a remoção da sobrecarga de 1 argumento retira um *footgun*: ela era `coreOnly: false`, e um
+  chamador futuro que a alcançasse concederia chave de módulo pago a conta inadimplente.
+
+**Três apontamentos corrigidos nesta mesma task:**
+
+1. **`BillingStatus` sintético no caminho de autorização.** A decisão remontada do cache usava
+   `Current` fixo, porque a entrada de cache não guardava o valor. Inerte hoje — `Denies()` não
+   olha o campo — mas é a mesma divergência que esta task eliminou, esperando uma única edição em
+   `Denies` para virar conta inadimplente avaliada como em dia, falhando **aberto**. O campo passou
+   a ser guardado e lido.
+2. **O arame de tropeço da ADR-005 não existia.** O `CA08_*` é um `BeEquivalentTo` sobre os quatro
+   nomes, e a reação natural a uma chave nova é acrescentá-la à lista esperada — o que passa a
+   suíte sem mapear nada. Entrou
+   `ADR005_toda_chave_de_capacidade_esta_mapeada_a_algum_modulo`: a única forma de silenciá-lo é
+   mapear a chave.
+3. **A mesma afirmação falsa da CA-05, no arquivo que eu não abri.**
+   `ModuleController.cs:229-231` ainda dizia que a resposta é "calculada pelo `IPermissionService`"
+   — e essa era a justificativa citada para o endpoint não ter `[RequiredPermission]`. A conclusão
+   valia; o motivo, não. Corrigido.
+
+**Um apontamento anotado, sem qualificar como defeito:** o predicado é único mas os insumos têm
+frescor diferente — autorização lê o cache `modgate:` (5 min em produção), `GetCapabilities`
+resolve o portão a cada requisição. Só abre janela na expiração **por relógio**, porque toda
+mutação invalida. Registrado nas consequências da ADR-005.
+
+**Um achado pré-existente, fora desta task:** a fronteira do visualizador avançado é enforçada
+**só na UI**. As quatro chaves `viewer.*` gateiam abas; os endpoints de dado carregam chave do
+Core. Uma conta com só o Core que chame `GET api/DrillHoleView3D/getByAccount` direto recebe os
+dados. É o que a migração `M20260908223605` declara desde a TASK-055, então é desenho da ADR-003 e
+não regressão — mas é decisão de receita que merece passagem própria. Virou **GT-0047**, no
+backlog, sem issue.
+
 ### Pendências
 
 Nenhuma desta task. A GT-0046 encosta em dois pontos daqui: `GetCapabilities` ganhou mais uma
@@ -305,7 +352,7 @@ cd api && dotnet build Back.sln && dotnet test Back.sln
 
 ```
 Back.UnitTests          269 aprovados   (eram 264)
-Back.IntegrationTests    36 aprovados   (eram 31)
+Back.IntegrationTests    37 aprovados   (eram 31)
 ```
 
 `ng test` não foi executado: nenhum arquivo em `web/` mudou. A ADR-005 escolheu a resposta que o
