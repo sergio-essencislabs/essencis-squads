@@ -19,6 +19,25 @@ Load these files before executing:
 
 ## Instructions
 
+Ler primeiro `audit-scope.md` desta run e aplicar o gate de branch:
+
+- Se a branch alvo for semanal/de integração (ou uma branch de task derivada dela), **não atualizar
+  documentação nem knowledge base**. A documentação viva representa a `main`, pelo mesmo motivo que
+  a LLML: doc escrito a partir de código que ainda não foi mesclado afirma como implementado aquilo
+  que a `main` não tem — é exatamente o "planejado documentado como implementado" que esta persona
+  existe para impedir. Gravar o output curto no formato "Fechamento documental omitido" abaixo e
+  avançar.
+- Somente se `audit-scope.md` registrar simultaneamente branch `main`/`master` e autorização
+  explícita do usuário para atuação direta nela, executar o processo abaixo.
+- Checkout em `main` sem autorização explícita é veto, não autorização implícita.
+
+**O caminho normal é ad-hoc, não este passo.** Como toda sprint roda em branch, este passo é
+omitido na maioria das execuções, e a atualização real acontece depois: Marta Documentation
+invocada via runner ad-hoc (`runner.agent.md`) contra a `main` já com os PRs mesclados, e Lívia
+Librarian logo em seguida. A ordem entre as duas não é preferência — Lívia usa como fonte o que
+Marta acabou de verificar, e sincronizar a LLML antes da documentação inverteria a cadeia de
+verdade.
+
 ### Process
 
 1. Filtrar em `aprovacao-prs.md` apenas os PRs marcados como "Aprovados para Merge" — PRs bloqueados ou rejeitados pelo usuário não geram atualização de documentação nesta execução.
@@ -49,6 +68,19 @@ The output MUST follow this exact structure:
 {lista de PRs aprovados que não exigiram nenhuma mudança de doc/knowledge, com justificativa breve}
 ```
 
+Para branch semanal/de integração, usar:
+
+```markdown
+# Fechamento documental omitido — {data da execução}
+
+**Branch alvo:** {nome}
+**Motivo:** a documentação viva representa somente a `main`; esta execução atua em branch
+semanal/de integração.
+**Docs/knowledge alterados:** nenhum.
+**Encaminhamento:** atualização a fazer via runner ad-hoc contra a `main` depois do merge — Marta
+Documentation primeiro, Lívia Librarian em seguida.
+```
+
 ## Output Example
 
 ```markdown
@@ -75,6 +107,8 @@ Nenhum.
 ## Veto Conditions
 
 Reject and redo if ANY of these are true:
+0. Documentação ou knowledge base foi atualizada numa execução em branch semanal/de integração, ou
+   em `main`/`master` sem ordem explícita do usuário para atuação direta nela.
 1. Um documento foi deixado "quase certo" em vez de corrigido ou removido, quando a divergência era clara.
 2. Uma funcionalidade planejada foi documentada como implementada (ou o inverso) em qualquer doc atualizado.
 3. Uma entrada de knowledge base foi criada que é apenas um resumo de código, sem lição acionável.
@@ -83,6 +117,10 @@ Reject and redo if ANY of these are true:
 
 ## Quality Criteria
 
+- [ ] A branch alvo e a autorização explícita para atuação direta na main foram verificadas em
+      `audit-scope.md` antes de qualquer alteração de documentação ou knowledge base.
+- [ ] Em branch semanal/de integração, nenhum doc e nenhuma entrada de knowledge base foi alterada,
+      e o encaminhamento ad-hoc ficou registrado no output.
 - [ ] Todo PR aprovado para merge tem um bloco de fechamento correspondente (mesmo que seja "sem ação de documentação").
 - [ ] Known-issues cobertos por um PR mesclado foram marcados como resolvidos, citando o PR.
 - [ ] Toda lição nova está classificada corretamente como cross-projeto ou específica de produto, sem duplicação.

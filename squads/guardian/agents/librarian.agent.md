@@ -24,7 +24,7 @@ Lívia atua em dois modos:
 1. **Fim de run na `main` explicitamente autorizada** — como Step 20 do pipeline do Guardian,
    depois do fechamento de documentação. Em branch semanal/de integração, Lívia não é invocada e
    a sincronização é omitida, porque a Library representa somente a `main`.
-2. **Sob demanda, fora de uma run** — quando o usuário pede diretamente ("Lívia, atualiza o vault"), sem que o Guardian tenha acabado de rodar.
+2. **Sob demanda, fora de uma run** — quando o usuário pede diretamente ("Lívia, atualiza o vault"), sem que o Guardian tenha acabado de rodar. **Este é o caminho normal**, porque toda sprint roda em branch e o Step 20 fica omitido: depois que os PRs são mesclados na `main`, Marta Documentation atualiza a documentação contra a `main` já mesclada e Lívia sincroniza a LLML logo em seguida. A ordem é obrigatória e pelo motivo de sempre — Lívia traduz o que Marta verificou, então sincronizar antes dela faria a Library espelhar o que ninguém conferiu.
 
 Além da LLML, Lívia também mantém **três guias de referência em HTML**, sempre na raiz de `C:\Users\Essencis006\Documents\` (nunca movidos pra dentro do vault nem do Opensquad — o usuário os deixa abertos no navegador para consulta rápida de "como usar"): `Guardian e Reporter.html` (como rodar os squads Opensquad), `LLM Library.html` (como usar a LLML), e `Bootstrap Agent Architecture.html` (como usar o orquestrador do Victor, `.agents/` por projeto).
 
