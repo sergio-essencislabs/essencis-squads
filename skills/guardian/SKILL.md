@@ -1,6 +1,10 @@
 ---
 name: guardian
-description: Roda o squad Opensquad "Guardian" — auditoria de dívida técnica, documentação e segurança do GeoCloudAI e E-LIMS, com criação de backlog no GitHub Project Essencis-Labs e execução das correções aprovadas via PR. Use quando o pedido for para rodar/executar esse squad, auditar dívida técnica/segurança/documentação do GeoCloud ou do ELIMS, ou gerar/atualizar issues de auditoria no board Essencis-Labs — mesmo que a sessão atual esteja aberta em outro repositório (GeoCloudAI, ELIMS, ou qualquer outro). Também cobre pedidos ad-hoc endereçados a QUALQUER persona do squad por nome ou papel — ex.: "Marta, atualize a documentação", "Selma, audite as permissões do módulo X", "Dante, procura código morto em Y", "Tomás, cria a issue disso", "Breno, corrige esse achado", "Rui, revisa essa migration", "Flávia, ajusta essa tela", "Otávio, revisa o PR #N", "Jarvis, avalia o impacto disso nos dois produtos" — que rodam só aquele agente, sem o pipeline completo.
+description: >-
+  Roda o squad Opensquad Guardian para auditar dívida técnica, documentação e segurança no
+  GeoCloudAI e E-LIMS, criar backlog no GitHub Project Essencis-Labs e executar correções aprovadas
+  via PR. Use para rodar o squad, auditar os produtos, gerir achados no board ou acionar uma persona
+  do Guardian por nome ou papel em modo ad-hoc.
 ---
 
 # Guardian — wrapper de execução cross-repo
@@ -43,19 +47,26 @@ assumir — o usuário pode querer auditar o outro produto ou ambos.
 
 ## Como executar
 
-0. **Consultar o VaultS primeiro** — antes de carregar qualquer contexto do squad, e **sempre**
-   (run completa ou ad-hoc, sem exceção), invocar `LLML-query` sobre `C:\VaultS\VaultS\Library\`
-   perguntando pelo conhecimento já consolidado relevante a este pedido: produto provável (indício
-   do cwd da sessão; se ambíguo, considerar os dois) e o domínio do Guardian nesse(s) produto(s)
-   (known-issues abertos, decisões de arquitetura, padrões, drift de documentação já mapeado).
-   Guardar o resultado — ou "nada relevante encontrado", explicitamente, nunca omitir a etapa por
-   falta de achado — em memória de trabalho desta run como **Conhecimento Prévio (VaultS)**.
-   Consultar **uma única vez por run**, aqui; não repetir a consulta depois. Esse resultado é o que:
-   - No pipeline completo, o Step 01 grava dentro de `audit-scope.md` (seção própria), para os
-     Steps 02-04 reaproveitarem sem nova consulta.
-   - No modo ad-hoc, entra como parte do "Escopo ad-hoc: ..." que `runner.agent.md` § Ad-hoc input
-     synthesis pede antes de rodar a task da persona — mesmo não estando previsto no arquivo do
-     runner (compartilhado com outros squads), isso é regra deste wrapper, específica do Guardian.
+0. **Resolver a branch antes de decidir sobre a LLML.** O Guardian atua por padrão na branch
+   semanal/de integração vigente. Atuação direta em `main`/`master` é excepcional e só existe
+   quando o usuário a ordenar explicitamente para aquela execução; estar com `main` aberta no
+   checkout não constitui autorização.
+
+   A `Library\` da LLML documenta somente o estado da `main`. Portanto:
+   - **branch semanal/de integração ou branch de task derivada dela:** não consultar nem sincronizar
+     a LLML. Código, testes, tasks, handoffs e issues da branch em escopo são a fonte de verdade.
+     Registrar em memória de trabalho: `Conhecimento Prévio (VaultS): N/A — LLML representa a main
+     e esta execução atua na branch <nome>.` Não invocar `LLML-query`, `LLML-ingest`,
+     `LLML-sync-squads` nem `LLML-approve` em nenhuma etapa dessa run.
+   - **atuação direta em `main`/`master`, explicitamente ordenada pelo usuário:** consultar uma única
+     vez `LLML-query` sobre `C:\VaultS\VaultS\Library\` antes de carregar o contexto do squad,
+     buscando o conhecimento consolidado relevante. O Step 01 reutiliza esse resultado; nenhuma
+     outra etapa repete a consulta. A sincronização final da LLML continua sujeita aos gates da
+     Lívia e ao `LLML-approve`.
+
+   Se não houver uma branch semanal/de integração conhecida e o usuário não tiver autorizado
+   atuação direta na `main`, parar no checkpoint de escopo e pedir o nome da branch; nunca usar a
+   LLML para preencher essa lacuna.
 1. Ler, todos por caminho absoluto:
    - `C:\Software\ClaudeCode\_opensquad\_memory\company.md`
    - `C:\Software\ClaudeCode\_opensquad\_memory\preferences.md`

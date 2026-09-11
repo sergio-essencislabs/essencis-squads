@@ -13,6 +13,10 @@ Pega o que Marta Documentation já verificou como verdade nesta execução (Step
 
 ## Process
 
+0. Ler `audit-scope.md`. Prosseguir somente quando ele registrar branch `main`/`master` **e** ordem
+   explícita do usuário para atuação direta nela. Em branch semanal/de integração, ou sem essa
+   autorização, encerrar sem consultar nem sincronizar a LLML; checkout em `main` sozinho não vale
+   como autorização.
 1. Ler `docs-atualizados.md` por inteiro — um bloco por PR mesclado, cada um com docs/system atualizados, planilha estrutural (se houver), known-issue resolvido (se houver), e lição registrada (cross-projeto ou específica de produto).
 2. Para cada doc/system ou planilha tocada, identificar se existe página correspondente já na Library (`Library/Products/<Produto>/...`) — se existir, é candidata a atualização; se não existir, é candidata a página nova.
 3. Invocar a skill `LLML-ingest` apontando para os arquivos de produto tocados (GeoCloudAI/ELIMS, conforme o PR) — deixa a skill gerar a proposta em `_Proposals/`, seguindo as regras dela de front-matter, hub-and-spoke e nomenclatura.
@@ -68,6 +72,8 @@ verificacao_bidirecional:
 ## Veto Conditions
 
 Reject and redo if ANY are true:
+0. A task consultou ou sincronizou a LLML sem `audit-scope.md` registrar atuação direta na
+   `main`/`master` explicitamente autorizada pelo usuário.
 1. Uma proposta foi gerada sem citar o bloco exato de `docs-atualizados.md` de origem.
 2. Uma página da Library foi editada diretamente, sem passar por `LLML-ingest`/`LLML-approve`.
 3. A checagem de concorrência de `LLML-sync-squads` abortou a sincronização por confundir a cauda desta run com uma leitura externa concorrente.

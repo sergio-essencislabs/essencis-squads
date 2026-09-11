@@ -10,6 +10,13 @@
 
 ## Técnico (específico do squad)
 
+- **LLML somente em atuação direta na `main`, por ordem explícita do usuário (2026-09-11).** A
+  Library documenta exclusivamente o estado da `main` e pode divergir da branch semanal. O Guardian
+  atua por padrão na branch semanal/de integração e, nesse modo, não consulta nem sincroniza a LLML;
+  usa código, testes, tasks, handoffs e issues da própria branch como fonte de verdade. Estar com
+  `main` aberta no checkout não autoriza atuação direta nela. `LLML-query` na abertura e Lívia no
+  fechamento só rodam quando o usuário ordenar explicitamente atuação direta na `main` naquela run.
+
 - **Sob contenção pesada de I/O/rede (muitos agentes paralelos), `gh pr merge`/`gh pr view --json` (GraphQL) falham com `TLS handshake timeout` mesmo quando a operação já teve sucesso no servidor** — confirmado 2x (PRs #360 e #361 apareceram como falha/timeout no client, mas já estavam `merged=true` no GitHub ao checar depois). **Usar `gh api -X PUT repos/{owner}/{repo}/pulls/{n}/merge -f merge_method=squash` (REST) e `gh api repos/{owner}/{repo}/pulls/{n} --jq '.state,.merged'` para checar** — mais leve que GraphQL, e sempre conferir o estado real antes de reenviar um merge que "falhou" no client (nunca assumir que falhou de verdade sem checar).
 
 - **Dispatch paralelo em massa (11 agentes simultâneos, Onda 3, 2026-09-02) causou contenção real de I/O**: `npm ci`/`ng build`/`ng test` não conseguiram terminar em pelo menos 1 agente (GT-0024) — `node_modules` travado em progresso parcial por vários minutos, até comandos básicos de shell estourando timeout. Validação ficou limitada a revisão estática de código nesse caso. **Lição para próximas ondas**: 11 worktrees simultâneos rodando `npm ci` ao mesmo tempo no mesmo host é demais — considerar lotes menores (5-6) ou espaçar a instalação de dependências, e **sempre rodar uma validação de build/test consolidada no repositório principal depois que uma onda inteira mesclar**, já que PRs individuais podem ter sido mesclados sem essa confirmação por causa da contenção.
