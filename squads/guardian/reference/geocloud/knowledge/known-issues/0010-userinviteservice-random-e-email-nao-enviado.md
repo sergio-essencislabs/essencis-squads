@@ -2,7 +2,7 @@
 id: KI-0010
 title: "UserInviteService — código de convite com System.Random + e-mail comentado com método inexistente"
 severidade: média
-status: aberta
+status: parcialmente decidida
 produto: GeoCloud
 ---
 
@@ -42,23 +42,35 @@ userInvite.Code = new Random().Next(0, 1000000).ToString("D6");
 
 ## Ação recomendada
 
-Nenhuma ação imediata — aguardar a modelagem/discussão em andamento do
-fluxo de convite de usuário. Quando essa discussão fechar, avaliar junto:
-substituir `new Random()` por
-`Back.Application.Security.VerificationCodeGenerator` (já usado por
-`AccountRegistrationService`, testado, `RandomNumberGenerator` por
-dentro — ver KI-0011) e decidir se o convite deve efetivamente enviar
-e-mail (religando via `EmailService.SendAsync`/`IEmailService` +
-`VerifyHtml.GetText`, corrigindo a assinatura) ou permanecer
-deliberadamente sem envio, documentado como tal.
+Os dois defeitos desta entrada tiveram destinos diferentes.
+
+**1. `System.Random` — fechado, fica como está.** Sergio confirmou em
+2026-09-10: *"Sempre manter fidelidade ao código D'Amore. Ele é o CTO e
+definiu dessa forma."* A decisão que o KI-0011 registrava só para
+`UserPasswordResetService` vale igualmente aqui: o padrão veio do código do
+D'Amore e não será trocado por `VerificationCodeGenerator`. A redação
+anterior desta seção mandava "avaliar junto quando a discussão fechar", o
+que tratava a fidelidade como prioridade temporária — não é. Ver KI-0011
+para a descrição correta do risco aceito (a versão antiga falava em semente
+de relógio, o que é falso no .NET 6+).
+
+**2. E-mail comentado com método inexistente — continua aberto.** A linha
+comentada chama `_emailService.EnviarEmailPadraoAsync(...)`, que não existe;
+a assinatura real é `SendAsync(recipient, subject, htmlBody, cancellationToken)`.
+Descomentar como está quebra o build. Isso é independente da decisão do CTO
+e continua aguardando a modelagem do fluxo de convite — mais o KI-0008, que
+é a mesma pendência em `UserPasswordResetService`.
 
 ## Resolução
 
-_Pendente._
+**Parcial.** O item 1 (`System.Random`) está fechado por decisão do CTO em
+2026-09-10 — não reabrir. O item 2 (envio de e-mail) segue pendente,
+atrelado à modelagem do fluxo de convite.
 
 ## Dono
 
-Security Architect (Selma) + Backend Architect (Breno).
+Item 1: CTO (Luiz Ângelo D'Amore) — decidido.
+Item 2: Backend Architect (Breno), atrelado à modelagem do fluxo de convite.
 
 ---
 
