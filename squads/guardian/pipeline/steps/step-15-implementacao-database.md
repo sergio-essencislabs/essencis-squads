@@ -42,6 +42,8 @@ Load these files before executing:
 7. Abrir um Pull Request por branch (NUNCA push direto em main/master), notificando explicitamente o Backend Architect para implementar/ajustar a camada Persistence sobre o schema novo.
 8. Atualizar, na própria `GT-NNNN.md` em `tasks/active/`, as seções "Registro de execução" e "Validação" — com comando e resultado reais.
 
+> **Onde escrever o Registro de execução:** se a `GT-NNNN` tem `contraparte` no front-matter, o Registro de execução e a Validação vão **no par do repositório de produto** (`<repo>/.agents/tasks/active/GT-NNNN.md`) — é ele que viaja na branch e é revisado no mesmo PR do código. O GT do hub guarda o porquê (achado, evidência, severidade) e **não** recebe registro de execução. Sem `contraparte`, tudo no hub, como antes. Ver `agents/task-curator/tasks/gerar-tasks.md`, passo 5.
+
 ## Output Format
 
 The output MUST follow this exact structure:

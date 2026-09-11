@@ -2,7 +2,7 @@
 id: KI-0011
 title: "UserPasswordReset — código gerado com System.Random (fidelidade deliberada ao D'Amore)"
 severidade: média
-status: aberta
+status: decidida (nao sera alterado)
 produto: GeoCloud
 ---
 
@@ -15,11 +15,23 @@ arquivo de referência do D'Amore. **Decisão deliberada do usuário
 planejamento nesta rodada, em vez de aplicar `RandomNumberGenerator`
 (CSPRNG) como eu tinha feito numa primeira versão do port.
 
-Isso significa que este código de verificação tem a mesma fragilidade já
+Isso significa que este código de verificação compartilha a fragilidade já
 conhecida do sistema (comparar com KI-0010, o mesmo padrão em
-`UserInviteService`, esse sim já em produção e não deliberado): sequência
-previsível pela semente baseada em relógio do `System.Random`, num espaço
-de apenas 1 milhão de combinações.
+`UserInviteService`).
+
+**Correção de precisão (2026-09-10).** A versão anterior desta entrada dizia
+"semente baseada em relógio". **Isso é falso no .NET 6+**: o `Random()` sem
+parâmetros passou a ser semeado por fonte criptográfica, então o ataque
+clássico de adivinhar a semente pelo horário não se aplica aqui. A fragilidade
+real é outra e continua existindo: `System.Random` usa xoshiro256**, um PRNG
+não criptográfico cujo estado interno é recuperável a partir de um punhado de
+saídas observadas — quem consegue pedir vários códigos para a própria conta
+pode, em princípio, prever o código emitido para outra. O espaço de 1 milhão
+de combinações é atenuado por `VerificationAttempts`, que limita força bruta,
+mas não atenua a previsão por recuperação de estado.
+
+Registrar o risco certo importa porque **o risco foi aceito**: uma decisão
+tomada sobre uma descrição errada não é a mesma decisão.
 
 ## Evidência
 
@@ -30,20 +42,29 @@ userPasswordReset.Code = new Random().Next(0, 1_000_000).ToString("D6");
 
 ## Ação recomendada
 
-Já existe um utilitário pronto e testado para isso —
-`Back.Application.Security.VerificationCodeGenerator` (`.Generate()`,
-usa `RandomNumberGenerator` internamente, cobertura em
-`VerificationCodeGeneratorTests.cs`), já adotado por
-`AccountRegistrationService`. Quando o D'Amore revisar/ajustar este
-código (ciclo já conhecido — ver planilha interna, "Revisão código
-D'Amore"), avaliar junto com KI-0010 migrar as duas classes para injetar
-e usar esse gerador em vez de reimplementar `RandomNumberGenerator`
-inline — é o padrão que o próprio projeto já estabeleceu em outro fluxo.
+**Nenhuma. Esta entrada está fechada como decisão, não como pendência.**
+
+Sergio confirmou em 2026-09-10, quando perguntei se valia abrir issue:
+*"Sempre manter fidelidade ao código D'Amore. Ele é o CTO e definiu dessa
+forma."* A fidelidade **não expira** e não depende de um ciclo de revisão
+futuro. A redação anterior desta seção — "quando o D'Amore revisar/ajustar
+este código, avaliar migrar as duas classes" — dizia o contrário, e foi
+exatamente ela que fez a proposta ser levantada de novo em 2026-09-10.
+
+O utilitário `Back.Application.Security.VerificationCodeGenerator`
+(`.Generate()`, `RandomNumberGenerator` por dentro, coberto por
+`VerificationCodeGeneratorTests.cs`) continua existindo, registrado no DI
+(`Startup.cs`) e usado por `AccountRegistrationService`. Ele simplesmente
+**não se aplica a código portado do D'Amore** — e o fato de estar ali,
+pronto e a uma linha de distância, é o que torna esta entrada necessária:
+sem ela, a próxima pessoa a ler o código vê uma correção óbvia por fazer.
 
 ## Resolução
 
-_Pendente._
+**Fechada por decisão em 2026-09-10**: fica como está, permanentemente.
+Fidelidade ao código do D'Amore é decisão do CTO, não prioridade temporária.
+Não reabrir.
 
 ## Dono
 
-Backend Architect (Breno) — decisão de quando aplicar depende do D'Amore/usuário, não é bloqueador para este PR.
+CTO (Luiz Ângelo D'Amore) — decidido. Não é decisão de arquiteto de backend.

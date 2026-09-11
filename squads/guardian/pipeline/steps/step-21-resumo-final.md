@@ -24,7 +24,7 @@ Apresentar ao usuário um resumo consolidado com:
 1. Link para cada issue criada ou comentada no GitHub Project Essencis-Labs nesta execução (de `issues-criadas.md`).
 2. Link/referência para cada PR aberto, indicando se foi mesclado, rejeitado ou segue pendente para rework em uma próxima execução (de `aprovacao-prs.md`).
 3. Lista de docs/system, planilhas estruturais e entradas de knowledge base atualizadas (de `docs-atualizados.md`).
-4. Estado final do hub de tasks: quantas `GT-NNNN` foram movidas para `completed/` nesta execução, e quantas permanecem em `backlog/` (não promovidas) ou `active/` (promovidas mas com pendência de fechamento).
+4. Estado final do hub de tasks: quantas `GT-NNNN` foram movidas para `completed/` nesta execução, e quantas permanecem em `backlog/` (não promovidas) ou `active/` (promovidas mas com pendência de fechamento). Reportar também, para cada uma com `contraparte`, se o par no repositório de produto está no **mesmo estado** — divergência entre os dois é achado, não detalhe, e deve aparecer no resumo.
 5. Confirmação explícita de que a execução está completa — informar o usuário, sem pedir aprovação adicional.
 
 ## Output Format

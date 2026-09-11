@@ -45,7 +45,7 @@ Load these files before executing:
      descrição integral.
    - **Modo implementacao-direta**: localizar a linha correspondente em
      `plano-implementacao.md` (escopo da camada, dependências, GADR).
-2. Determinar o próximo `GT-NNNN` livre escaneando `squads/guardian/tasks/{backlog,active,completed}/*.md` — nunca reaproveitar um número já usado.
+2. Determinar o próximo `GT-NNNN` livre escaneando `squads/guardian/tasks/{backlog,active,completed}/*.md` **e** o `.agents/tasks/{backlog,active,completed}/*.md` de cada repositório de produto em escopo — nunca reaproveitar um número já usado em nenhum dos dois.
 3. Preencher o template (`tasks/_template.md`) com fidelidade total ao achado/
    plano original: nunca rebaixar severidade, nunca resumir a evidência a
    ponto de perdê-la, nunca inventar critério de aceite que o relatório não
@@ -53,8 +53,23 @@ Load these files before executing:
 4. Salvar o arquivo em `squads/guardian/tasks/backlog/GT-NNNN-{achado-id-lower}-{slug}.md`
    (ou `GT-NNNN-feature-{slug}.md` em modo implementacao-direta), com
    `status: backlog` e `run_origem` apontando para esta execução.
-5. Registrar o resultado — cada `GT-NNNN` gerada, achado/linha de origem, e
-   caminho do arquivo — em `tasks-geradas.md`.
+5. **Emitir o par no repositório de produto.** Se o produto em escopo tem
+   `.agents/tasks/` versionado, escrever também
+   `<repo-de-produto>/.agents/tasks/backlog/GT-NNNN-{slug}.md` — **mesmo
+   número**, template **daquele** repositório, `contraparte:` apontando para o
+   arquivo do hub, e o do hub apontando de volta. Detalhe e condições em
+   `agents/task-curator/tasks/gerar-tasks.md`, passo 5.
+
+   A numeração `GT` é **global ao Guardian**: ao escolher o número livre no
+   passo 2, varrer o hub **e** o `.agents/tasks/{backlog,active,completed}/` de
+   cada repositório de produto em escopo.
+
+   Repositório sem `.agents/` versionado (hoje o E-LIMS): não inventar a
+   estrutura — gerar só o GT do hub e registrar a ausência em
+   `tasks-geradas.md`.
+6. Registrar o resultado — cada `GT-NNNN` gerada, achado/linha de origem,
+   caminho do arquivo no hub e caminho do par (ou a ausência dele) — em
+   `tasks-geradas.md`.
 
 ## Output Format
 
@@ -64,7 +79,8 @@ Load these files before executing:
 **Data:** YYYY-MM-DD
 
 ### [ID do achado, ou linha da quebra por camada] → GT-NNNN
-**Arquivo:** `squads/guardian/tasks/backlog/GT-NNNN-{slug}.md`
+**Arquivo (hub):** `squads/guardian/tasks/backlog/GT-NNNN-{slug}.md`
+**Par (repo de produto):** `<repo>/.agents/tasks/backlog/GT-NNNN-{slug}.md` — ou "N/A — repositório sem `.agents/` versionado"
 **Título:** [título da task]
 **Camada:** [Backend/Frontend/Database/Documentação — ainda provisória; Jarvis confirma no roteamento]
 
@@ -99,7 +115,9 @@ Reject and redo if ANY of these are true:
   `GT-NNNN` correspondente).
 - Uma `GT-NNNN` reaproveitou um número já usado por outra task existente.
 - Qualquer chamada `gh` foi feita neste step (issue/board só no Step 10).
-- Uma task foi salva fora de `squads/guardian/tasks/backlog/`.
+- Uma task do hub foi salva fora de `squads/guardian/tasks/backlog/`.
+- Um par foi gerado com número diferente do GT do hub, ou nomeado `TASK-NNN` — essa sequência é do orquestrador `bootstrap-*` e o Guardian não escreve nela.
+- Um par foi gerado sem `contraparte` nos dois sentidos, ou o produto tem `.agents/` versionado e o par não foi gerado (nem a ausência justificada).
 
 ## Quality Criteria
 
