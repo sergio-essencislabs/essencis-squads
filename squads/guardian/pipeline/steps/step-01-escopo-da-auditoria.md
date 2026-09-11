@@ -57,7 +57,10 @@ a pergunta de frentes, que não se aplica).
 
 ## Ação do Pipeline Runner
 
-1. Coletar o modo e as respostas correspondentes.
+1. Coletar o modo e as respostas correspondentes. Resolver também a **branch alvo**: por padrão,
+   usar a branch semanal/de integração vigente. `main`/`master` só pode ser escolhida quando o
+   usuário tiver ordenado explicitamente atuação direta nela nesta execução; o checkout estar em
+   `main` não basta. Se não houver branch semanal conhecida, perguntar em vez de assumir `main`.
 2. Modo 1: se o usuário não especificar produto, assumir "Ambos"; se não
    especificar frentes, assumir "Todas"; se não especificar profundidade,
    assumir "Completa".
@@ -70,9 +73,11 @@ a pergunta de frentes, que não se aplica).
    abaixo — este arquivo é o `inputFile` dos Steps 02-05, então cada um deles
    precisa conseguir determinar, só lendo este arquivo, qual é o `modo` desta
    execução e se deve rodar de verdade ou virar stub.
-6. Incluir na mesma gravação, na seção "Conhecimento Prévio (VaultS)" abaixo, o
-   resultado já reunido no Passo 0 do wrapper (`~/.claude/skills/guardian/SKILL.md`) —
-   nunca consultar o VaultS de novo aqui, apenas reaproveitar o que já foi trazido.
+6. Incluir na mesma gravação a branch e a decisão sobre LLML já resolvidas no Passo 0 do wrapper
+   (`~/.claude/skills/guardian/SKILL.md`):
+   - branch semanal/de integração: `LLML: não consultada`, pois a Library representa a `main`;
+   - `main`/`master` com ordem explícita: reutilizar em "Conhecimento Prévio (VaultS)" o resultado
+     já consultado uma única vez. Nunca consultar o VaultS de novo aqui.
 7. Avançar: modo 1 → Steps 03, 04 e 05 (auditorias, em paralelo; Step 02 vira
    stub); modo 3 → Step 02 (planejamento do Jarvis; Steps 03-05 viram stub);
    modo 2 → Steps 02-05 todos stub, indo direto para o Step 06 com a lista de
@@ -85,6 +90,9 @@ a pergunta de frentes, que não se aplica).
 
 **Data:** YYYY-MM-DD
 **Modo:** [auditoria-nova | retomar-promocao | implementacao-direta]
+**Branch alvo:** [nome exato]
+**Atuação direta na main autorizada nesta execução:** [sim | não]
+**LLML:** [não consultada — branch semanal/de integração | consultada — atuação direta na main explicitamente autorizada]
 
 ## Modo 1 — Auditoria nova
 **Produto(s):** [GeoCloudAI | E-LIMS | Ambos]
@@ -109,10 +117,10 @@ a pergunta de frentes, que não se aplica).
 **Profundidade:** [Rápida | Completa]
 
 ## Conhecimento Prévio (VaultS)
-[resumo do que o VaultS já sabe sobre o(s) produto(s)/frente(s)/pedido acima —
-achados, decisões de arquitetura, padrões, known-issues relevantes, reunidos no
-Passo 0 do wrapper (não consultado de novo aqui); ou "Nada relevante encontrado no
-VaultS para este escopo."]
+[Em branch semanal/de integração: "N/A — LLML representa a main e esta execução atua na branch
+<nome>; fontes de verdade são código, testes, tasks, handoffs e issues da branch." Em atuação
+direta na main explicitamente autorizada: resumo reunido no Passo 0 do wrapper, ou "Nada relevante
+encontrado no VaultS para este escopo."]
 
 ## Observações do usuário
 [qualquer contexto adicional em texto livre fornecido pelo usuário]
