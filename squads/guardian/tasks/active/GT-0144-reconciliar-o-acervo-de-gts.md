@@ -67,9 +67,14 @@ existiu nesses arquivos.
 3. Os dois commits imediatamente seguintes ao da TASK-060 são `f9cecc26` (GT-0040) e `f12060bb`
    (GT-0041) — as duas primeiras GTs com par.
 
-**O que falta para virar fato:** a hipótese explica a ausência por "o mecanismo não existia", mas
-não exclui que pares tenham existido e sido apagados. Confirmar exige varrer o histórico do
-produto por arquivos `GT-000*` removidos (`git log --diff-filter=D`). Não foi feito.
+**O que falta para virar fato:** isso explica a ausência por "o mecanismo não existia", mas não
+exclui que pares tenham existido e sido apagados. Confirmar exige varrer arquivos removidos — com
+o glob `'*GT-00*'`, **não** `'.agents/tasks/GT-00*'`, que não alcança subpasta e devolve zero por
+cegueira. O comando e o controle positivo obrigatório estão no CA-07. Não foi feito.
+
+Uma deleção já apareceu na revisão do #4 — `b8cafe8e`, que removeu
+`.agents/tasks/backlog/GT-0043-rqd-real.md` ao movê-lo para `completed/`. Está **fora** da faixa
+0001-0039 e não refuta nada; serve de controle de que a varredura corrigida enxerga.
 
 ### Grupo B — causa diferente: cunhadas fora do hub
 
@@ -163,10 +168,32 @@ Cada `GT-NNNN` alcançável dos dois lados, ou com ausência justificada por esc
 - [ ] CA-03: `contraparte:` correta nos dois sentidos em tudo que for reconciliado, em caminho
       relativo — nunca `C:/...`.
 - [ ] CA-04: `GT-0109` e `GT-0110` deixam de apontar para arquivo inexistente.
-- [ ] CA-05: `GT-0120`, `GT-0121` e `GT-0122` apontam para `completed/` **e deixam de usar caminho
-      absoluto**. Hoje são `C:/Software/GeoCloud/GeoCloudAI/...`, apontando para o checkout
-      compartilhado — pasta errada e caminho de máquina são dois defeitos no mesmo campo, e este CA
-      cobre os dois. O par viaja na branch; caminho relativo é o que o CA-03 exige.
+- [ ] CA-05: **nenhum `contraparte:` do hub aponta para arquivo inexistente, e nenhum usa caminho
+      absoluto.** São **nove**, não três — este número foi medido, não enumerado de memória:
+
+      | GT | aponta para | está em |
+      |---|---|---|
+      | GT-0044, 0049, 0050, 0051 | `active/` ou `backlog/` | `completed/` |
+      | GT-0118, 0119, 0120, 0121, 0122 | `active/` | `completed/` |
+
+      As nove usam `C:/Software/GeoCloud/GeoCloudAI/...` ou a variante com barra invertida,
+      apontando para o checkout compartilhado — **pasta errada e caminho de máquina são dois
+      defeitos no mesmo campo**, e este CA cobre os dois. O par viaja na branch; caminho relativo é
+      o que o CA-03 exige, e `C:/Software/...` não resolve em janela de nuvem.
+
+      **Uma décima, de classe diferente:** `GT-0052` tem `contraparte:` apontando para
+      `C:\Software\EssencisSquads\squads\guardian\tasks\active\GT-0052-...` — ou seja, **para o
+      próprio hub, não para o produto**. Não é pasta errada nem caminho absoluto: é o ponteiro
+      virado para o lado errado do par. Vai no mesmo CA porque o conserto é o mesmo campo.
+
+      **Como conferir, em vez de confiar na lista acima** (ela envelhece; o comando não):
+      normalizar cada `contraparte:` do hub e testar contra
+      `git ls-tree -r --name-only <rev-do-produto> .agents/tasks`, com as duas pontas ancoradas em
+      commit. Atenção a um falso positivo legítimo: GT recém-cunhada cujo par ainda está em branch
+      não mesclada aparece como quebrada e não está.
+
+      Contagem por forma do campo, no mesmo instante: **25 relativos, 17 absolutos, 1 apontando
+      para o hub, 39 sem o campo** (estes 39 são exatamente o Grupo A).
 - [ ] CA-06: `docs/setup-local.md:39` traz a baseline real, com cada número rotulado pela suíte a
       que pertence, ou deixa de citar número se a decisão for que baseline não pertence a documento
       de setup. Baseline proposta, com a run citada:
@@ -187,14 +214,63 @@ Cada `GT-NNNN` alcançável dos dois lados, ou com ausência justificada por esc
       **Sobreposição declarada:** a Etapa 6 da GT-0142 (#622) também prevê corrigir essa linha, ao
       escrever a página de "como rodar a suíte localmente". Quem chegar primeiro resolve e marca
       nos dois lugares; o risco aqui não é o trabalho dobrado, é cada uma supor que a outra fez.
-- [ ] CA-07: a hipótese do Grupo A é confirmada ou refutada por
-      `git log --diff-filter=D -- '.agents/tasks/GT-00*'`, e o resultado fica escrito.
-- [ ] CA-08: o `README.md` de tasks ganha uma linha dizendo **o que impede o Grupo B de se
-      repetir** — ou, se nada impedir hoje, dizendo isso com essas palavras.
+- [ ] CA-07: a hipótese do Grupo A é confirmada ou refutada por varredura de arquivos removidos, e
+      o resultado fica escrito. **Comando, já corrigido:**
+
+      ```bash
+      MSYS_NO_PATHCONV=1 git log --oneline --diff-filter=D --all -- '*GT-00*'
+      ```
+
+      **E, obrigatoriamente, o controle positivo antes de acreditar em qualquer zero:**
+
+      ```bash
+      MSYS_NO_PATHCONV=1 git log --oneline --all -- '*GT-00*'   # tem de devolver > 0
+      ```
+
+      A primeira redação deste critério mandava `-- '.agents/tasks/GT-00*'`, que **não alcança
+      subpasta** — e as tasks vivem em `.agents/tasks/{backlog,active,completed}/`. Esse pathspec
+      devolve `0` **mesmo sem** `--diff-filter=D`, o que prova que não estava olhando lugar nenhum.
+      Quem executasse literalmente veria `0`, escreveria "hipótese confirmada" e fecharia a caixa —
+      e este é justamente o critério que transforma a hipótese em fato. **O zero não dizia "nada
+      foi apagado"; dizia "não olhei".** Achado do Dante na revisão do #4.
+
+      Daí o controle positivo ser parte do critério e não zelo: um comando de verificação que pode
+      falhar em silêncio tem de provar que enxerga alguma coisa antes de o seu vazio valer.
+
+      **Resultado parcial já obtido na revisão**, para quem executar não começar do zero: a
+      varredura corrigida acha **uma** deleção — `b8cafe8e`, que removeu
+      `.agents/tasks/backlog/GT-0043-rqd-real.md` (movido para `completed/`). **Fora da faixa
+      0001-0039**, portanto não refuta o Grupo A. Falta varrer o resto com o glob certo.
+- [ ] CA-08: **`.agents/tasks/README.md`** — o do produto, não o
+      `squads/guardian/tasks/README.md` do hub — ganha uma linha dizendo **o que impede o Grupo B
+      de se repetir**, ou, se nada impedir hoje, dizendo isso com essas palavras. É o do produto
+      porque é o que uma sessão trabalhando no repositório lê antes de criar um `GT-`, que é
+      exatamente onde o Grupo B nasce.
+
       O README já afirma que **nascer em par é a regra, não o fim do ciclo**: o `GT` é criado
       *"automaticamente, junto do `GT` de mesmo número no repositório do squad"* (linha 19) e
-      *"todo `GT-NNNN` daqui tem um irmão"* (linha 27). A regra está escrita; o que falta é o que a
-      faz valer. Enunciar de novo não fecha este critério.
+      *"Todo `GT-NNNN` daqui tem um irmão de mesmo número"* (linha 27). **A regra está escrita; o
+      que falta é o que a faz valer. Reenunciá-la não fecha este critério.**
+
+      Frase mínima aceitável, para copiar se nada melhor aparecer — a saída honesta é uma saída
+      válida aqui:
+      > Hoje nada impede que um `GT-NNNN` nasça só neste repositório, sem o par no hub: a regra
+      > acima é convenção, não verificação. Enquanto não houver checagem, conferir o par é passo
+      > manual de quem cria.
+
+- [ ] CA-09: **o `_template.md` do hub passa a trazer `contraparte: ""`.** Hoje ele termina em
+      `related_adrs: []` e não tem o campo — todas as GTs do acervo o carregam à mão, e a próxima
+      janela que copiar o molde começa sem ele. É parte da resposta ao CA-08: perguntar o que
+      impede o Grupo B de se repetir e descobrir que **o molde nem pede o ponteiro** fecha o
+      círculo. Achado do Dante na revisão do #3, devolvido por estar fora daqueles PRs.
+      O `_template.md` do produto deve ser conferido no mesmo passo.
+
+- [ ] CA-10: **o campo do número da issue tem duas grafias no hub.** `issue_url:` em 59 arquivos
+      (é o que o `_template.md` declara, com o comentário "sinal de promovida") e `issue: NNN` em
+      23. Uma varredura por `issue_url` lê esses 23 como **não promovidos**, e eles estão — é o
+      mesmo defeito da GT-0135, em escala. Seis dos 23 já foram convertidos no PR #3 do hub
+      (GT-0106/0107/0108/0123/0124/0125), por serem os que aquele PR tocava; **restam 17**:
+      GT-0040-0043, 0045-0052 e GT-0118-0122. Converter é mecânico — o número já está lá.
 
 ## Impacto técnico
 ### Backend
@@ -210,12 +286,14 @@ Indireto. Acervo em que não se confia é acervo que não se consulta, e boa par
 achados de permissão (0083-0095, 0109-0110).
 
 ## Plano de implementação
-- [ ] Etapa 1 — confirmar ou refutar a hipótese do Grupo A (CA-07). Muda o texto do lado que for
-      criado para as 39.
-- [ ] Etapa 2 — os cinco itens pontuais, que são baratos e independentes: CA-04, CA-05, CA-06.
+- [ ] Etapa 1 — confirmar ou refutar a hipótese do Grupo A (CA-07), **rodando o controle positivo
+      primeiro**; muda o texto do lado a criar.
+- [ ] Etapa 2 — os itens pontuais, baratos e independentes: CA-04, CA-05, CA-06, CA-09, CA-10.
+      **O CA-09 vale fazer antes da Etapa 3**: criar 31 arquivos de hub a partir de um molde que
+      não pede `contraparte:` é fabricar o Grupo B de novo, à mão.
 - [ ] Etapa 3 — Grupo B (31 arquivos de hub a criar a partir do par existente).
-- [ ] Etapa 4 — Grupo A (39 pares de produto, ou a justificativa do CA-01).
-- [ ] Etapa 5 — CA-08, a linha no README.
+- [ ] Etapa 4 — Grupo A (39 pares, ou a justificativa do CA-01).
+- [ ] Etapa 5 — CA-08.
 
 ## Estratégia de testes
 - [ ] Unitários: N/A — não há código.
