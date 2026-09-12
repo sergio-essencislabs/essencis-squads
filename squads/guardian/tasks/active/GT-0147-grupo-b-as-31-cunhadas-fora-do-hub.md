@@ -111,17 +111,17 @@ sobre o que impede a repetição.
 ## Critérios de aceitação
 Numeração original da GT-0144 preservada, para o rastro ser legível sem tradução.
 
-- [ ] **CA-02**: as 31 têm arquivo no hub, ou justificativa escrita equivalente.
+- [x] **CA-02**: as 31 têm arquivo no hub, ou justificativa escrita equivalente.
 
-- [ ] **CA-03** (escopo Grupo B): `contraparte:` correta nos dois sentidos, em caminho relativo —
+- [x] **CA-03** (escopo Grupo B): `contraparte:` correta nos dois sentidos, em caminho relativo —
       nunca `C:/...`.
 
-- [ ] **CA-04**: `GT-0109` e `GT-0110` deixam de apontar para arquivo inexistente.
+- [x] **CA-04**: `GT-0109` e `GT-0110` deixam de apontar para arquivo inexistente.
       **Vem junto do CA-03 de propósito:** as duas são exatamente os 2 dos 31 com ponteiro
       pendurado, e consertá-las é o **mesmo campo, no mesmo arquivo** que o CA-03 escreve ao criar
       o par. Separar poria duas janelas no mesmo arquivo.
 
-- [ ] **CA-08**: `.agents/tasks/README.md` — o do **produto**, não o do hub — ganha uma linha
+- [x] **CA-08**: `.agents/tasks/README.md` — o do **produto**, não o do hub — ganha uma linha
       dizendo **o que impede o Grupo B de se repetir**, ou, se nada impedir hoje, dizendo isso com
       essas palavras. É o do produto porque é o que uma sessão lê antes de criar um `GT-`, que é
       onde o Grupo B nasce.
@@ -149,14 +149,14 @@ Indireto: boa parte das 31 são achados de permissão (0083-0095, 0109-0110), e 
 confia é acervo que não se consulta.
 
 ## Plano de implementação
-- [ ] Etapa 0 — **confirmar que o CA-09 da GT-0145 fechou.** Se não fechou, ou espere, ou ponha
+- [x] Etapa 0 — **confirmar que o CA-09 da GT-0145 fechou.** Se não fechou, ou espere, ou ponha
       `contraparte:` à mão e registre que o molde ainda não pedia.
-- [ ] Etapa 1 — CA-08, que é independente do resto e o único fazível em nuvem.
-- [ ] Etapa 2 — CA-02 + CA-03 + CA-04, os 31 arquivos, em lote, varrendo case-insensitive.
+- [x] Etapa 1 — CA-08, que é independente do resto e o único fazível em nuvem.
+- [x] Etapa 2 — CA-02 + CA-03 + CA-04, os 31 arquivos, em lote, varrendo case-insensitive.
 
 ## Estratégia de testes
-- [ ] Unitários / Integração / E2E: N/A — não há código.
-- [ ] Manual: varredura final **case-insensitive** confirmando que as 31 têm hub ou justificativa,
+- [x] Unitários / Integração / E2E: N/A — não há código.
+- [x] Manual: varredura final **case-insensitive** confirmando que as 31 têm hub ou justificativa,
       e que nenhum `contraparte:` aponta para arquivo inexistente. Rodar o **controle positivo**
       antes de aceitar qualquer zero.
 
@@ -169,19 +169,96 @@ confia é acervo que não se consulta.
 
 ## Registro de execução
 ### Alterações realizadas
-Pendente — cunhada em 12/09/2026, não executada.
+- **CA-02** — 31 arquivos novos neste repositório, em `squads/guardian/tasks/{active,completed}/`,
+  cada um na pasta que espelha a do par. PR #7, mesclado em `00a0ce3`. Nenhuma das 31 precisou de
+  justificativa de ausência: todas tinham par honesto do qual derivar.
+- **CA-03** — `contraparte:` nos dois sentidos, em caminho relativo. Do lado do produto, 29
+  inserções e 2 correções, em Essencis-Labs/GeoCloudAI#641.
+- **CA-04** — `GT-0109` e `GT-0110` deixaram de apontar para
+  `C:/Software/ClaudeCode/.../GT-0109.md` e `GT-0110.md`, que nunca existiram. Eram também os dois
+  únicos ponteiros absolutos do lado do produto: os dois defeitos morriam no mesmo campo, que é
+  por que o CA-04 veio junto do CA-03.
+- **CA-08** — `.agents/tasks/README.md` do produto ganhou a seção "O que faz essa regra valer:
+  hoje, nada", com a frase mínima e três verificações que a sustentam. Commit `cfb3d2a5` no #641.
+
 ### Arquivos principais
-Pendente.
+- 31 arquivos novos aqui (PR #7)
+- 31 pares no produto, só o campo `contraparte:`, uma linha cada (#641)
+- `.agents/tasks/README.md` no produto (CA-08)
+
 ### Decisões
-A decisão de nomenclatura (`GT-` maiúsculo no hub, sem renomear o produto) está na seção própria,
-acima, com as três razões.
+- **O arquivo do hub não duplica o par.** O README do produto define que o hub responde *por que
+  entrou na fila* e o par *como foi feito*. Como nenhuma das 31 veio de auditoria, cada arquivo
+  daqui transcreve a origem real do par e aponta para lá. Copiar critérios, plano e registro teria
+  produzido a "mesma coisa duas vezes" que o README proíbe.
+- **`## Objetivo`:** nenhuma das 31 traz essa seção — são escritas à mão, fora do molde. Deduzir um
+  objetivo do título seria inventar, e a RN-01 veta. Cada arquivo lista as seções que o par
+  realmente traz. Conferido depois pelo revisor, nome por nome nos 31: todas verbatim.
+- **Base do PR #7:** `origin/main` (`b99055f`), não `acervo/gt-0145-0147`, para não empilhar PR em
+  branch que mescla por squash. Como `b99055f` é anterior ao CA-09, o molde de lá ainda não pedia
+  `contraparte:` — os 31 campos foram escritos deliberadamente, na forma do molde corrigido em
+  `c3b5320`, não copiados do molde velho.
+- **Worktree, não troca de branch:** o checkout compartilhado deste repositório estava na branch do
+  Tomás com trabalho não commitado. `git worktree add`; a árvore dele não foi tocada.
+
 ### Divergências
-Os cinco nomes minúsculos do produto ficam como estão, por decisão registrada — não por descuido.
+- **`GT-0064`** tem `status: partial` no par, valor que o molde daqui não prevê (`backlog |
+  active | completed`). O arquivo do hub espelha a pasta (`active`), como o molde manda, e grava
+  `partial` no corpo. Dois valores registrados, nenhum inventado.
+- **Os cinco nomes minúsculos** do produto (`gt-0113`..`gt-0117`) continuam minúsculos lá, por
+  decisão registrada acima. Aqui nasceram maiúsculos, e o hub segue sem nenhum minúsculo.
+
 ### Pendências
-`grupo_execucao` vazio: é do Step 09.
+- `camada:` e `grupo_execucao:` ficaram `""` nos 31: são campos do Step 09, e nenhuma das 31 passou
+  por roteamento. `""` aqui significa "não preenchido", que é a verdade.
+- `GT-0073` e `GT-0079` ficaram com `issue_url: ""` porque o par não registra issue. Pelo molde,
+  `issue_url` vazio é o sinal de "não promovida pelo Step 10", que é o caso das duas.
+- **O fechamento move os dois lados juntos.** Enquanto o #641 não mesclar, mover só este lado para
+  `completed/` deixaria o ponteiro do outro apontando para `active/` — exatamente a fila que o
+  CA-08 documenta.
+
+### Este arquivo foi, ele próprio, o oitavo caso
+Os 31 arquivos mesclaram no `00a0ce3` e **este arquivo-task ficou para trás**, com zero caixas
+marcadas e o Registro dizendo "Pendente — não executada", enquanto o trabalho que ele descreve já
+estava na `main`.
+
+É a mesma forma que o CA-08 documenta — **entrega feita, registro não atualizado** — manifestada
+num **campo diferente**: não o ponteiro, o Registro. E aconteceu **depois** de o CA-08 ser escrito,
+o que é a evidência mais forte que a task podia ter: a fila não é acervo histórico, é produção
+corrente, e escrever sobre ela não a interrompe.
+
+Acrescenta uma quarta manifestação às três já mapeadas (par ausente no nascimento; ponteiro que
+envelhece ao mover para `completed/`; `issue_url` vazio depois de a issue existir). As quatro têm a
+mesma causa e nenhuma tem quem a feche no fluxo.
 
 ## Validação
-Pendente. Os números vêm do censo da GT-0144, com as duas pontas ancoradas em commit.
+Revalidado contra **commit**, não contra árvore de trabalho — três janelas ainda têm worktree neste
+repositório, e medir a árvore mede o trabalho não commitado dos outros.
+
+Âncoras: hub em `origin/main` (`9774f53`), produto em `7d0799d1` (head do #641).
+
+```
+hub @ 9774f53: 116 arquivos | produto @ 7d0799d1: 77 arquivos
+
+CA-02 as 31 com arquivo no hub : 31/31 (faltam nenhuma)
+CA-03 hub -> produto resolve   : 31/31
+CA-03 produto -> hub resolve   : 31/31
+CA-04/05 caminho absoluto      : 0 (esperado 0)
+controle positivo minusculos   : hub=0 (esp. 0) | produto=5 (esp. 5)
+```
+
+O controle positivo é o que autoriza aceitar os zeros: o detector de minúsculo acha os cinco do
+produto, então o zero do hub é ausência real, não cegueira do instrumento.
+
+Três zeros falsos foram rejeitados durante a execução:
+
+1. Ponteiro desatualizado no hub voltou **0** — a árvore compartilhada estava com consertos não
+   commitados que mascaravam cinco dos sete. Em `b99055f` são **7**.
+2. Contagem de `## Objetivo` voltou **0 de 31** por `os.path.join` ter produzido barra invertida que
+   o grep do MSYS não resolve. Refeita com barra normal e controle positivo (`Critérios de
+   aceitação` em 20/31), o zero se confirmou real.
+3. Uma suspeita de front-matter corrompido (`pr: affected_modules: [...]` em onze arquivos) era bug
+   do extrator — `\s*` atravessando a quebra de linha. Os arquivos estão íntegros.
 
 ## Handoff
 **Depende da GT-0145 (CA-09).** O CA-08 é separável e não depende de nada.
