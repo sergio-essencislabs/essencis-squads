@@ -152,8 +152,10 @@ Nenhuma.
 `grupo_execucao` vazio: é do Step 09.
 
 ## Validação
-Pendente. Os números vêm do censo da GT-0144, medido em 12/09/2026 sobre 82 arquivos do hub, com
-as duas pontas ancoradas em commit.
+Pendente. Os números vêm do censo da GT-0144 (#627), medido em 12/09/2026 com as duas pontas
+ancoradas em commit — hub em `8867236` + `7a8fdb2`, produto em `d75d0bdf`. O hub tinha **82**
+arquivos naquele instante e tem **85** em `b99055f`; a contagem envelhece, o método de conferir
+não. Reancore antes de recontar.
 
 ## Handoff
 Sem dependência de entrada — corre desde o primeiro minuto, em paralelo com a GT-0146.

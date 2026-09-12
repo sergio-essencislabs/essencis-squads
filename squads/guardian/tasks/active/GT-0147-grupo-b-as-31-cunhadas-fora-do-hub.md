@@ -17,7 +17,7 @@ updated_at: 2026-09-12
 affected_modules: [acervo-de-tasks]
 related_adrs: []
 guarda_chuva: "GT-0144 — o censo, o método e a evidência vivem lá e não são copiados aqui"
-depende_de: "GT-0145 (CA-09) — o molde precisa pedir `contraparte:` antes de 31 arquivos saírem dele"
+depende_de: ["GT-0145"]
 contraparte: "GeoCloudAI/.agents/tasks/active/GT-0147-grupo-b-as-31-cunhadas-fora-do-hub.md"
 ---
 
@@ -71,8 +71,10 @@ Uma varredura por `GT-` devolve **26 e parece completa**. Achado do Jarvis, que 
 Três razões:
 1. **O `id:` é o identificador canônico**, e nas cinco ele é maiúsculo. O nome do arquivo do
    produto é que diverge do próprio conteúdo.
-2. **O hub é hoje 100% maiúsculo** — 82 arquivos, nenhum `gt-`. Seguir o nome do par importaria a
-   grafia minúscula para um lugar que não a tem: espalharia o defeito em vez de contê-lo.
+2. **O hub é 100% maiúsculo** — **85 arquivos** em `sergio-essencislabs/essencis-squads` @
+   `b99055f`, nenhum `gt-`. (Eram 82 no censo da GT-0144; o hub cresceu entre as duas medições, e
+   o que não muda é a proporção: **zero** minúsculos.) Seguir o nome do par importaria a grafia
+   minúscula para um lugar que não a tem: espalharia o defeito em vez de contê-lo.
 3. **O `contraparte:` carrega o caminho exato dos dois lados**, então a divergência de caixa entre
    os nomes **nunca quebra a resolução do par** — ela só quebra varredura ingênua, e a defesa
    contra isso é varrer case-insensitive, não renomear.
