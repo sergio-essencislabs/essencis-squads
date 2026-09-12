@@ -72,9 +72,9 @@ Três razões:
 1. **O `id:` é o identificador canônico**, e nas cinco ele é maiúsculo. O nome do arquivo do
    produto é que diverge do próprio conteúdo.
 2. **O hub é 100% maiúsculo** — **85 arquivos** em `sergio-essencislabs/essencis-squads` @
-   `b99055f`, nenhum `gt-`. (Eram 82 no censo da GT-0144; o hub cresceu entre as duas medições, e
-   o que não muda é a proporção: **zero** minúsculos.) Seguir o nome do par importaria a grafia
-   minúscula para um lugar que não a tem: espalharia o defeito em vez de contê-lo.
+   `2e1fc9e`, nenhum `gt-`. (Eram 82 em `b99055f`, antes de as três GTs desta divisão entrarem na
+   `main`; o que não muda é a proporção: **zero** minúsculos.) Seguir o nome do par importaria a
+   grafia minúscula para um lugar que não a tem: espalharia o defeito em vez de contê-lo.
 3. **O `contraparte:` carrega o caminho exato dos dois lados**, então a divergência de caixa entre
    os nomes **nunca quebra a resolução do par** — ela só quebra varredura ingênua, e a defesa
    contra isso é varrer case-insensitive, não renomear.
