@@ -192,8 +192,29 @@ Cada `GT-NNNN` alcançável dos dois lados, ou com ausência justificada por esc
       commit. Atenção a um falso positivo legítimo: GT recém-cunhada cujo par ainda está em branch
       não mesclada aparece como quebrada e não está.
 
-      Contagem por forma do campo, no mesmo instante: **25 relativos, 17 absolutos, 1 apontando
-      para o hub, 39 sem o campo** (estes 39 são exatamente o Grupo A).
+      **Este critério tem duas cláusulas, de alcances diferentes, e a caixa só fecha com as duas.**
+      É possível consertar os nove, marcar a caixa e deixar cinco arquivos para trás cumprindo a
+      letra da primeira e não da segunda:
+
+      | Cláusula | Quantos | Quais |
+      |---|---|---|
+      | nenhum aponta para arquivo inexistente | **9** | a tabela acima |
+      | nenhum usa caminho absoluto | **14** | os 9 acima **+ 5 que resolvem** |
+
+      Os cinco absolutos que **resolvem hoje** — pasta certa, caminho de máquina — são
+      `GT-0043`, `GT-0045`, `GT-0046`, `GT-0047` e `GT-0048`. Não estão quebrados e ainda assim
+      precisam virar relativos, pela razão que este CA já dá: `C:/Software/...` não resolve em
+      janela de nuvem. Somando a décima de classe diferente (GT-0052, virada para o hub), são
+      **15 campos a consertar**, dos quais só 9 aparecem como quebrados.
+
+      Contagem por forma do campo, no mesmo instante: **28 relativos, 14 absolutos, 1 apontando
+      para o hub, 39 sem o campo** (estes 39 são exatamente o Grupo A — conferido por igualdade de
+      conjunto com `GT-0001`..`GT-0039`, não por contagem).
+
+      > Nota para quem cruzar com o histórico de revisão: ali estes números aparecem como *"18
+      > absolutos, dos quais 8 resolvem"*. A diferença não é divergência de medição — são
+      > `GT-0123`, `GT-0124` e `GT-0125`, convertidos para relativo no PR #3 do hub enquanto a
+      > revisão acontecia. O acervo se moveu entre as duas contagens; a daqui é a posterior.
 - [ ] CA-06: `docs/setup-local.md:39` traz a baseline real, com cada número rotulado pela suíte a
       que pertence, ou deixa de citar número se a decisão for que baseline não pertence a documento
       de setup. Baseline proposta, com a run citada:
