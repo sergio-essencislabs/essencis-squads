@@ -132,7 +132,14 @@ Credencial do MySQL do CI é efêmera e de serviço.
       (CA-05).
 - [x] Etapa 5 — `scripts/cloud/provision-env.sh` criado e verificado (#610).
 - [ ] Etapa 6 — documentar em `docs/` (CA-07), incluindo corrigir a baseline defasada de
-      `docs/setup-local.md:39`.
+      `docs/setup-local.md:39`. **Atenção ao terceiro número:** o `332 specs` da linha atual é do
+      **frontend** (Karma), não do `Back.ApiTests`. Trocar por `509/91/274` poria um número de
+      backend sob o rótulo "specs", sumiria com o número do frontend num parágrafo que manda subir
+      os dois, e esconderia que 78 dos 274 são pulados. A baseline correta tem quatro números:
+      **`509 unit / 91 integration / 196 de 274 api (78 skipped) / 561 specs`** (run 34701237492).
+      Desambiguado por contagem histórica: em `f3d33580`, quando a linha nasceu, o frontend tinha
+      329 `it(` e o `Back.ApiTests` tinha 12 `[Fact]/[Theory]`. Achado do Rui na revisão do #628.
+      Mesma correção consta do CA-06 da GT-0144 (#627) — sobreposição declarada dos dois lados.
 
 ## Estratégia de testes
 - [x] Unitários: N/A — é infraestrutura.

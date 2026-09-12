@@ -9,7 +9,7 @@ severidade: media
 produto: GeoCloudAI
 camada: frontend
 run_origem: 2026-09-11-095223
-issue_url: ""   # ver "Divergência de acervo" no fim deste arquivo — o #569 aqui anotado era da GT-0116
+issue_url: "https://github.com/Essencis-Labs/GeoCloudAI/issues/626"
 grupo_execucao: onda-4-sequencial
 owner: Sergio
 created_at: 2026-09-11
@@ -72,24 +72,33 @@ Pendente.
 ## Handoff
 Aguardando promoção — ver contraparte.
 
-## Divergência de acervo — anotada por Tomás em 12/09/2026
-Dois problemas encontrados ao commitar o acervo pendente do hub (Frente 3 do despacho da Vision).
-Nenhum dos dois foi "consertado" por dedução; ficam registrados para a Vision decidir.
+## Divergência de acervo — anotada por Tomás em 12/09/2026, resolvida no mesmo dia
 
-**1. `issue_url` apontava para a issue errada.** O campo trazia
-`.../issues/569`, que é a issue da **GT-0116** ("Minimizar o chat em página cheia voltava sempre
-para a raiz"), não desta task. O ponteiro foi esvaziado: deixar um link que leva o leitor a outra
-GT é pior do que declarar que não se sabe.
+**Não houve trabalho sem registro. Houve registro apontando para o lugar errado.** A distinção é o
+ponto desta nota, e é o que ela existe para preservar.
 
-**2. Esta GT parece nunca ter ganhado issue própria.** O bloco de issues da épica é contínuo —
-#586 (GT-0126) a #597 (GT-0138) — e nele **não há** issue para a GT-0135: o #595 é a GT-0136 e o
-#596 é a GT-0137. Uma busca por `painel continuacao conversa pagina cheia` em todos os estados
-retorna só o #569.
+**1. `issue_url` apontava para a issue errada.** O campo trazia `.../issues/569`, que é a issue da
+**GT-0116** ("Minimizar o chat em página cheia voltava sempre para a raiz"), não desta task.
+Enquanto o campo parecesse preenchido, ninguém tinha motivo para desconfiar: uma varredura que só
+conferisse "tem `issue_url`?" daria esta GT por promovida.
+
+**2. Esta GT nunca ganhou issue própria.** O bloco de issues da épica é contínuo — #586 (GT-0126) a
+#597 (GT-0138) — e nele não havia entrada para a GT-0135: de #594 (GT-0134) salta para #595
+(GT-0136). Ela ficou de fora quando o lote foi criado, e o campo foi preenchido depois com um
+número que não era o dela.
 
 Mesmo assim **o trabalho foi mesclado**: commit `0bbd0691`, *"fix(chat): anexo serial, painel
-separado da caixa e exportacao resiliente (GT-0134/0135/0136) (#605)"*, e o par vive em
-`.agents/tasks/completed/` na branch de integração. Por isso o arquivo vai para `completed/`.
+separado da caixa e exportacao resiliente (GT-0134/0135/0136) (#605)"*, junto da GT-0134 (#594) e
+da GT-0136 (#595), que ganharam issue própria. O par vive em `.agents/tasks/completed/` na branch
+de integração. Por isso o arquivo está em `completed/`.
 
-Criar uma issue retroativa para trabalho já entregue é decisão da Vision, não minha — não foi
-feito. As caixas de critério deste arquivo continuam `- [ ]` porque não implementei esta GT e não
-tenho evidência para marcá-las; marcá-las por dedução seria inventar prova.
+**Resolução (decisão do Sergio, via Vision, 12/09/2026):** criada a issue retroativa
+[#626](https://github.com/Essencis-Labs/GeoCloudAI/issues/626), aberta e fechada no mesmo ato, e o
+`issue_url` acima foi reapontado da #569 para ela.
+
+As caixas de critério deste arquivo continuam `- [ ]` porque quem escreveu esta nota não
+implementou a GT-0135 e não tem evidência para marcá-las. Marcá-las por dedução seria inventar
+prova — e é justamente por assumir sem conferir que esta divergência existiu.
+
+A lacuna maior de que este caso é sintoma — 31 GTs só no produto, 39 só no hub — está mapeada na
+**GT-0144**.
