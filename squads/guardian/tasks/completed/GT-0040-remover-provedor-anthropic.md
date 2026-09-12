@@ -6,7 +6,7 @@ severidade: media
 origem: pedido direto do dono do produto (não veio de run de auditoria)
 run_origem: —
 produto: GeoCloudAI
-issue: 329
+issue_url: "https://github.com/Essencis-Labs/GeoCloudAI/issues/329"
 contraparte: GeoCloudAI/.agents/tasks/completed/GT-0040-remover-provedor-anthropic.md
 camada: backend
 created_at: 2026-09-09

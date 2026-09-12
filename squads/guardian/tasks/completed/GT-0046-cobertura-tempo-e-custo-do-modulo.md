@@ -9,12 +9,12 @@ owner: Sergio
 created_at: 2026-09-09
 updated_at: 2026-09-09
 origem: "TD-02, TD-03, TD-09, TD-10, TD-11 — auditoria ad-hoc de Dante Débito sobre TASK-055/056/057 (2026-09-09)"
-contraparte: C:\Software\GeoCloud\GeoCloudAI\.agents\tasks\completed\GT-0046-cobertura-tempo-e-custo-do-modulo.md
+contraparte: "GeoCloudAI/.agents/tasks/completed/GT-0046-cobertura-tempo-e-custo-do-modulo.md"
 branch: feature/fix/refactor-08_09-11_09
 affected_modules: ["Back.API", "Back.Application", "Back.Persistence", "Back.IntegrationTests"]
 related_use_cases: []
 related_adrs: ["ADR-006", "ADR-007"]
-issue: 452
+issue_url: "https://github.com/Essencis-Labs/GeoCloudAI/issues/452"
 sprint: 08/09-11/09/2026
 ---
 

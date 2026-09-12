@@ -8,8 +8,8 @@ owner: sergio-essencislabs
 created_at: 2026-09-09
 updated_at: 2026-09-09
 origem: "pedido direto do Sergio: estender a sessão para cobrir a épica noturna de 09/09 17:00 a 10/09 06:00"
-contraparte: C:\Software\GeoCloud\GeoCloudAI\.agents\tasks\active\GT-0049-vida-do-token-configuravel.md
-issue: 463
+contraparte: "GeoCloudAI/.agents/tasks/completed/GT-0049-vida-do-token-configuravel.md"
+issue_url: "https://github.com/Essencis-Labs/GeoCloudAI/issues/463"
 branch: chore/gt-0049-vida-do-token-configuravel
 affected_modules: ["Back.Application", "Back.API"]
 related_use_cases: []

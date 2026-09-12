@@ -6,7 +6,7 @@ severidade: baixa
 origem: pedido direto do dono do produto, repetido
 run_origem: —
 produto: GeoCloudAI
-issue: 329
+issue_url: "https://github.com/Essencis-Labs/GeoCloudAI/issues/329"
 contraparte: GeoCloudAI/.agents/tasks/completed/GT-0042-chatclient-sem-nome-de-fornecedor.md
 camada: backend
 created_at: 2026-09-09

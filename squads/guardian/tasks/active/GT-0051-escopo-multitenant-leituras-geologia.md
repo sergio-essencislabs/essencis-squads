@@ -8,8 +8,12 @@ owner: sergio-essencislabs
 created_at: 2026-09-09
 updated_at: 2026-09-09
 origem: "issues #296 e #297, da auditoria da aba Metodos_Back de GeoCloud.xlsx"
-contraparte: C:\Software\GeoCloud\GeoCloudAI\.agents\tasks\active\GT-0051-escopo-multitenant-leituras-geologia.md
-issue: "296, 297"
+contraparte: "GeoCloudAI/.agents/tasks/completed/GT-0051-escopo-multitenant-leituras-geologia.md"
+issue_url: "https://github.com/Essencis-Labs/GeoCloudAI/issues/296"
+                           # Esta GT fechou DUAS issues: a #296 e a #297.
+                           # `issue_url` é campo de URL única, então guarda a primeira;
+                           # as duas seguem nomeadas no `title:` e no `origem:` acima,
+                           # que é onde já estavam. Nada se perdeu na conversão.
 branch: fix/gt-0051-escopo-multitenant-leituras-geologia
 affected_modules: ["Back.API"]
 related_use_cases: []

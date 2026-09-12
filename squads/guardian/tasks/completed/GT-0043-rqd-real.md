@@ -6,8 +6,8 @@ type: feature
 owner: Sergio
 created_at: 2026-09-09
 updated_at: 2026-09-09
-issue: 446
-contraparte: C:\Software\GeoCloud\GeoCloudAI\.agents\tasks\completed\GT-0043-rqd-real.md
+issue_url: "https://github.com/Essencis-Labs/GeoCloudAI/issues/446"
+contraparte: "GeoCloudAI/.agents/tasks/completed/GT-0043-rqd-real.md"
 origem: GT-0041 — sinalizar o mock deixou explícito que sinalizar não resolve
 affected_modules: ["Back.Domain", "Back.Persistence", "Back.Application", "Back.API", "web"]
 related_use_cases: []
