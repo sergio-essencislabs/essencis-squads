@@ -1,7 +1,7 @@
 ---
 id: GT-0147
 title: "Grupo B: as 31 GTs cunhadas fora do hub, e o caminho que continua aberto"
-status: active
+status: completed
 type: documentation
 achado_origem: "Censo de acervo da GT-0144 (#627) — divisão em três decidida pelo Sergio em 12/09/2026"
 auditor_origem: "Tomás Ticket (censo), divisão recomendada por Jarvis no Step 09 (PR #632)"
@@ -18,7 +18,7 @@ affected_modules: [acervo-de-tasks]
 related_adrs: []
 guarda_chuva: "GT-0144 — o censo, o método e a evidência vivem lá e não são copiados aqui"
 depende_de: ["GT-0145"]
-contraparte: "GeoCloudAI/.agents/tasks/active/GT-0147-grupo-b-as-31-cunhadas-fora-do-hub.md"
+contraparte: "GeoCloudAI/.agents/tasks/completed/GT-0147-grupo-b-as-31-cunhadas-fora-do-hub.md"
 ---
 
 # GT-0147 — Grupo B: as 31 GTs cunhadas fora do hub, e o caminho que continua aberto
