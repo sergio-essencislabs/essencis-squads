@@ -16,9 +16,23 @@ created_at: 2026-09-02
 updated_at: 2026-09-02
 affected_modules: [koregeo3, koregeo2]
 related_adrs: [GADR-0002]
+contraparte: "N/A — anterior à TASK-060; .agents/tasks/ não existia quando esta GT nasceu"
 ---
 
 # GT-0023 — Decisão: KoreGeo3 como visualizador padrão
+
+## Par no repositório de produto
+
+**Não há par, e ele não foi perdido.** Esta GT é de 2026-09-02; o diretório `.agents/tasks/` do
+GeoCloudAI só passou a existir em 2026-09-09, no commit `8e10d774` (TASK-060). O mecanismo de
+par não existia quando ela nasceu — o `contraparte:` não é ponteiro quebrado, é ausência
+decidida.
+
+**E aqui não haveria de onde derivar um par, mesmo que se quisesse:** este arquivo não cita PR
+nem commit do produto. Um par escrito hoje seria conteúdo inventado — o que a RN-01 da GT-0146
+veta, porque arquivo fabricado é pior que a ausência: a ausência é visível, a fabricação não.
+
+Apurado na GT-0146 (issue #634), CA-07, em 12/09/2026.
 
 ## Contexto
 Registrar formalmente a decisão de adotar o KoreGeo3 e o plano de descontinuação do KoreGeo2.

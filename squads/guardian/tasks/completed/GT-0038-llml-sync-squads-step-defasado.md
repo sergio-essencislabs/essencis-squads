@@ -16,9 +16,23 @@ created_at: 2026-09-08
 updated_at: 2026-09-08
 affected_modules: ["skills/LLML-sync-squads"]
 related_adrs: []
+contraparte: "N/A — anterior à TASK-060; .agents/tasks/ não existia quando esta GT nasceu"
 ---
 
 # GT-0038 — LLML-sync-squads ancora exceção de concorrência em número de step defasado
+
+## Par no repositório de produto
+
+**Não há par, e ele não foi perdido.** Esta GT é de 2026-09-08; o diretório `.agents/tasks/` do
+GeoCloudAI só passou a existir em 2026-09-09, no commit `8e10d774` (TASK-060). O mecanismo de
+par não existia quando ela nasceu — o `contraparte:` não é ponteiro quebrado, é ausência
+decidida.
+
+**E aqui não haveria de onde derivar um par, mesmo que se quisesse:** este arquivo não cita PR
+nem commit do produto. Um par escrito hoje seria conteúdo inventado — o que a RN-01 da GT-0146
+veta, porque arquivo fabricado é pior que a ausência: a ausência é visível, a fabricação não.
+
+Apurado na GT-0146 (issue #634), CA-07, em 12/09/2026.
 
 ## Contexto
 

@@ -1,7 +1,7 @@
 ---
 id: GT-0007
 title: "Lista de caixas: tornar retrátil e remover o seletor inferior"
-status: active
+status: completed
 type: feature
 achado_origem: "N/A — pedido direto de implementação"
 auditor_origem: "Jarvis — planejamento"
@@ -16,9 +16,30 @@ created_at: 2026-09-02
 updated_at: 2026-09-02
 affected_modules: [images-viewer]
 related_adrs: []
+contraparte: "N/A — anterior à TASK-060; .agents/tasks/ não existia quando esta GT nasceu"
 ---
 
 # GT-0007 — Lista de caixas retrátil, remover seletor inferior
+
+## Par no repositório de produto
+
+**Não há par, e ele não foi perdido.** Esta GT é de 2026-09-02; o diretório `.agents/tasks/` do
+GeoCloudAI só passou a existir em 2026-09-09, no commit `8e10d774` (TASK-060). O mecanismo de
+par não existia quando ela nasceu — o `contraparte:` não é ponteiro quebrado, é ausência
+decidida.
+
+**A ausência é decisão, não buraco — e não é por falta de informação.** A rastreabilidade do
+lado-produto continua alcançável pelo que este arquivo já cita: issue, PR ou commit. Há por
+onde chegar ao que foi feito; o que não há é um registro do lado de lá, porque não havia onde
+escrevê-lo.
+
+Um par criado hoje acrescentaria um ponteiro a uma rota que já funciona, e pagaria por isso
+afirmando, pela própria existência, que o mecanismo de par cobria esta GT. Seria **registro
+com proveniência falsa** — a mesma inversão de "planejado documentado como implementado",
+com outra roupa. Por isso não foi criado.
+
+Apurado na GT-0146 (issue #634), CA-07, em 12/09/2026. A busca forense e o controle positivo
+ficam no registro daquela task e não são copiados aqui.
 
 ## Contexto
 Existem hoje dois pontos de seleção de caixa (menu lateral com miniaturas + barra inferior). Redundante.
