@@ -16,9 +16,30 @@ created_at: 2026-09-03
 updated_at: 2026-09-03
 affected_modules: [single-view]
 related_adrs: []
+contraparte: "N/A — anterior à TASK-060; .agents/tasks/ não existia quando esta GT nasceu"
 ---
 
 # GT-0030 — Geoquímica e redesenho do hiperespectral (Single View)
+
+## Par no repositório de produto
+
+**Não há par, e ele não foi perdido.** Esta GT é de 2026-09-03; o diretório `.agents/tasks/` do
+GeoCloudAI só passou a existir em 2026-09-09, no commit `8e10d774` (TASK-060). O mecanismo de
+par não existia quando ela nasceu — o `contraparte:` não é ponteiro quebrado, é ausência
+decidida.
+
+**A ausência é decisão, não buraco — e não é por falta de informação.** A rastreabilidade do
+lado-produto continua alcançável pelo que este arquivo já cita: issue, PR ou commit. Há por
+onde chegar ao que foi feito; o que não há é um registro do lado de lá, porque não havia onde
+escrevê-lo.
+
+Um par criado hoje acrescentaria um ponteiro a uma rota que já funciona, e pagaria por isso
+afirmando, pela própria existência, que o mecanismo de par cobria esta GT. Seria **registro
+com proveniência falsa** — a mesma inversão de "planejado documentado como implementado",
+com outra roupa. Por isso não foi criado.
+
+Apurado na GT-0146 (issue #634), CA-07, em 12/09/2026. A busca forense e o controle positivo
+ficam no registro daquela task e não são copiados aqui.
 
 ## Contexto
 GT-0017 (E3-05) implementou 5 das 9 camadas priorizadas pelo spike GT-0016 (E3-04) e deixou 2 pendências já documentadas e nunca resolvidas: (1) geoquímica (item 6) nunca implementada — o próprio GT-0017 recomendava "abrir sub-issue de geoquímica", nunca feito; (2) o mock de mapa hiperespectral foi implementado como overlay HTML na mesma área da foto da caixa, não como duplicação da caixa ao lado.
