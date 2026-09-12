@@ -73,6 +73,48 @@ o vocabulário do hub não tem `blocked`. A mesma normalização no produto **es
 lá o valor é sancionado. **O mesmo ato é certo de um lado e errado do outro, e nada no acervo diz
 isso.**
 
+### 3. E a terceira manifestação não é de campo — é de corpo
+
+Achado da Lívia ao fechar o Registro do lado-hub da GT-0147, e **muda o que esta GT precisa
+verificar**:
+
+> *"As três primeiras manifestações eram sobre campos de **front-matter** — `contraparte`,
+> `issue_url`. Esta é sobre o **corpo** do arquivo: Registro, Validação, caixas. **Uma trava que
+> valide front-matter não pegaria esta.**"*
+
+O caso concreto: a GT-0146 e a GT-0147 tiveram o trabalho feito e mesclado, e o **arquivo-task do
+lado do hub** ficou com as caixas todas abertas e o Registro dizendo *"não executada"*. Nenhum
+campo de front-matter estava errado. Um validador de front-matter passaria **verde sobre um
+Registro vazio**.
+
+**Consequência para o escopo desta GT:** ela ia nascer cobrindo três quartos do problema. O que os
+READMEs precisam governar não é só *o que um campo pode conter* — é também **o que torna um
+arquivo fechado por dentro**, que vive no corpo e não no front-matter.
+
+E o que justifica o esforço: **o defeito sobreviveu a ser documentado, por quatro janelas, no
+mesmo dia.** Antes, isto podia ser lido como dívida histórica a drenar. Agora há caso nascido **no
+intervalo entre escrever o diagnóstico e fechar a task** — é a diferença entre fila que encolhe e
+vazão, com evidência produzida depois da documentação.
+
+### 4. Quem pode marcar uma caixa — e por que a regra mora aqui
+
+**A caixa marcada é a afirmação de que alguém verificou.** Disso decorre que **quem marca é quem
+verificou**, e que critério alheio não se fecha por conveniência de fechamento.
+
+Hoje essa regra **não está escrita em lugar nenhum**: existiu só em mensagens de despacho e em
+recusas individuais — o Dante não opinou sobre a GT-0142 porque a escreveu; eu não fechei a
+GT-0146 nem a GT-0147 porque não as executei. **Duas pessoas acertaram por julgamento, não por
+regra**, e julgamento não sobrevive à próxima janela.
+
+**Por que nos READMEs e não na `dispatcher`** — e o argumento é o defeito da própria `dispatcher`,
+que a Vision encontrou em 12/09: a regra do veredito no PR *"também só existia nas mensagens de
+despacho"*. Regra que mora no despacho **só existe no momento do despacho**. Quem fecha uma task
+pode estar fazendo isso dias depois, fora de qualquer despacho, e o que essa pessoa lê é o README
+de tasks.
+
+**Uma casa só, e a outra aponta.** Se a `dispatcher` repetir o texto em vez de referenciá-lo,
+nascem duas cópias para divergir — que é literalmente o defeito que esta GT documenta.
+
 ## Objetivo
 Os dois READMEs concordam sobre o que cada um dos dois campos pode conter, ou declaram por escrito
 onde e por que divergem de propósito.
@@ -107,6 +149,15 @@ justificada, o que também é resposta válida.
 - [ ] CA-04: o `_template.md` de cada lado reflete o vocabulário declarado.
 - [ ] CA-05: existe uma frase dizendo **qual dos dois documentos governa** quando eles
       discordarem, para a próxima divergência ter onde ser resolvida sem nova GT.
+- [ ] CA-06: os READMEs declaram **o que torna um arquivo fechado por dentro** — Registro
+      preenchido, Validação com saída real, caixas marcadas ou `- [ ]` com motivo ao lado. É a
+      parte que vive no **corpo**, e que um validador de front-matter não alcança.
+- [ ] CA-07: os READMEs declaram que **quem marca uma caixa é quem verificou**, e que critério
+      alheio não se fecha por conveniência de fechamento — com a razão: *a caixa marcada é a
+      afirmação de que alguém verificou*.
+- [ ] CA-08: se alguma trava automática for proposta a partir desta GT, ela **declara o que não
+      alcança**. Validador de front-matter não vê corpo vazio; dizer isso evita que o verde dele
+      seja lido como "fechado por dentro".
 
 ## Impacto técnico
 ### Backend / Frontend / Banco de dados
@@ -122,6 +173,7 @@ Nenhum direto.
 - [ ] Etapa 2 — `issue_url` (CA-01), com os três estados nomeados.
 - [ ] Etapa 3 — `status`/`blocked` (CA-02), decidindo se converge ou diverge declaradamente.
 - [ ] Etapa 4 — moldes (CA-04).
+- [ ] Etapa 5 — as regras de corpo: CA-06, CA-07 e a ressalva do CA-08.
 
 ## Estratégia de testes
 - [ ] Unitários / Integração / E2E: N/A — não há código.
