@@ -87,7 +87,7 @@ pedindo `contraparte:`.
 Herdados da GT-0144 com o texto completo — **a numeração original foi preservada de propósito**,
 para que o rastro entre as duas seja legível sem tradução.
 
-- [ ] **CA-05** (da GT-0144): nenhum `contraparte:` do hub aponta para arquivo inexistente, **e
+- [x] **CA-05** (da GT-0144): nenhum `contraparte:` do hub aponta para arquivo inexistente, **e
       nenhum usa caminho absoluto**. São duas cláusulas de alcances diferentes e a caixa só fecha
       com as duas:
 
@@ -109,10 +109,10 @@ para que o rastro entre as duas seja legível sem tradução.
       com as **duas pontas ancoradas em commit**. Falso positivo legítimo: GT recém-cunhada cujo
       par ainda está em branch não mesclada aparece quebrada e não está.
 
-- [ ] **CA-10** (da GT-0144): uma só grafia do campo de issue. Restam **17**: GT-0040-0043,
+- [x] **CA-10** (da GT-0144): uma só grafia do campo de issue. Restam **17**: GT-0040-0043,
       0045-0052 e GT-0118-0122. Conversão mecânica, o número já está lá.
 
-- [ ] **CA-09** (da GT-0144): o `_template.md` do hub passa a trazer `contraparte: ""`. O
+- [x] **CA-09** (da GT-0144): o `_template.md` do hub passa a trazer `contraparte: ""`. O
       `_template.md` do produto deve ser conferido no mesmo passo. **Este critério é a porta da
       GT-0147** — avise quando fechar.
 
@@ -125,14 +125,15 @@ Nenhum. Não há código.
 Indireto: boa parte dos arquivos com ponteiro quebrado são achados de permissão.
 
 ## Plano de implementação
-- [ ] Etapa 1 — CA-09 primeiro, porque destrava a GT-0147. É um campo num arquivo.
-- [ ] Etapa 2 — CA-05, as 15 correções, conferindo pelo método e não pela lista.
-- [ ] Etapa 3 — CA-10, os 17 restantes.
+- [x] Etapa 1 — CA-09 primeiro, porque destrava a GT-0147. É um campo num arquivo.
+- [x] Etapa 2 — CA-05, as 15 correções, conferindo pelo método e não pela lista.
+- [x] Etapa 3 — CA-10, os 17 restantes.
 
 ## Estratégia de testes
-- [ ] Unitários / Integração / E2E: N/A — não há código.
-- [ ] Manual: varredura final com **controle positivo** — rodar a mesma consulta sem o filtro
-      restritivo e confirmar que ela devolve algo. Vazio só vale como resposta depois disso.
+- [x] Unitários / Integração / E2E: N/A — não há código neste escopo.
+- [x] Manual: varredura final com **controle positivo** — feita. Rodada a mesma consulta sem o
+      filtro restritivo, para provar que ela enxerga antes de o vazio valer; a soma fecha em 85
+      arquivos classificados. Resultado completo na Validação.
 
 ## Riscos e rollback
 - **Risco:** marcar o CA-05 com a primeira cláusula cumprida e a segunda não. A tabela existe por
@@ -142,21 +143,101 @@ Indireto: boa parte dos arquivos com ponteiro quebrado são achados de permissã
 
 ## Registro de execução
 ### Alterações realizadas
-Pendente — cunhada em 12/09/2026, não executada.
+**21 arquivos no hub**, todos em `squads/guardian/tasks/`. Nada no repositório de produto.
+
+**CA-09 — o molde (`_template.md`).** Acrescentados `contraparte: ""` e `depende_de: []`, com a
+**forma visível** e não só o nome. Duas correções ao que o despacho previa: o molde **já pedia**
+`grupo_execucao` (linha 13), então eram dois campos e não três; e o `_template.md` do produto foi
+conferido e **não muda** — os três são idênticos e são de `TASK-000`, convenção do orquestrador,
+e `TASK-NNN` não tem par no hub por decisão da TASK-060.
+
+O molde também passou a definir **a forma de "não há par"**, que faltava e bloqueava a GT-0146:
+`contraparte: "N/A — <motivo curto>"`, nunca `""` nem `—` solto, com a justificativa longa no
+corpo. E a regra que vem junto: **varredura de ponteiro deve pular valores que começam com `N/A`**
+— sem isso, os 39 do Grupo A apareceriam como 39 ponteiros quebrados neste mesmo método.
+
+**CA-05 — 17 campos `contraparte:`**, não os 15 previstos. O método achou **11 quebrados**, não 9:
+`GT-0139` e `GT-0142` entraram na fila **hoje**, pelas nossas próprias entregas (#630 e #629), que
+as moveram para `completed/` no produto e deixaram o ponteiro do hub em `active/`. Absorvidos por
+autorização explícita da Vision — mesma classe, faixa livre, decisão do despachante registrada
+aqui para quem ler depois ver que foi decidido e não que escorregou.
+
+Havia **quatro formas** do mesmo defeito, e a lista só teria pego três: barra invertida sem aspas
+(`GT-0043`, `0045`-`0052`), barra invertida dupla com aspas (`GT-0044`), barra normal com aspas
+(`GT-0118`-`0122`), e a `GT-0052`, que apontava para **o próprio hub** em vez do produto.
+
+**CA-10 — 17 conversões `issue:` → `issue_url:`.** Quinze mecânicas, com os catorze números
+distintos conferidos contra issues reais. **Duas não eram mecânicas:**
+
+- `GT-0045` trazia `issue: a criar`. **A issue existia:** a **#452** se chama
+  *"[GT-0044/45/46] Auditoria do Guardian..."* e o corpo nomeia as três. Não foi invenção — foi
+  leitura. A RN-01 proíbe fabricar URL, e não foi preciso.
+- `GT-0051` trazia `issue: "296, 297"`, duas issues numa GT. `issue_url` é campo de URL única;
+  ficou com a **#296**, e as duas seguem nomeadas no `title:` e no `origem:`, que é onde já
+  estavam. **Nada se perdeu**, e a linha diz isso.
+
+De passagem, na mesma faixa: `GT-0044` tinha `issue_url: ""` — grafia certa, valor vazio, **mesmo
+efeito** de ser lida como não promovida. A mesma #452 a nomeia; preenchida.
+
 ### Arquivos principais
-Pendente.
+`_template.md`; `GT-0040`-`0052`, `GT-0118`-`0122`, `GT-0139` e `GT-0142`.
+
 ### Decisões
-Pendente.
+1. **`N/A — motivo` para "não há par"**, não `""`. Motivo medido, não estético: `""` é o valor de
+   campo **ainda não preenchido** e é o que o molde entrega, então serve para as duas coisas e a
+   varredura não as distingue. A prova apareceu no próprio CA-10: dos 85 arquivos, **10 ficaram
+   com `issue_url: ""`** e não há como dizer quais nunca tiveram issue e quais têm e não
+   registraram — a `GT-0045` era uma dessas, e só se soube pelo título da issue. `N/A — motivo` já
+   é a forma da casa em `achado_origem`, `auditor_origem` e `run_origem`.
+2. **Absorver `GT-0139`/`GT-0142`** em vez de devolver: autorização da Vision, faixa livre
+   (Marta em `GT-0001`-`0039`, Lívia nos 31 do Grupo B, e estas duas em nenhuma das duas), e o
+   conserto é idêntico ao dos outros 15.
+3. **`GT-0051` fica com uma URL só.** O campo é singular; inventar uma lista aqui criaria
+   convenção nova num dia em que estamos consertando divergência de convenção.
+
 ### Divergências
-Nenhuma.
+- O despacho dizia que o molde não pedia `grupo_execucao`. **Pedia.**
+- O critério dizia 15 campos; eram **17**, porque o acervo se moveu entre a medição e a execução.
+  A nova âncora está na Validação.
+
 ### Pendências
-`grupo_execucao` vazio: é do Step 09.
+1. **A torneira continua aberta.** Cada GT implementada e movida para `completed/` no produto
+   deixa o ponteiro do hub apontando para `active/` — `GT-0139` e `GT-0142` nasceram assim hoje.
+   Consertar os 17 drena a pia sem fechar a torneira. Encaminhado para ser irmão do CA-08 na
+   GT-0147, que é onde a pergunta "o que impede isto de se repetir" já mora.
+2. **Os 10 `issue_url: ""`** (`GT-0027`, `0028`, `0031`-`0038`) são a outra forma da mesma
+   torneira: entrega feita, registro não atualizado. Fora do escopo deste CA, que era a **grafia**;
+   quais deles têm issue não registrada é trabalho de conferência, um a um.
+3. **O produto não tem molde de `GT-` nenhum.** Quem cria o lado de produto de uma GT não tem de
+   onde partir — candidato à resposta do CA-08, encaminhado à GT-0147.
 
 ## Validação
-Pendente. Os números vêm do censo da GT-0144 (#627), medido em 12/09/2026 com as duas pontas
-ancoradas em commit — hub em `8867236` + `7a8fdb2`, produto em `d75d0bdf`. O hub tinha **82**
-arquivos naquele instante e tem **85** em `b99055f`; a contagem envelhece, o método de conferir
-não. Reancore antes de recontar.
+
+**Método, não lista** — como o próprio CA-05 manda. As duas pontas ancoradas em commit: produto em
+`origin/feature/fix/refactor-08_09-11_09` @ `82f6c769`, hub em `bfe144f` → `c9741bd`.
+
+**VERMELHO — antes**
+```
+formas do campo: {'absoluto': 14, 'sem campo': 39, 'aponta-para-o-hub': 1, 'relativo': 31}
+ponteiros que NAO resolvem: 11
+absolutos que RESOLVEM (pasta certa, caminho de maquina): 5
+campo de issue: issue_url=68   issue=17
+```
+
+**VERDE — depois**
+```
+formas do campo: {'relativo': 46, 'sem campo': 39}
+ponteiros que NAO resolvem: 0
+absolutos que RESOLVEM: 0
+campo de issue: issue_url=85   issue=0
+```
+
+**Controle positivo.** Antes de aceitar o zero, rodei a mesma varredura sem o filtro restritivo:
+ela devolvia 11 e continuou enxergando os 85 arquivos e classificando 100% deles — a soma fecha
+em 46 + 39 = 85. Zero aqui é ausência medida, não peneira cega.
+
+Os **39 sem campo** são exatamente `GT-0001`-`GT-0039`, o Grupo A, que é escopo da GT-0146 e não
+deste critério: não têm ponteiro quebrado, **nunca tiveram o campo**.
 
 ## Handoff
 Sem dependência de entrada — corre desde o primeiro minuto, em paralelo com a GT-0146.

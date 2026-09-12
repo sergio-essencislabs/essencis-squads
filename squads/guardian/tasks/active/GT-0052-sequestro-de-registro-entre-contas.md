@@ -8,8 +8,8 @@ owner: sergio-essencislabs
 created_at: 2026-09-09
 updated_at: 2026-09-10
 origem: "campanha de autorizacao (Back.ApiTests/Campaign), depois que a GT-0050 a fez produzir veredito real"
-contraparte: C:\Software\EssencisSquads\squads\guardian\tasks\active\GT-0052-sequestro-de-registro-entre-contas.md
-issue: 467
+contraparte: "GeoCloudAI/.agents/tasks/completed/GT-0052-sequestro-de-registro-entre-contas.md"
+issue_url: "https://github.com/Essencis-Labs/GeoCloudAI/issues/467"
 branch: fix/gt-0052-sequestro-de-registro-entre-contas
 affected_modules: ["Back.API", "Back.Persistence"]
 related_use_cases: []

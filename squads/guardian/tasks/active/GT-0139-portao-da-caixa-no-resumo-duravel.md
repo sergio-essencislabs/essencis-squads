@@ -16,7 +16,7 @@ created_at: 2026-09-12
 updated_at: 2026-09-12
 affected_modules: [ChatService, DrillBoxChatContextService]
 related_adrs: [GADR-0004]
-contraparte: "GeoCloudAI/.agents/tasks/active/GT-0139-portao-da-caixa-no-resumo-duravel.md"
+contraparte: "GeoCloudAI/.agents/tasks/completed/GT-0139-portao-da-caixa-no-resumo-duravel.md"
 ---
 
 # GT-0139 — o portão da caixa não é conferido no resumo durável

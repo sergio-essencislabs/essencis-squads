@@ -8,12 +8,12 @@ owner: Sergio
 created_at: 2026-09-09
 updated_at: 2026-09-09
 origem: "TD-04, TD-05, TD-06, TD-07, TD-12 — auditoria ad-hoc de Dante Débito sobre TASK-055/056/057 (2026-09-09)"
-contraparte: C:\Software\GeoCloud\GeoCloudAI\.agents\tasks\completed\GT-0045-fonte-unica-regra-de-concessao.md
+contraparte: "GeoCloudAI/.agents/tasks/completed/GT-0045-fonte-unica-regra-de-concessao.md"
 branch: feature/fix/refactor-08_09-11_09
 affected_modules: ["Back.API", "Back.Application", "Back.Domain", "Back.Persistence", "Back.UnitTests"]
 related_use_cases: []
 related_adrs: ["ADR-003", "ADR-005"]
-issue: a criar
+issue_url: "https://github.com/Essencis-Labs/GeoCloudAI/issues/452"
 sprint: 08/09-11/09/2026
 ---
 

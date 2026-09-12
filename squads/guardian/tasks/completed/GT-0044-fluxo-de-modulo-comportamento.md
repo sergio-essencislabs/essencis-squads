@@ -9,9 +9,9 @@ severidade: "alta"
 produto: "GeoCloudAI"
 camada: "backend"
 run_origem: "auditoria ad-hoc de Dante Débito sobre o código de modularização (TASK-055/056/057), 2026-09-09 — sem run de pipeline; achados aprovados pelo dono do produto para correção na branch feature/fix/refactor-08_09-11_09"
-issue_url: ""
+issue_url: "https://github.com/Essencis-Labs/GeoCloudAI/issues/452"
 grupo_execucao: ""
-contraparte: "C:\\Software\\GeoCloud\\GeoCloudAI\\.agents\\tasks\\backlog\\GT-0044-fluxo-de-modulo-comportamento.md"
+contraparte: "GeoCloudAI/.agents/tasks/completed/GT-0044-fluxo-de-modulo-comportamento.md"
 owner: ""
 created_at: 2026-09-09
 updated_at: 2026-09-09

@@ -6,7 +6,7 @@ severidade: baixa
 origem: revisão do board pelo dono do produto (CA-02 da #338)
 run_origem: —
 produto: GeoCloudAI
-issue: 338
+issue_url: "https://github.com/Essencis-Labs/GeoCloudAI/issues/338"
 contraparte: GeoCloudAI/.agents/tasks/completed/GT-0041-selo-mock-caixas-molhadas.md
 camada: frontend
 created_at: 2026-09-09

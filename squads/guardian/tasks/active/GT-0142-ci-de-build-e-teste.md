@@ -17,7 +17,7 @@ updated_at: 2026-09-12
 affected_modules: [infra, api, web]
 related_adrs: []
 task_de_origem: "GeoCloudAI/.agents/tasks/backlog/TASK-061-ci-de-build-e-teste.md"
-contraparte: "GeoCloudAI/.agents/tasks/active/GT-0142-ci-de-build-e-teste.md"
+contraparte: "GeoCloudAI/.agents/tasks/completed/GT-0142-ci-de-build-e-teste.md"
 ---
 
 # GT-0142 — CI de build e teste (conversão da TASK-061)

@@ -8,8 +8,8 @@ owner: Sergio
 created_at: 2026-09-09
 updated_at: 2026-09-09
 origem: "geocloud-permission-auditor, na revisão da GT-0045 (2026-09-09) — achado 2.1, pré-existente à GT-0045"
-contraparte: C:\Software\GeoCloud\GeoCloudAI\.agents\tasks\completed\GT-0047-fronteira-do-visualizador-so-na-ui.md
-issue: 457
+contraparte: "GeoCloudAI/.agents/tasks/completed/GT-0047-fronteira-do-visualizador-so-na-ui.md"
+issue_url: "https://github.com/Essencis-Labs/GeoCloudAI/issues/457"
 branch: feature/fix/refactor-08_09-11_09
 affected_modules: ["Back.API", "Back.Persistence"]
 related_use_cases: []

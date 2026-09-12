@@ -8,8 +8,8 @@ owner: sergio-essencislabs
 created_at: 2026-09-09
 updated_at: 2026-09-09
 origem: "descoberto ao tentar provar as guardas de tenant das issues #296 e #297 — nenhum teste conseguia chegar ao controller"
-contraparte: C:\Software\GeoCloud\GeoCloudAI\.agents\tasks\active\GT-0050-suite-de-api-volta-a-exercitar-autorizacao.md
-issue: 465
+contraparte: "GeoCloudAI/.agents/tasks/completed/GT-0050-suite-de-api-volta-a-exercitar-autorizacao.md"
+issue_url: "https://github.com/Essencis-Labs/GeoCloudAI/issues/465"
 branch: fix/gt-0050-suite-de-api-volta-a-exercitar-autorizacao
 affected_modules: ["Back.ApiTests", "Back.IntegrationTests", "Back.Persistence"]
 related_use_cases: []
