@@ -163,16 +163,38 @@ Cada `GT-NNNN` alcançável dos dois lados, ou com ausência justificada por esc
 - [ ] CA-03: `contraparte:` correta nos dois sentidos em tudo que for reconciliado, em caminho
       relativo — nunca `C:/...`.
 - [ ] CA-04: `GT-0109` e `GT-0110` deixam de apontar para arquivo inexistente.
-- [ ] CA-05: `GT-0120`, `GT-0121` e `GT-0122` apontam para `completed/`.
-- [ ] CA-06: `docs/setup-local.md:39` traz a baseline real (509 / 91 / 274), ou deixa de citar
-      número, se a decisão for que baseline não pertence a documento de setup.
+- [ ] CA-05: `GT-0120`, `GT-0121` e `GT-0122` apontam para `completed/` **e deixam de usar caminho
+      absoluto**. Hoje são `C:/Software/GeoCloud/GeoCloudAI/...`, apontando para o checkout
+      compartilhado — pasta errada e caminho de máquina são dois defeitos no mesmo campo, e este CA
+      cobre os dois. O par viaja na branch; caminho relativo é o que o CA-03 exige.
+- [ ] CA-06: `docs/setup-local.md:39` traz a baseline real, com cada número rotulado pela suíte a
+      que pertence, ou deixa de citar número se a decisão for que baseline não pertence a documento
+      de setup. Baseline proposta, com a run citada:
+      **`509 unit / 91 integration / 196 de 274 api (78 skipped) / 561 specs`** (run 34701237492).
+
+      **O `332 specs` da linha atual é do frontend, não do backend** — e é por isso que este
+      critério precisa de quatro números, não três. A primeira redação deste CA mandava trocar por
+      `509 / 91 / 274`, o que teria causado três estragos de uma vez: pôr um número de backend
+      (`Back.ApiTests`) sob o rótulo "specs", que é do Karma; **sumir com o número do frontend** de
+      um parágrafo que manda subir backend **e** frontend; e esconder que 78 dos 274 não rodam.
+      Quem seguisse o setup e visse `561` concluiria que quebrou alguma coisa — exatamente o mal
+      que este CA existe para curar.
+
+      A desambiguação é por contagem histórica: em `f3d33580` (09/09, o commit que criou a linha) o
+      frontend tinha **329** `it(` — praticamente os 332 — e o `Back.ApiTests` tinha **12**
+      `[Fact]/[Theory]`. Hoje são 548 `it(` e 96. Achado do Rui na revisão do #628.
+
       **Sobreposição declarada:** a Etapa 6 da GT-0142 (#622) também prevê corrigir essa linha, ao
       escrever a página de "como rodar a suíte localmente". Quem chegar primeiro resolve e marca
       nos dois lugares; o risco aqui não é o trabalho dobrado, é cada uma supor que a outra fez.
-- [ ] CA-07: a hipótese do Grupo A é confirmada ou refutada por varredura de arquivos removidos
-      (`git log --diff-filter=D -- '.agents/tasks/GT-00*'`), e o resultado fica escrito aqui.
-- [ ] CA-08: existe uma linha no `README.md` de tasks dizendo o que impede o Grupo B de se repetir
-      — ou, se nada impedir hoje, dizendo isso com essas palavras.
+- [ ] CA-07: a hipótese do Grupo A é confirmada ou refutada por
+      `git log --diff-filter=D -- '.agents/tasks/GT-00*'`, e o resultado fica escrito.
+- [ ] CA-08: o `README.md` de tasks ganha uma linha dizendo **o que impede o Grupo B de se
+      repetir** — ou, se nada impedir hoje, dizendo isso com essas palavras.
+      O README já afirma que **nascer em par é a regra, não o fim do ciclo**: o `GT` é criado
+      *"automaticamente, junto do `GT` de mesmo número no repositório do squad"* (linha 19) e
+      *"todo `GT-NNNN` daqui tem um irmão"* (linha 27). A regra está escrita; o que falta é o que a
+      faz valer. Enunciar de novo não fecha este critério.
 
 ## Impacto técnico
 ### Backend
@@ -227,8 +249,42 @@ Nenhuma.
 - `grupo_execucao` vazio de propósito (Step 09).
 
 ## Validação
-Pendente. Os números deste achado foram medidos em 12/09/2026 sobre os 70 arquivos, contra o hub e
-a branch `feature/fix/refactor-08_09-11_09` (`4cea0a87`) — não por amostragem.
+
+**Censo, não amostragem.** Os números foram medidos sobre os 70 arquivos em 12/09/2026.
+
+**As duas pontas do censo, datadas juntas** — e esta é a correção mais importante desta revisão:
+
+| Lado | Referência |
+|---|---|
+| Produto | `feature/fix/refactor-08_09-11_09` @ `d75d0bdf` (12:04:52) |
+| Hub | `sergio-essencislabs/essencis-squads` @ `8867236` (11:49:38) + `7a8fdb2` (12:05:53) |
+
+A primeira redação datava **só o lado produto**, em `4cea0a87` (11:03:12) — um commit anterior ao
+próprio trabalho que este documento descreve. **Censo que fixa um lado e deixa o outro flutuar não
+é reproduzível**, e produz artefato: comparar hub-às-11:49 com produto-às-11:03 faz `GT-0139` a
+`GT-0143` aparecerem como se existissem só no hub, inflando o Grupo A de 39 para 44. Achado do Rui
+na revisão do #628; a regra que fica é **fixar os dois lados no mesmo instante antes de contar**.
+
+**Os números não mudam: Grupo A = 39, total = 70, pendurados = 2.** Em qualquer instante
+*consistente* — antes do trabalho, quando as cinco não existiam de lado nenhum; ou depois do merge,
+quando existem dos dois — `GT-0139`-`GT-0143` não são Grupo A. A linha do tempo mostra por quê:
+
+```
+11:47:44  4b821485  lado PRODUTO das cinco, commitado
+11:49:38  8867236   lado HUB das cinco, commitado
+12:04:52  d75d0bdf  #624 mesclado na branch de integração
+```
+
+**O lado produto veio primeiro, por dois minutos.** As cinco nunca foram só-hub; se algo, foram
+brevemente só-produto. E os cinco `contraparte:` do lado hub resolvem hoje na branch de integração
+— conferido por `git ls-tree`, não por `git show <rev>:<caminho>`, que no Git Bash desta máquina é
+destruído pela conversão de path do MSYS e devolve "não existe" para arquivo que existe.
+
+Por isso o mecanismo do Grupo A — *arquivo de hub sem par no produto, permanentemente* — **não se
+reproduziu nesta jornada**. A disciplina do par valeu: os dois lados nasceram, foram commitados e
+mesclados. O que a revisão encontrou foi um defeito de datação no meu documento, não uma
+recorrência do defeito que ele documenta. A distinção importa porque é a diferença entre "a regra
+falhou de novo" e "minha medição estava mal ancorada" — e só a segunda é verdade.
 
 ## Handoff
 Cunhada e promovida no mesmo despacho. Decisão do Sergio, via Vision, em 12/09/2026: mapear agora,
