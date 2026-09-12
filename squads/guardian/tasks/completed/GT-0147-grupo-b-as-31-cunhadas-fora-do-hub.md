@@ -231,6 +231,13 @@ Acrescenta uma quarta manifestação às três já mapeadas (par ausente no nasc
 envelhece ao mover para `completed/`; `issue_url` vazio depois de a issue existir). As quatro têm a
 mesma causa e nenhuma tem quem a feche no fluxo.
 
+### O fechamento
+Os dois lados movem para `completed/` no mesmo par de commits, cada um já apontando para o
+`completed/` do outro. Como não há commit que atravesse dois repositórios, é o mais próximo de
+atômico que existe aqui; entre um merge e o outro um ponteiro fica *adiantado*, que se resolve
+sozinho, e não *atrasado*, que não se resolve. O raciocínio completo, e a armadilha de renomeação
+que ele evitou, estão no par — é lá que mora o "como foi feito".
+
 ## Validação
 Revalidado contra **commit**, não contra árvore de trabalho — três janelas ainda têm worktree neste
 repositório, e medir a árvore mede o trabalho não commitado dos outros.
