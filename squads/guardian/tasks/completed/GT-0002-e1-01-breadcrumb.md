@@ -1,7 +1,7 @@
 ---
 id: GT-0002
 title: "Breadcrumb com caminho hierárquico completo"
-status: active
+status: completed
 type: feature
 reaberta_qa: "2026-09-03"
 achado_origem: "N/A — pedido direto de implementação"

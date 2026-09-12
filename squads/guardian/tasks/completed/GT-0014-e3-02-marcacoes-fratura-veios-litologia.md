@@ -1,7 +1,7 @@
 ---
 id: GT-0014
 title: "Exibir marcações de fratura, veios e litologias específicas (somente leitura)"
-status: active
+status: completed
 type: feature
 achado_origem: "N/A — pedido direto de implementação"
 auditor_origem: "Jarvis — planejamento"

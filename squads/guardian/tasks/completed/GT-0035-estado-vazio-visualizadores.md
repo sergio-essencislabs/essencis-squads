@@ -1,7 +1,7 @@
 ---
 id: GT-0035
 title: "Estado vazio honesto nos visualizadores quando o furo/nível não tem caixas (hoje mostra painel preto / 'No image')"
-status: active
+status: completed
 type: feature
 achado_origem: "QA-Sergio-2026-09-03: 'Single view completamente bugado' / 'Multiview inexistente' (depósito Tapira)"
 auditor_origem: "Sergio Mendes (teste manual) — investigado por Jarvis"

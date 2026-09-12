@@ -1,7 +1,7 @@
 ---
 id: GT-0013
 title: "🐛 Corrigir desalinhamento das marcações em relação às caixas"
-status: active
+status: completed
 type: feature
 achado_origem: "N/A — pedido direto de implementação (bug)"
 auditor_origem: "Jarvis — planejamento"

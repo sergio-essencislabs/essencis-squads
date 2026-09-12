@@ -1,7 +1,7 @@
 ---
 id: GT-0036
 title: "Botão 'Analisar furo inteiro' aparece como ícone sem nome (tooltip não dispara em botão disabled)"
-status: active
+status: completed
 type: feature
 achado_origem: "QA-Sergio-2026-09-03: 'Também temos um ícone aleatório que não tem nome. O que é isso?'"
 auditor_origem: "Sergio Mendes (teste manual) — investigado por Jarvis"

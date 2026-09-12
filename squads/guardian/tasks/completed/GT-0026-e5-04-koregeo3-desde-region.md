@@ -1,7 +1,7 @@
 ---
 id: GT-0026
 title: "KoreGeo3 acessível desde Region — REVERTER (decisão do usuário, 2026-09-03: restringir a DrillHole)"
-status: active
+status: completed
 reaberta_qa: "2026-09-03"
 type: feature
 achado_origem: "N/A — pedido direto de implementação"

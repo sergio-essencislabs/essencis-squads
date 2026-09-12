@@ -1,7 +1,7 @@
 ---
 id: GT-0015
 title: "Régua de profundidade navegável em escala reduzida"
-status: active
+status: completed
 type: feature
 reaberta_qa: "2026-09-03"
 achado_origem: "N/A — pedido direto de implementação"

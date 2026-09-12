@@ -1,7 +1,7 @@
 ---
 id: GT-0009
 title: "Indicador de resumo gerado por IA na caixa aberta"
-status: active
+status: completed
 type: feature
 achado_origem: "N/A — pedido direto de implementação"
 auditor_origem: "Jarvis — planejamento"

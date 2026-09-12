@@ -1,7 +1,7 @@
 ---
 id: GT-0010
 title: 'Botão "Analisar furo inteiro" (placeholder para visão computacional)'
-status: active
+status: completed
 type: feature
 achado_origem: "N/A — pedido direto de implementação"
 auditor_origem: "Jarvis — planejamento"

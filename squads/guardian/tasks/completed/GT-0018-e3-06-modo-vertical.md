@@ -1,7 +1,7 @@
 ---
 id: GT-0018
 title: "Modo de visualização vertical (drillcores empilhados)"
-status: active
+status: completed
 reaberta_qa: "2026-09-03"
 type: feature
 achado_origem: "N/A — pedido direto de implementação"

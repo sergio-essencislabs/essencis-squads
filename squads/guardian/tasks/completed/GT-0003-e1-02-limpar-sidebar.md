@@ -1,7 +1,7 @@
 ---
 id: GT-0003
 title: "Limpar sidebar do layout: remover Workspace e o ícone de Account"
-status: active
+status: completed
 type: feature
 achado_origem: "N/A — pedido direto de implementação"
 auditor_origem: "Jarvis — planejamento"

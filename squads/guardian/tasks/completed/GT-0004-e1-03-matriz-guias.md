@@ -1,7 +1,7 @@
 ---
 id: GT-0004
 title: "Definir matriz de disponibilidade das guias por entidade"
-status: active
+status: completed
 type: feature
 reaberta_qa: "2026-09-03"
 achado_origem: "N/A — pedido direto de implementação"

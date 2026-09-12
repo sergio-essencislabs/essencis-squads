@@ -1,7 +1,7 @@
 ---
 id: GT-0030
 title: "Camada de geoquímica (gráfico por profundidade) e redesenho do mock de mapa hiperespectral no Single View"
-status: blocked
+status: active
 type: feature
 achado_origem: "QA-Matheus-2026-09-03 (E3-04/E3-05, TASKS.md linha 31)"
 auditor_origem: "Matheus Lima Santos de Souza (QA manual) — roteado por Jarvis"

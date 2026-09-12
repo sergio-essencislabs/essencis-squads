@@ -1,7 +1,7 @@
 ---
 id: GT-0021
 title: 'Modo "somente DrillCore" no MultiView — REDESENHAR para seleção por janela (decisão do usuário, 2026-09-03)'
-status: active
+status: completed
 reaberta_qa: "2026-09-03"
 type: feature
 achado_origem: "N/A — pedido direto de implementação"

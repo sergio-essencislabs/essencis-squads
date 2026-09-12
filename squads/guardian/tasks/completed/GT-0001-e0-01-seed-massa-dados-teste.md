@@ -1,7 +1,7 @@
 ---
 id: GT-0001
 title: "Seed: popular ambiente com furos, caixas e marcações representativas"
-status: active
+status: completed
 type: feature
 reaberta_qa: "2026-09-03"
 achado_origem: "N/A — pedido direto de implementação (projeto Visualizadores/Navegação/Layout)"

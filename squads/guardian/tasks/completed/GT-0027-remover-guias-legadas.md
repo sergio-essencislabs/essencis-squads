@@ -1,7 +1,7 @@
 ---
 id: GT-0027
 title: "Remover (comentar) guias de visualização legadas — manter só Images, Single View, MultiView, KoreGeo3"
-status: active
+status: completed
 type: feature
 achado_origem: "N/A — escopo extra pedido pelo usuário (2026-09-02)"
 auditor_origem: "Usuário (Sergio Mendes), via Jarvis"

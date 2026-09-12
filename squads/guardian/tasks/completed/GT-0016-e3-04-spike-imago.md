@@ -1,7 +1,7 @@
 ---
 id: GT-0016
 title: "Spike: levantar parâmetros e camadas de dados usados pelo IMAGO"
-status: active
+status: completed
 type: feature
 achado_origem: "N/A — pedido direto de implementação"
 auditor_origem: "Jarvis — planejamento"

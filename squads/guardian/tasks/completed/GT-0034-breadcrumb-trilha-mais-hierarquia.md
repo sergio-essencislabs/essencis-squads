@@ -1,7 +1,7 @@
 ---
 id: GT-0034
 title: "Breadcrumb: combinar trilha de navegação (Geodata Management > Deposits) com a cadeia hierárquica"
-status: active
+status: completed
 type: feature
 achado_origem: "QA-Sergio-2026-09-03: 'O breadcrumb ainda está péssimo. Clico em dashboard>Geodatamanagement>Deposits e quando seleciono um deposit já quebra o breadcrumb'"
 auditor_origem: "Sergio Mendes (teste manual) — investigado por Jarvis"

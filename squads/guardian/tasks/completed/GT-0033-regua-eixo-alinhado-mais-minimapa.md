@@ -1,7 +1,7 @@
 ---
 id: GT-0033
 title: "Régua do Single View: eixo de profundidade alinhado às caixas + minimapa do furo (substitui o minimapa isolado do GT-0015)"
-status: active
+status: completed
 type: feature
 achado_origem: "QA-Sergio-2026-09-03: 'Em Mine Area régua' + 'A régua precisa acompanhar a caixa'"
 auditor_origem: "Sergio Mendes (teste manual) — investigado por Jarvis"

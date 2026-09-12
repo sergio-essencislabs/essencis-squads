@@ -1,7 +1,7 @@
 ---
 id: GT-0007
 title: "Lista de caixas: tornar retrátil e remover o seletor inferior"
-status: active
+status: completed
 type: feature
 achado_origem: "N/A — pedido direto de implementação"
 auditor_origem: "Jarvis — planejamento"

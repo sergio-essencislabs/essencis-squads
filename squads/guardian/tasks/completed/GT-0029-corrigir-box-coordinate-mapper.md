@@ -1,7 +1,7 @@
 ---
 id: GT-0029
 title: "Corrigir unidades mistas em BoxCoordinateMapperService.registerBoxFromTiledImage()"
-status: active
+status: completed
 type: feature
 achado_origem: "QA-Matheus-2026-09-03 (E3-02, TASKS.md linha 27)"
 auditor_origem: "Matheus Lima Santos de Souza (QA manual) — roteado por Jarvis"

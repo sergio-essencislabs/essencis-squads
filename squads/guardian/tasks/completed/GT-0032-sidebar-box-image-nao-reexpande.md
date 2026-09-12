@@ -1,7 +1,7 @@
 ---
 id: GT-0032
 title: "Sidebar do Box Image some ao recolher e não pode ser reaberta (CSS legado esconde o próprio botão de expandir)"
-status: active
+status: completed
 type: feature
 achado_origem: "QA-Sergio-2026-09-03 (teste manual na branch de integração)"
 auditor_origem: "Sergio Mendes (teste manual) — investigado por Jarvis"

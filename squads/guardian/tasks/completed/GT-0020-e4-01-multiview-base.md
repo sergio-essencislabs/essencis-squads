@@ -1,7 +1,7 @@
 ---
 id: GT-0020
 title: "Visualizar múltiplas caixas — do mesmo furo e de furos distintos"
-status: active
+status: completed
 type: feature
 achado_origem: "N/A — pedido direto de implementação"
 auditor_origem: "Jarvis — planejamento"
