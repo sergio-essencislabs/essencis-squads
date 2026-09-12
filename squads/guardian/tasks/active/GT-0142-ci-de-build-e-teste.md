@@ -139,7 +139,13 @@ Credencial do MySQL do CI é efêmera e de serviço.
       **`509 unit / 91 integration / 196 de 274 api (78 skipped) / 561 specs`** (run 34701237492).
       Desambiguado por contagem histórica: em `f3d33580`, quando a linha nasceu, o frontend tinha
       329 `it(` e o `Back.ApiTests` tinha 12 `[Fact]/[Theory]`. Achado do Rui na revisão do #628.
-      Mesma correção consta do CA-06 da GT-0144 (#627) — sobreposição declarada dos dois lados.
+      **Titularidade desta linha é desta GT.** Até 12/09/2026 ela era compartilhada com o CA-06 da
+      GT-0144 (#627), sob a regra "quem chegar primeiro resolve e marca nos dois lugares" — e essa
+      regra **era ela própria o risco que o parágrafo nomeava**: duas tasks com direito ao mesmo
+      arquivo e nenhuma com o dever. Ao dividir a GT-0144 em três (GT-0145/0146/0147), o CA-06 não
+      foi para nenhuma delas: ficou aqui, com dono único.
+      **Se esta GT fechar sem cumprir, isso volta como divergência registrada — não recai na
+      GT-0144 por omissão.**
 
 ## Estratégia de testes
 - [x] Unitários: N/A — é infraestrutura.
