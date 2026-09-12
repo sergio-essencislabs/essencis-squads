@@ -144,8 +144,16 @@ Credencial do MySQL do CI é efêmera e de serviço.
       regra **era ela própria o risco que o parágrafo nomeava**: duas tasks com direito ao mesmo
       arquivo e nenhuma com o dever. Ao dividir a GT-0144 em três (GT-0145/0146/0147), o CA-06 não
       foi para nenhuma delas: ficou aqui, com dono único.
-      **Se esta GT fechar sem cumprir, isso volta como divergência registrada — não recai na
-      GT-0144 por omissão.**
+      **✅ Cumprido pelo PR #629 (`79b42190`)**, que criou `docs/quality/rodar-a-suite-localmente.md`
+      e deixou a linha do `docs/setup-local.md` com os quatro números, acrescentando a ressalva de
+      que são suítes diferentes e não se somam. A titularidade funcionou: nada voltou como
+      divergência.
+
+      > **Divergência de par, para a Vision:** o #629 moveu a GT-0142 para `completed/` **no
+      > produto** e este arquivo do hub continua em `active/`, com os CA-05/CA-07 ainda `- [ ]`.
+      > Os dois lados do par se contradizem — é bug de processo pelo `.agents/tasks/README.md`.
+      > Não corrijo aqui porque a entrega é do #629 e marcar critério alheio exige que o dono o
+      > faça; fica registrado onde o próximo leitor tropece.
 
 ## Estratégia de testes
 - [x] Unitários: N/A — é infraestrutura.

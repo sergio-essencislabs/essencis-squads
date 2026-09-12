@@ -38,6 +38,11 @@ contraparte: "GeoCloudAI/.agents/tasks/active/GT-0144-reconciliar-o-acervo-de-gt
 > O risco do guarda-chuva é virar GT ativa e vazia, que é o outro defeito daqui. Contra isso: este
 > aviso, a tabela de migração, e a regra de que **esta GT só fecha quando as três filhas
 > fecharem** — ela não tem critério próprio a marcar.
+>
+> **Um campo ficou para trás no lado produto e não é meu para mexer:** lá o front-matter traz
+> `grupo_execucao: G1`, gravado pelo roteamento do Step 09 (#632) **antes** de a divisão existir.
+> Numa GT que diz "não despachar", isso é convite para abrir janela para nada — mas
+> `grupo_execucao` é campo do Step 09 e precisa ser limpo por lá.
 
 
 ## Contexto
@@ -155,7 +160,8 @@ uma colisão que não existe.
    **Atenção ao terceiro número:** `332 specs` é do **frontend** (Karma), não do `Back.ApiTests` —
    a baseline correta tem quatro números, `509 unit / 91 integration / 196 de 274 api (78 skipped)
    / 561 specs` (run 34701237492). **A titularidade deste item é da GT-0142 (#622)**, não desta
-   GT — ver a tabela de migração.
+   GT — ver a tabela de migração. ✅ **Resolvido pelo #629**, que aplicou os quatro números e
+   acrescentou que são suítes diferentes e não se somam.
 
 ## Objetivo
 O acervo volta a ser fonte confiável: todo `GT-NNNN` existe dos dois lados, com `contraparte:`
@@ -201,7 +207,7 @@ o rastro ser legível sem tradução.
 | CA-02 — as 31 do Grupo B | **GT-0147** (Grupo B) | — |
 | CA-04 — GT-0109 e GT-0110 pendurados | **GT-0147** | são 2 dos 31; é o **mesmo campo, no mesmo arquivo** que o CA-03 escreve ao criar o par |
 | CA-08 — linha no `README.md` do produto | **GT-0147** | único critério das três executável em janela de nuvem |
-| CA-06 — baseline de `docs/setup-local.md:39` | **GT-0142** (#622) | ver abaixo |
+| CA-06 — baseline de `docs/setup-local.md:39` | **GT-0142** (#622) — ✅ **já cumprido** pelo #629 | ver abaixo |
 
 ### O CA-06 saiu do escopo, com titularidade e não com cortesia
 Ele não foi para nenhuma das três: **a GT-0142 (#622) é dona dele**, porque é ela que escreve a
@@ -211,8 +217,13 @@ A redação anterior dizia *"quem chegar primeiro resolve e marca nos dois lugar
 era ela própria o risco que o parágrafo nomeava** — duas tasks com direito ao mesmo arquivo e
 nenhuma com o dever. Agora há uma dona só.
 
-**Se a GT-0142 fechar sem cumprir o CA-06, isso volta como divergência registrada — não recai aqui
-por omissão.**
+**✅ Cumprido.** O PR **#629** (`79b42190`) entregou os dois critérios da GT-0142: criou
+`docs/quality/rodar-a-suite-localmente.md`, ligou-a a partir de `docs/README.md` e de
+`docs/quality/README.md`, e deixou a linha do `docs/setup-local.md` com os quatro números, com um
+acréscimo melhor do que o que eu tinha escrito: *"quatro suítes diferentes, que não se somam; os
+274 são backend e os 561 são frontend"*.
+
+Ou seja: a titularidade funcionou como devia. **Nada volta como divergência.**
 
 ### Dependência entre as três
 ```
