@@ -16,6 +16,12 @@ created_at:
 updated_at:
 affected_modules: []
 related_adrs: []
+contraparte: ""            # caminho do par no repositório de produto, em caminho RELATIVO
+                           # (ex.: GeoCloudAI/.agents/tasks/active/GT-NNNN-slug.md) — nunca C:/...
+                           # Todo GT nasce em par (.agents/tasks/README.md, linhas 19 e 27):
+                           # este campo é o ponteiro, e o par aponta de volta para cá.
+depende_de: []             # LISTA, sempre — [] quando não depende de nada, ["GT-0139"] quando
+                           # depende. Prosa aqui quebra quem lê o campo para montar grafo.
 ---
 
 # GT-0000 — Título
