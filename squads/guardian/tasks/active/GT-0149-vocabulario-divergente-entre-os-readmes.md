@@ -82,10 +82,16 @@ verificar**:
 > `issue_url`. Esta é sobre o **corpo** do arquivo: Registro, Validação, caixas. **Uma trava que
 > valide front-matter não pegaria esta.**"*
 
-O caso concreto: a GT-0146 e a GT-0147 tiveram o trabalho feito e mesclado, e o **arquivo-task do
-lado do hub** ficou com as caixas todas abertas e o Registro dizendo *"não executada"*. Nenhum
-campo de front-matter estava errado. Um validador de front-matter passaria **verde sobre um
-Registro vazio**.
+O caso concreto, **medido em 12/09/2026 com o hub em `9774f53`**: a GT-0146 e a GT-0147 tiveram o
+trabalho feito e mesclado, e o **arquivo-task do lado do hub** ficou com **8 e 9 caixas abertas,
+zero marcadas**, e o Registro dizendo *"não executada"*. Nenhum campo de front-matter estava
+errado. Um validador de front-matter passaria **verde sobre um Registro vazio**.
+
+> **A âncora não é formalidade: as duas estavam sendo consertadas enquanto isto era escrito.** Quem
+> ler esta seção depois vai encontrar os dois arquivos fechados, concluir que o texto mente e
+> duvidar do resto da task. O caso continua valendo como evidência **porque está datado** — não
+> porque o estado persiste. Achado do Otávio ao revisar esta extensão, e é o defeito que esta
+> própria GT documenta, aparecendo dentro dela.
 
 **Consequência para o escopo desta GT:** ela ia nascer cobrindo três quartos do problema. O que os
 READMEs precisam governar não é só *o que um campo pode conter* — é também **o que torna um
