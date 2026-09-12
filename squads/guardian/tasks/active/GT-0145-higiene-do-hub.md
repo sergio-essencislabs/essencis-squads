@@ -106,8 +106,19 @@ para que o rastro entre as duas seja legível sem tradução.
 
       **Conferir com o método, não com a lista** — lista envelhece, comando não: normalizar cada
       `contraparte:` e testar contra `git ls-tree -r --name-only <rev-do-produto> .agents/tasks`,
-      com as **duas pontas ancoradas em commit**. Falso positivo legítimo: GT recém-cunhada cujo
-      par ainda está em branch não mesclada aparece quebrada e não está.
+      com as **duas pontas ancoradas em commit**.
+
+      **Dois casos que o método precisa tratar, e que não são defeito:**
+
+      1. **Valor começando com `N/A`** — é a forma de "não há par" que o `_template.md` define
+         (ex.: `"N/A — anterior à TASK-060"`). **Não é caminho e deve ser PULADO**, nunca contado
+         como quebrado. Sem esta linha, os 39 do Grupo A apareceriam como 39 ponteiros quebrados
+         nesta mesma varredura, e a próxima pessoa "consertaria" o que está certo.
+         **Hoje isto não é pegável por teste:** o acervo tem **zero** valores `N/A`, então o ramo
+         não é exercitado por nada. Ele existe para quando a GT-0146 escrever os 39 — que é
+         exatamente quando errar sairia caro.
+      2. **GT recém-cunhada cujo par ainda está em branch não mesclada** aparece quebrada e não
+         está. Falso positivo legítimo, some quando o PR entra.
 
 - [x] **CA-10** (da GT-0144): uma só grafia do campo de issue. Restam **17**: GT-0040-0043,
       0045-0052 e GT-0118-0122. Conversão mecânica, o número já está lá.
@@ -166,8 +177,9 @@ Havia **quatro formas** do mesmo defeito, e a lista só teria pego três: barra 
 (`GT-0043`, `0045`-`0052`), barra invertida dupla com aspas (`GT-0044`), barra normal com aspas
 (`GT-0118`-`0122`), e a `GT-0052`, que apontava para **o próprio hub** em vez do produto.
 
-**CA-10 — 17 conversões `issue:` → `issue_url:`.** Quinze mecânicas, com os catorze números
-distintos conferidos contra issues reais. **Duas não eram mecânicas:**
+**CA-10 — 17 conversões `issue:` → `issue_url:`.** Catorze mecânicas, com os números distintos
+conferidos contra issues reais antes de converter. **Três não eram mecânicas** — e as três são
+variações do mesmo defeito de fundo: o campo diz "não há registro" quando há.
 
 - `GT-0045` trazia `issue: a criar`. **A issue existia:** a **#452** se chama
   *"[GT-0044/45/46] Auditoria do Guardian..."* e o corpo nomeia as três. Não foi invenção — foi
@@ -176,8 +188,12 @@ distintos conferidos contra issues reais. **Duas não eram mecânicas:**
   ficou com a **#296**, e as duas seguem nomeadas no `title:` e no `origem:`, que é onde já
   estavam. **Nada se perdeu**, e a linha diz isso.
 
-De passagem, na mesma faixa: `GT-0044` tinha `issue_url: ""` — grafia certa, valor vazio, **mesmo
-efeito** de ser lida como não promovida. A mesma #452 a nomeia; preenchida.
+- `GT-0044` trazia `issue_url: ""` — grafia certa, **valor vazio**, mesmo efeito de ser lida como
+  não promovida. É o caso que **mais** precisava de justificativa, e não de menos: a RN-01 proíbe
+  inventar URL para arquivo sem número, e este **não tinha número nenhum**. O que autoriza
+  preenchê-lo não é dedução, é leitura — o título da **#452** nomeia o `GT-0044`, junto do 45 e do
+  46, e o corpo repete os três. Conferência independente: os `issue_url` vazios caíram de **11
+  para 10**, consistente com ter preenchido exatamente um.
 
 ### Arquivos principais
 `_template.md`; `GT-0040`-`0052`, `GT-0118`-`0122`, `GT-0139` e `GT-0142`.
@@ -201,8 +217,16 @@ efeito** de ser lida como não promovida. A mesma #452 a nomeia; preenchida.
   A nova âncora está na Validação.
 
 ### Pendências
-1. **A torneira continua aberta.** Cada GT implementada e movida para `completed/` no produto
-   deixa o ponteiro do hub apontando para `active/` — `GT-0139` e `GT-0142` nasceram assim hoje.
+1. **A torneira continua aberta, e mediu-se ela jorrando.** Cada GT implementada e movida para
+   `completed/` no produto deixa o ponteiro do hub apontando para `active/`.
+
+   A aritmética dos 17 mostra isso sem precisar de argumento: **14 absolutos + 1 virado para o hub
+   + 2 que eram relativos e apontavam para `active/`**. Os dois últimos são `GT-0139` e `GT-0142`,
+   cujos pares foram para `completed/` **hoje**, pelos PRs #630 e #629 — ou seja, **dois dos 17
+   foram criados durante a execução da task que os conserta**, por entregas do próprio squad.
+
+   Não é fila herdada que encolhe até zerar: é vazão. Consertar os 17 drena a pia sem fechar a
+   torneira.
    Consertar os 17 drena a pia sem fechar a torneira. Encaminhado para ser irmão do CA-08 na
    GT-0147, que é onde a pergunta "o que impede isto de se repetir" já mora.
 2. **Os 10 `issue_url: ""`** (`GT-0027`, `0028`, `0031`-`0038`) são a outra forma da mesma
@@ -213,8 +237,17 @@ efeito** de ser lida como não promovida. A mesma #452 a nomeia; preenchida.
 
 ## Validação
 
-**Método, não lista** — como o próprio CA-05 manda. As duas pontas ancoradas em commit: produto em
-`origin/feature/fix/refactor-08_09-11_09` @ `82f6c769`, hub em `bfe144f` → `c9741bd`.
+**Método, não lista** — como o próprio CA-05 manda. As duas pontas ancoradas em commit, e **as
+duas colunas também**:
+
+| coluna | hub em | produto em |
+|---|---|---|
+| **antes** | `c9741bd` | `82f6c769` |
+| **depois** | `b925492` | `82f6c769` |
+
+O produto não se move entre as duas: **nada foi escrito nele por esta task.** Quem for reproduzir
+o verde precisa do SHA do depois, e ele é o `b925492` — a primeira redação parava em `c9741bd`,
+que é justamente onde a coluna *antes* se reproduz.
 
 **VERMELHO — antes**
 ```
