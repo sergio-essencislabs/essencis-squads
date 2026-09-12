@@ -96,6 +96,31 @@ mesmo dia.** Antes, isto podia ser lido como dívida histórica a drenar. Agora 
 intervalo entre escrever o diagnóstico e fechar a task** — é a diferença entre fila que encolhe e
 vazão, com evidência produzida depois da documentação.
 
+### 5. Ponteiro adiantado e ponteiro atrasado não são o mesmo defeito
+
+Achado da Lívia ao fechar a GT-0147, e é o que **inverte** o que uma trava ingênua faria:
+
+> *"Ponteiro **adiantado** se resolve sozinho quando o segundo merge entra; ponteiro **atrasado**
+> não se resolve nunca sem alguém ir lá. **A fila do CA-08 é toda de ponteiros atrasados.**"*
+
+| | aponta para | resolve sozinho? |
+|---|---|---|
+| **adiantado** | onde o par **vai estar** | **sim** — quando o segundo merge entra |
+| **atrasado** | onde o par **estava** | **nunca**, sem alguém ir lá |
+
+Os 17 ponteiros consertados na GT-0145 eram **todos atrasados**. Nenhum ia se resolver esperando.
+
+**Consequência para qualquer trava que saia desta GT:** uma verificação que trate os dois como o
+mesmo defeito **marca como quebrado um estado transitório que está correto** — e, nas palavras
+dela, *"a primeira coisa que um alarme falso ensina é a ignorar o alarme"*. É o mesmo princípio que
+o Otávio aplicou à caixa do `provision-env.sh`: **errar para o lado cauteloso ensina o operador a
+desconfiar da caixa.**
+
+**E a inversão:** o estado adiantado não é tolerado, é **o certo**. Como não há atomicidade entre
+dois repositórios — *"não há commit que atravesse os dois"* —, o melhor alcançável é **cada lado já
+mesclar apontando para o destino final do outro**. Quem faz isso produz, de propósito, uma janela
+de ponteiro adiantado. Uma trava que a punisse estaria punindo a boa prática.
+
 ### 4. Quem pode marcar uma caixa — e por que a regra mora aqui
 
 **A caixa marcada é a afirmação de que alguém verificou.** Disso decorre que **quem marca é quem
@@ -158,6 +183,13 @@ justificada, o que também é resposta válida.
 - [ ] CA-08: se alguma trava automática for proposta a partir desta GT, ela **declara o que não
       alcança**. Validador de front-matter não vê corpo vazio; dizer isso evita que o verde dele
       seja lido como "fechado por dentro".
+- [ ] CA-09: os READMEs distinguem **ponteiro adiantado de ponteiro atrasado**, e declaram que o
+      adiantado é **o estado correto** durante a janela entre os dois merges — não um defeito
+      tolerado. Como não há commit que atravesse os dois repositórios, **cada lado deve mesclar já
+      apontando para o destino final do outro**.
+- [ ] CA-10: qualquer trava proposta **não acusa ponteiro adiantado**. Acusar o transitório correto
+      treina quem lê a ignorar o alarme, e aí ela deixa de valer para o atrasado, que é a fila
+      real.
 
 ## Impacto técnico
 ### Backend / Frontend / Banco de dados
@@ -185,6 +217,9 @@ Nenhum direto.
   deliberada — `blocked` pode existir só no produto por um motivo que ninguém escreveu. A RN-01
   existe para isso: declarar é resposta.
 - **Risco:** aproveitar a GT para converter os 11 vazios. A RN-03 veta; é conferência um a um.
+- **Risco, e é o que mata a utilidade:** uma trava que acuse ponteiro adiantado. Ela estaria
+  punindo a única prática possível sem atomicidade entre repositórios, e o custo não é o
+  falso-positivo — é que **quem aprende a ignorar o alarme deixa de ver o verdadeiro**.
 - **Rollback:** markdown; um revert.
 
 ## Registro de execução
