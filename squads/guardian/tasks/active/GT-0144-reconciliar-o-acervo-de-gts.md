@@ -10,7 +10,8 @@ produto: GeoCloudAI
 camada: documentacao
 run_origem: "N/A — despacho direto, fora de run de pipeline"
 issue_url: "https://github.com/Essencis-Labs/GeoCloudAI/issues/627"
-grupo_execucao: ""
+grupo_execucao: nao-despachavel
+depende_de: ["GT-0145", "GT-0146", "GT-0147"]
 owner: Sergio
 created_at: 2026-09-12
 updated_at: 2026-09-12
