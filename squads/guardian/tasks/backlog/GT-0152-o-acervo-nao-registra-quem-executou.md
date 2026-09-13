@@ -136,6 +136,21 @@ O front-matter registra quem executou. As decisões que ficam para o Sergio, e q
 - [ ] **CA-05:** o registro de execução declara **o que esta verificação não alcança** — em
       particular, que ela não diz nada sobre a fidelidade do que foi preenchido, só sobre a
       presença e a forma.
+- [ ] **CA-06:** o mecanismo escolhido na Etapa 1 está escrito **como obrigação no documento que
+      governa o momento em que ele ocorre** — o Step 09 se for o roteamento a preencher, o
+      procedimento de fechamento se for quem executa. **Declarar o campo no `_template.md` faz
+      quem cunha VER o campo; não faz ninguém PREENCHê-lo.**
+
+      **Por que este CA existe, e ele é sobre esta GT.** Sem ele, a GT-0152 pode fechar com os
+      cinco anteriores cumpridos — campo nos quatro documentos, convenção de ausência posta,
+      histórico decidido, varredura passando — e **ninguém obrigado a preenchê-lo na GT seguinte**.
+      A prestação de contas do CA-04 fecharia relatando *"0 têm, 120 não têm, a soma bate"*, e
+      **isso passa**. Ou seja: ela produziria **exatamente o resultado contra o qual avisa** — um
+      quarto campo vazio de significado ambíguo — **satisfazendo os próprios critérios**.
+
+      A GT nomeia a pergunta certa e manda a decisão para o Sergio, o que é legítimo. **O problema
+      nunca foi o adiamento; era nenhum critério pegar a decisão na volta.** Este CA existe para que
+      *"a decisão existe"* e *"a decisão está em vigor"* não sejam a mesma caixa marcada.
 
 ## Impacto técnico
 
@@ -158,6 +173,8 @@ Nenhum.
 - [ ] Etapa 2 — declarar nos quatro documentos (CA-01, CA-02).
 - [ ] Etapa 3 — resolver o histórico conforme a decisão (CA-03).
 - [ ] Etapa 4 — varredura com controle positivo e prestação de contas (CA-04, CA-05).
+- [ ] Etapa 5 — escrever o mecanismo como **obrigação** no documento que governa o momento dele
+      (CA-06). Sem esta etapa a GT fecha sem produzir efeito.
 
 > **Aviso a quem executar a Etapa 3:** se a decisão for escrever nos arquivos existentes, não use
 > `sed` por padrão no front-matter. Um `/^owner:/` acerta também blocos ```yaml citados dentro do
