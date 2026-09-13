@@ -9,7 +9,7 @@ severidade: alta
 produto: GeoCloudAI
 camada: infraestrutura
 run_origem: "run 34745948062, tentativa 1 — bytes ancorados no commit 16b404a5 (PR #661)"
-issue_url: ""
+issue_url: "https://github.com/Essencis-Labs/GeoCloudAI/issues/668"
 grupo_execucao: ""
 depende_de: []
 owner: Sergio
