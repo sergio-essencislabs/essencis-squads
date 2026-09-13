@@ -93,6 +93,21 @@ $janelas = @(
   @{ Nome = 'GeoCloudAI'; Sub = 'GeoCloudAI' }
 ) | ForEach-Object { $_.Dir = Join-Path $Base $_.Sub; [pscustomobject]$_ }
 
+# Casar cada persona ao sessionId do mapa, para poder ANEXAR em vez de criar.
+# Sem o mapa, o script cai no comportamento antigo (--continue) e diz isso.
+$mapaSessoes = 'C:\Software\GeoCloud\sessoes.json'
+if (Test-Path -LiteralPath $mapaSessoes) {
+  $cru = Get-Content -LiteralPath $mapaSessoes -Raw -Encoding UTF8 | ConvertFrom-Json
+  $porNome = @{}
+  foreach ($x in $cru) { $porNome[$x.nome] = $x.sessionId }
+  foreach ($j in $janelas) {
+    $j | Add-Member -NotePropertyName SessionId -NotePropertyValue $porNome[$j.Nome] -Force
+  }
+} else {
+  Write-Warning "sessoes.json nao encontrado -- as abas vao usar --continue (escolhe pela DATA)."
+  foreach ($j in $janelas) { $j | Add-Member -NotePropertyName SessionId -NotePropertyValue $null -Force }
+}
+
 if ($SomenteDevice) { $janelas = @() }
 
 if ($Apenas) {
@@ -187,12 +202,18 @@ $primeira = $true
 foreach ($j in $janelas) {
   if (-not $primeira) { $wtArgs.Add(';') }
   $primeira = $false
-  # `-n <Nome>` fixa o nome da sessao. Sem isso o nome e derivado do diretorio
-  # com sufixo aleatorio (wt-rui-8d, depois wt-rui-f7) e MUDA a cada reinicio --
-  # e despacho por nome obriga a reler a lista toda vez.
+  # `claude attach <id>` ABRE a sessao que ja esta rodando em fundo -- nao cria
+  # outra. E o que elimina a duplicata que este script antes precisava vigiar.
+  # O id curto e o prefixo de 8 do sessionId (conferido: "id":"f78ac08c" para
+  # "sessionId":"f78ac08c-b983-...").
+  #
+  # O --title nao garante nada: o claude SOBRESCREVE o titulo da aba com o nome
+  # da sessao. Fica so como rotulo do instante anterior ao claude subir.
+  $cmdAba = if ($j.SessionId) { "claude attach $($j.SessionId.Substring(0,8))" }
+            else               { "claude --continue -n $($j.Nome)" }
   $wtArgs.AddRange([string[]]@(
     'new-tab', '--title', $j.Nome, '-d', $j.Dir,
-    'powershell', '-NoExit', '-Command', "claude --continue -n $($j.Nome)"
+    'powershell', '-NoExit', '-Command', $cmdAba
   ))
 }
 

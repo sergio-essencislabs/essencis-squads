@@ -1,4 +1,26 @@
-# Operação: recuperar o squad depois de um reinício
+# Operação: manter e recuperar o squad
+
+> **O desenho mudou.** O squad roda em **sessões de fundo**, sem janela. As
+> abas do Windows Terminal passaram a ser opcionais — servem para *ver*, e
+> abrem **anexando** às sessões que já rodam, não criando novas.
+>
+> | | |
+> |---|---|
+> | `subir-squad.ps1` | sobe as 12 em fundo, por `--bg --resume <id>`. **É o padrão** |
+> | `abrir-squad.ps1` | abre abas com `claude attach <id>`. Só para ver |
+> | `sessoes.json` | o mapa persona → `sessionId`. É o que permite retomar **por identidade** |
+>
+> **Por que `--resume <id>` e não `--continue`:** o `--continue` escolhe a
+> conversa **pela data**. Se a pasta tiver mais de uma e a errada for a mais
+> nova, a persona volta na conversa errada e **nada avisa** — já aconteceu.
+> `--resume <id>` retoma por identidade, em troca de manter o mapa.
+>
+> **O que este desenho não resolve:** sessão de fundo **não tem quem responda a
+> pedido de permissão**. Ela fica parada em silêncio até alguém atender, do
+> celular ou por `claude attach`. É o risco operacional, e não há conserto
+> dentro do script.
+
+
 
 O squad roda como **N janelas do Claude Code**, uma por worktree, mais uma sessão
 de **Remote Control** que é o que faz a máquina aparecer como device no celular.

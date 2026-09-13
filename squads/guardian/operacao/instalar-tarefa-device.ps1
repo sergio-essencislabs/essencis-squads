@@ -26,9 +26,12 @@
 
 [CmdletBinding(PositionalBinding = $false)]
 param(
-  [string] $Nome     = 'Guardian - garantir device',
-  [string] $Script   = 'C:\Software\GeoCloud\garantir-device.ps1',
-  [int]    $Minutos  = 30,
+  [string] $Nome        = 'Guardian - manter de pe',
+  [string] $Script      = 'C:\Software\GeoCloud\garantir-device.ps1',
+  [string] $ScriptSquad = 'C:\Software\GeoCloud\subir-squad.ps1',
+  [string] $NomeAntigo  = 'Guardian - garantir device',
+  [switch] $SemSquad,
+  [int]    $Minutos     = 30,
   [switch] $Remover,
   [switch] $Conferir
 )
@@ -56,7 +59,19 @@ $Script = (Resolve-Path -LiteralPath $Script).Path
 $exe = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
 $arg = "-ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File `"$Script`""
 
-$acao = New-ScheduledTaskAction -Execute $exe -Argument $arg -WorkingDirectory (Split-Path -Parent $Script)
+$acoes = @(New-ScheduledTaskAction -Execute $exe -Argument $arg -WorkingDirectory (Split-Path -Parent $Script))
+
+# Segunda acao: subir as 12 sessoes de fundo. O Agendador executa as acoes em
+# ORDEM, entao o device sobe primeiro -- as personas nascem com ele de pe e ja
+# ficam alcancaveis do celular.
+if (-not $SemSquad) {
+  if (Test-Path -LiteralPath $ScriptSquad) {
+    $argSquad = "-ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File `"$ScriptSquad`""
+    $acoes += New-ScheduledTaskAction -Execute $exe -Argument $argSquad -WorkingDirectory (Split-Path -Parent $ScriptSquad)
+  } else {
+    Write-Warning "subir-squad.ps1 nao existe em $ScriptSquad -- a tarefa vai so manter o device."
+  }
+}
 
 # Gatilho 1: no logon deste usuario.
 $g1 = New-ScheduledTaskTrigger -AtLogOn -User "$env:USERDOMAIN\$env:USERNAME"
@@ -88,15 +103,21 @@ if ($Conferir) {
   Write-Host "  gatilho 2 : a cada $Minutos min, indefinidamente"
   Write-Host "  sessao    : Interactive (NUNCA servico -- Sessao 0 quebra as janelas)"
   Write-Host "  instancias: IgnoreNew"
+  $oQue = if ($SemSquad) { 'so o device' } else { 'device, depois squad' }
+  Write-Host "  acoes     : $($acoes.Count)  ($oQue)"
   Write-Host "  ja existe : $([bool]$existente)"
   return
 }
 
 if ($existente) { Unregister-ScheduledTask -TaskName $Nome -Confirm:$false }
+# A tarefa mudou de nome ao passar a cobrir o squad; remover a antiga evita
+# duas tarefas fazendo a mesma coisa em horarios deslocados.
+$velha = Get-ScheduledTask -TaskName $NomeAntigo -ErrorAction SilentlyContinue
+if ($velha) { Unregister-ScheduledTask -TaskName $NomeAntigo -Confirm:$false; Write-Host "removida a tarefa antiga: $NomeAntigo" }
 
-Register-ScheduledTask -TaskName $Nome -Action $acao -Trigger @($g1, $g2) `
+Register-ScheduledTask -TaskName $Nome -Action $acoes -Trigger @($g1, $g2) `
                        -Principal $principal -Settings $cfg `
-                       -Description 'Mantem o device (claude remote-control) de pe: checa no logon e a cada 30 min; se ja estiver rodando, nao faz nada.' | Out-Null
+                       -Description 'Mantem o device e as 12 sessoes do squad de pe: checa no logon e a cada 30 min; o que ja estiver rodando e ignorado.' | Out-Null
 
 # Conferir lendo de volta, nao confiar no Register.
 $v = Get-ScheduledTask -TaskName $Nome -ErrorAction SilentlyContinue
@@ -106,6 +127,7 @@ Write-Host ""
 Write-Host "registrada: $Nome"
 Write-Host "  estado   : $($v.State)"
 Write-Host "  gatilhos : $($v.Triggers.Count)"
+Write-Host "  acoes    : $($v.Actions.Count)"
 Write-Host "  executa  : $($v.Actions[0].Execute)"
 Write-Host "  argumento: $($v.Actions[0].Arguments)"
 Write-Host "  logon    : $($v.Principal.LogonType)"
