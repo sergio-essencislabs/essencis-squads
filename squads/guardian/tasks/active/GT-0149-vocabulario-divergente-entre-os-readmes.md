@@ -221,17 +221,43 @@ justificada, o que também é resposta válida.
       Escrita só como *"nenhum ponteiro aponta para pasta de onde o arquivo já saiu"*, a regra
       carrega a linha "atrasado" e **perde a linha "adiantado"** — e aí volta a acusar trânsito.
 
-      **Resíduo declarado, e é meu:** mesmo com as duas metades, existe **uma** janela em que um
-      ponteiro legitimamente atrasado **não é defeito**. Quando o primeiro dos dois PRs mescla, o
-      lado que **ainda não mesclou** continua na `main` com o ponteiro antigo — e o par já saiu da
-      pasta que ele nomeia. Pela tabela, isso é "atrasado" e seria acusado, mas está correto: o
-      segundo PR o conserta.
+      **E as duas metades ainda não bastam — o problema não é geométrico.** Achado da Lívia, ao
+      conferir a própria regra contra a janela real. Eu havia declarado o mesmo resíduo por outro
+      caminho, tratando-o como ponto cego a declarar; ela mostrou que **é fechável, e como**.
 
-      Não é decidível localmente — daí a cláusula que o CA-08 exige:
+      O procedimento correto produz, **ao mesmo tempo, um adiantado e um atrasado**. Se o lado do
+      hub mesclar primeiro:
+
+      | lado | arquivo | ponteiro | leitura |
+      |---|---|---|---|
+      | hub | `completed/` | → produto `completed/` | **adiantado** |
+      | produto | `active/` | → hub `active/` | **atrasado** |
+
+      O segundo é *"genuinamente atrasado pela minha própria definição, e foi criado por fazer
+      certo"*. **A regra o acusaria.**
+
+      A conclusão que isso força:
+
+      > **"Em trânsito" e "abandonado" têm geometria idêntica.** O que os separa não é geometria
+      > nenhuma — é **se existe conclusão pendente**.
+
+      **Nenhuma regra puramente geométrica separa os dois.** A trava precisa de um insumo **de fora
+      do acervo**, e há duas saídas baratas:
+
+      - **(a)** rodar a checagem só quando **não há PR aberto** nomeando aquela task — a pendência
+        declarada absolve a janela;
+      - **(b)** acusar só depois de a divergência **sobreviver N** — trânsito dura minutos,
+        abandono dura semanas.
+
+      **Sem uma das duas, o CA-10 vira o CA-09 ao contrário:** em vez de acusar quem acertou por
+      não distinguir adiantado de atrasado, acusa quem acertou por não distinguir **transitório de
+      permanente**. Mesmo erro, uma camada abaixo.
+
+      E a cláusula que o CA-08 exige continua valendo, agora com o que a supre:
 
       > **A trava é sólida sobre estado assentado.** Entre o merge do primeiro PR de um par e o do
-      > segundo, ela tem **falso positivo conhecido** no lado ainda não mesclado. Quem a ler
-      > precisa saber disso, senão o primeiro alarme legítimo que ela der será descartado como
+      > segundo, ela tem **falso positivo conhecido** — e o insumo (a) ou (b) é o que o remove.
+      > Quem a ler precisa saber disso, senão o primeiro alarme legítimo será descartado como
       > "deve ser a janela".
 
       **E a prática que zera a janela em vez de tolerá-la:** pôr o move dentro do mesmo PR, e cada
