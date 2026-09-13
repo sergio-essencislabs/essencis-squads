@@ -238,8 +238,17 @@ justificada, o que também é resposta válida.
       lado mesclar já apontando para o destino final do outro. Decisão da Lívia no `squads#11` —
       **elimina a janela em vez de apostar em como o Git a resolve.**
 
-      Trocar condição relacional por condição local é o que resolve: relacional depende do estado
-      do outro lado e por isso depende da ordem; local é verificável de um lado só.
+      **O que resolve é trocar condição sobre a RELAÇÃO ENTRE DOIS ESTADOS por condição sobre uma
+      PROPRIEDADE DO ALVO** — "o arquivo saiu desta pasta?" é fato do alvo, e não comparação entre
+      os dois lados. É por isso que fica imune à ordem de merge.
+
+      **Cuidado com a palavra "local":** ela descreve a propriedade errada. Para saber se o arquivo
+      **saiu** de uma pasta ainda é preciso **olhar o repositório do alvo** — a verificação
+      continua atravessando os dois. Quem implementar lendo "de um lado só" pode concluir que
+      dispensa o outro repositório e escrever uma checagem que **não decide nada**. A propriedade
+      que faz a regra funcionar é **não depender de qual lado mesclou primeiro**, não economia de
+      leitura. Achado do Otávio; o `ponteiros.py` usado na GT-0145 confirma por construção — ele lê
+      o hub **e** faz `git ls-tree` no produto.
 
 ## Impacto técnico
 ### Backend / Frontend / Banco de dados
