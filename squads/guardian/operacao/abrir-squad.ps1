@@ -11,13 +11,20 @@
   -Apenas vision,rui  abre so as janelas nomeadas -- SEPARADAS POR VIRGULA,
                       sem espaco: com -File, "vision rui" nao passa as duas
   -SemDevice          nao abre a aba do Remote Control
+  -SomenteDevice      abre SO a aba do device, nenhuma janela de persona.
+                      E o caso de "so o device caiu" -- contradiz -SemDevice
+                      e -Apenas, e o script recusa as duas combinacoes
   -Sim                pula a confirmacao do aviso de sessoes ja vivas.
                       Use so quando voce ja sabe que ha sessoes vivas e quer
                       abrir assim mesmo -- ou para testar o script sem teclado
   -Base <caminho>     raiz das worktrees (padrao: C:\Software\GeoCloud)
   -DeviceDir <cam>    diretorio de onde o Remote Control sobe
-  -DeviceNome <nome>  nome do device -- trocar cria um device NOVO no celular
-                      em vez de reconectar o mesmo
+  -DeviceNome <nome>  nome com que o device aparece no celular. Medido: subir
+                      com o MESMO nome nao reconecta a sessao anterior -- cria
+                      uma sessao nova, e a antiga fica na lista como 'offline'.
+                      O que o nome compra e reconhecimento, nao reconexao;
+                      troca-lo so acrescenta um nome novo ao que ja e uma
+                      entrada nova
 
 .COMO CADA JANELA VOLTA
   `claude --continue` retoma a conversa MAIS RECENTE do diretorio. Nao ha id
@@ -42,6 +49,7 @@
 [CmdletBinding(PositionalBinding = $false)]
 param(
   [switch]   $SemDevice,
+  [switch]   $SomenteDevice,
   [string[]] $Apenas,
   [switch]   $Conferir,
   [switch]   $Sim,
@@ -51,6 +59,13 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+
+if ($SomenteDevice -and $SemDevice) {
+  throw "-SomenteDevice e -SemDevice se contradizem: um manda abrir so o device, o outro manda nao abrir o device."
+}
+if ($SomenteDevice -and $Apenas) {
+  throw "-SomenteDevice e -Apenas se contradizem: -SomenteDevice nao abre janela de persona nenhuma."
+}
 
 # Nome da aba -> diretorio de trabalho. A ordem aqui e a ordem das abas.
 $janelas = @(
@@ -67,6 +82,8 @@ $janelas = @(
   @{ Nome = 'Marta';      Sub = '_wt_marta'  }
   @{ Nome = 'GeoCloudAI'; Sub = 'GeoCloudAI' }
 ) | ForEach-Object { $_.Dir = Join-Path $Base $_.Sub; [pscustomobject]$_ }
+
+if ($SomenteDevice) { $janelas = @() }
 
 if ($Apenas) {
   # Invocado com -File, o PowerShell NAO separa "vision,rui" em dois: chega um
@@ -104,8 +121,13 @@ if ($vivos.Count -gt 0) {
 
 # Qual conversa cada janela vai retomar, pela data do .jsonl mais recente.
 Write-Host ""
+if ($SomenteDevice) {
+  Write-Host "-SomenteDevice: nenhuma janela de persona sera aberta." -ForegroundColor Cyan
+}
+if ($janelas.Count -gt 0) {
 Write-Host "Janela        Conversa que o --continue vai retomar" -ForegroundColor Cyan
 Write-Host "------------  -------------------------------------" -ForegroundColor Cyan
+}
 foreach ($j in $janelas) {
   # Sem regex de proposito: barra invertida em regex e fonte de erro silencioso.
   $slug = $j.Dir.Replace(':', '-').Replace([char]92, '-').Replace('/', '-').Replace('_', '-').Replace('.', '-')
@@ -142,7 +164,10 @@ foreach ($j in $janelas) {
 
 if (-not $SemDevice) {
   if (Test-Path -LiteralPath $DeviceDir) {
-    $wtArgs.Add(';')
+    # O ';' so entra se ja houver uma aba antes -- com -SomenteDevice nao ha,
+    # e um ';' solto na frente faz o wt receber um comando vazio.
+    if (-not $primeira) { $wtArgs.Add(';') }
+    $primeira = $false
     $wtArgs.AddRange([string[]]@(
       'new-tab', '--title', "$DeviceNome (device)", '-d', $DeviceDir,
       'powershell', '-NoExit', '-Command', "claude --remote-control $DeviceNome"
@@ -156,6 +181,10 @@ if (-not $SemDevice) {
 
 Write-Host ""
 Write-Host "Disparado. Confira numa das janelas com /agents:" -ForegroundColor Green
-Write-Host "  - devem aparecer $($janelas.Count - 1) pares;" -ForegroundColor Green
-Write-Host "  - o device deve aparecer como 'Remote Control', nao 'offline'." -ForegroundColor Green
+if ($janelas.Count -gt 1) {
+  Write-Host "  - devem aparecer $($janelas.Count - 1) pares novos;" -ForegroundColor Green
+}
+if (-not $SemDevice) {
+  Write-Host "  - o device deve aparecer como 'Remote Control', nao 'offline'." -ForegroundColor Green
+}
 Write-Host "Contar as abas nao serve: aba aberta nao e sessao viva." -ForegroundColor Green

@@ -50,10 +50,23 @@ errada. O script conta os processos e pede confirmação.
 
 ## O device (Remote Control)
 
-A última aba roda `claude --remote-control <nome>`. O nome mantém a identidade
-que já aparece no celular — **trocá-lo cria um device novo na lista em vez de
-reconectar o mesmo**. Os padrões estão no `param()` do script; passe `-DeviceDir`
-e `-DeviceNome` se mudarem.
+A última aba roda `claude --remote-control <nome>`. Os padrões estão no `param()`
+do script; passe `-DeviceDir` e `-DeviceNome` se mudarem.
+
+**Medido, e ao contrário do que este README dizia antes:** subir com o **mesmo
+nome não reconecta a sessão anterior**. Cria uma sessão nova, e a antiga fica na
+lista como `offline`, ao lado:
+
+```
+VaultS [909199]  ·  Remote Control  ·  idle       <- a que acabou de subir
+VaultS [b956da]  ·  Remote Control  ·  offline    <- a anterior, ainda listada
+```
+
+O que o nome compra é **reconhecimento**, não reconexão. Trocá-lo só acrescenta
+um nome diferente ao que já seria uma entrada nova de qualquer jeito.
+
+Use `-SomenteDevice` quando só o device tiver caído — ele abre a aba do Remote
+Control e nenhuma janela de persona.
 
 ## Como conferir que deu certo
 
@@ -87,7 +100,8 @@ quando ninguém quer diagnosticar.
 | `-w new` cria janela nova | **verificado** enumerando janelas da classe `CASCADIA_HOSTING_WINDOW_CLASS`: 2 → 3 → 2 |
 | `-Apenas`, nome inexistente, `-Base` inexistente, `-SemDevice`, `-Sim` | testados, incluindo os ramos de erro |
 | o atalho | criado e **lido de volta do disco** — `Save()` não acusa alvo inexistente |
-| **a aba do device** | **não testada** — subir o Remote Control agora mudaria o estado do device de verdade |
+| **a aba do device** | **testada** com `-SomenteDevice`: o device saiu de `offline` para `Remote Control · idle`, e a contagem de `claude` subiu exatamente 1 |
+| `-SomenteDevice` com `-SemDevice` e com `-Apenas` | testados: o script recusa as duas combinações nomeando a contradição |
 | **o disparo com as 12 sessões vivas no mesmo diretório** | **não testado, de propósito** — duas janelas `--continue` no mesmo diretório retomam o mesmo arquivo de conversa, e já houve um caso em que isso fez trabalho ser atribuído a quem não o fez |
 
 ## Dois defeitos que só apareceram porque os ramos de erro foram exercidados
