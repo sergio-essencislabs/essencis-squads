@@ -14,6 +14,13 @@ Só roda em modo "solicitação direta de implementação" — quando o usuário
 sozinho quais camadas precisam agir, sem que o usuário chame cada
 especialista por nome.
 
+**Nem toda solicitação direta chega aqui (revisto em 13/09/2026).** A Vision
+despacha direto ao dono do papel quando o pedido é de **uma camada só e
+evidente**. Esta task roda quando o pedido toca o núcleo compartilhado de
+Conta/Identidade, quando atravessa mais de uma camada, ou quando a decisão
+exige um GADR. Ver `chief-architect.agent.md`, seção "Quando Jarvis é
+acionado".
+
 ## Process
 
 1. Ler o pedido em `audit-scope.md` com fidelidade total — nunca reinterpretar
