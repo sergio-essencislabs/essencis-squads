@@ -165,6 +165,22 @@ não derivável de `.agents/tasks/`, exige varredura de commits"*.
       quatro arquivos do CA-03 —, redigida para ser **citada junto com o censo**, de modo que
       qualquer enumeração que se apoie nele herde a frase da fonte.
 
+      **A declaração é redigida como afirmação auto-contida**, e esta é a regra que governa a
+      redação dela:
+
+      > **Toda afirmação absoluta traz o conjunto na própria frase. Antecedente em outro parágrafo
+      > não conta.**
+
+      A razão é operacional, não estilística: **slide, citação e resumo viajam por frase.** Uma
+      sentença cujo escopo mora no parágrafo anterior chega ao leitor **sem ele** — que é
+      exatamente como *"nenhum par está faltando"* atravessou três revisões e chegou em negrito a
+      um documento de apresentação. Uma declaração que só funciona junto do parágrafo que a cerca
+      não sobrevive à citação, e ser citada é o único jeito de ela alcançar quem não conhece esta
+      GT.
+
+      O que se declara aqui **não é alcance de peneira, é domínio de sentença** — a distinção é do
+      Otávio, e é o que separa esta regra do princípio de declarar o que a verificação não alcança.
+
       **Reparo declarado, e a razão é boa.** A versão anterior obrigava *"todo documento que
       enumerar GTs por arquivo"* a declarar o limite. O revisor mostrou que isso é **inalcançável
       de dentro, pela tese desta própria GT**: quem escreve uma varredura não tem como saber que
