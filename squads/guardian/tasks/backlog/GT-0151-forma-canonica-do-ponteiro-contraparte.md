@@ -27,8 +27,8 @@ contraparte: "GeoCloudAI/.agents/tasks/backlog/GT-0151-forma-canonica-do-ponteir
 A GT-0145 deixou o sentido **hub → produto** limpo. O sentido **produto → hub** nunca foi tocado, e
 a varredura final da GT-0144 o mediu pela primeira vez.
 
-Ao medir, **três janelas chegaram a três números diferentes, todas de boa-fé**: 24, 34 e 46. A
-adjudicação mostrou que os três estão certos — sobre **três perguntas diferentes**, nenhuma delas
+Ao medir, **três janelas produziram dois números diferentes, todas de boa-fé**: **24 e 34**. A
+adjudicação mostrou que os dois estão certos — sobre **duas perguntas diferentes**, nenhuma delas
 escrita em lugar nenhum.
 
 Esta GT existe por causa disso, não por causa dos números.
@@ -48,25 +48,38 @@ da árvore de trabalho. 98 arquivos `.md` em `.agents/tasks/`:
       absoluto   (C:/Software/EssencisSquads/...)           16
       relativo-repo                                         21
 
-### Três predicados, três números, nenhum deles declarado
+### Dois predicados entre três pessoas, nenhum deles declarado
 
-| quem | predicado | não-conformes |
+| predicado | quem usou | não-conformes |
 |---|---|---|
-| Lívia | resolve pelo **caminho literal**, sem normalizar nada | **34** |
-| Vision | normaliza `org/repo`, **não** normaliza o absoluto | **34** |
-| Tomás | normaliza `org/repo` **e** o absoluto | **24** |
+| normalizar `org/repo`, resolver por caminho | **Lívia e Vision** | **34** |
+| normalizar `org/repo` **e** a forma absoluta | **Tomás** | **24** |
+| literal puro — não reconhece nem o prefixo | **ninguém**; hipotético, medido só para descartar | 77 |
 
-**Os três predicados são válidos e nenhum estava escrito em lugar nenhum.** A formulação da Lívia,
-que é a frase mais curta do assunto:
+**Os dois predicados usados são válidos e nenhum estava escrito em lugar nenhum.**
 
-> *"Três pessoas mediram a mesma coisa com três definições tácitas, e **a definição só apareceu
-> quando os números discordaram**."*
+> *"A definição só apareceu quando os números discordaram."* — Lívia
 
-E o desconforto dela, que fica registrado aqui porque é método e não anedota:
+**Uma versão anterior desta tabela dizia que eram três predicados**, atribuindo à Lívia um
+*"caminho literal, sem normalizar nada"*. Era falso: o script dela ancora em
+`squads/guardian/tasks/` e resolve dali, ou seja **normaliza o prefixo `org/repo`**, como o da
+Vision. Reconferido por complemento sobre os 80 preenchidos — literal puro resolve `3` e acusa
+`77`; normalizando `org/repo` resolve `46` e acusa `34`.
 
-> *"Se os três tivessem batido **por acaso**, ninguém teria descoberto que havia três predicados.
-> **A discordância foi o instrumento.** Uma varredura sozinha não teria produzido isso — é
-> argumento a favor de medir em paralelo coisas que já parecem resolvidas."*
+**O reparo não é cosmético.** Como estava, a tabela fazia o `34` aparecer duas vezes por caminhos
+que pareciam independentes, o que se lê como **confirmação mútua**. Era o mesmo predicado medido
+duas vezes — e duas medições do mesmo predicado **concordam por construção**, que é exatamente a
+tese desta seção. A tabela oferecia como prova o que o texto ao lado diz não ser prova.
+
+> *"Num documento cuja tese é 'o rótulo não bate com o número', o rótulo errado é **o defeito que
+> ele existe para nomear, cometido nele**."* — Lívia
+
+**A divergência real foi a minha contra a das duas**, 24 contra 34, e ela existiu. O que não houve
+foi convergência independente. O desconforto da Lívia, que é método e não anedota, continua de pé:
+
+> *"Se os números tivessem batido **por acaso**, ninguém teria descoberto que havia predicados
+> diferentes. **A discordância foi o instrumento.** Uma varredura sozinha não teria produzido isso
+> — é argumento a favor de medir em paralelo coisas que já parecem resolvidas."*
 
 As contagens decompõem umas nas outras, e isso foi conferido nos dois sentidos:
 
@@ -251,8 +264,8 @@ registrasse execução, o CA-00 seria uma consulta em vez de uma reconstrução.
 
 | parte | quem | por quê |
 |---|---|---|
-| a declaração canônica, as três formas | **Rui** | único sem precedente em jogo |
-| escopo, os 34 campos, os três predicados, os auto-ponteiros | **Lívia** | com o conflito declarado na abertura |
+| a declaração canônica, as três formas | **Rui** | sem precedente executado; advocacia declarada no #628 |
+| escopo, os 34 campos, os dois predicados usados, os auto-ponteiros | **Lívia** | com o conflito declarado na abertura |
 
 Eu não reviso: escrevi a GT. A Vision não revisa: adjudicou a divergência que a originou.
 
@@ -288,9 +301,19 @@ Eu não reviso: escrevi a GT. A Vision não revisa: adjudicou a divergência que
 > | **nome de branch** | `fix/gt-0054-...` minúsculo no merge sem squash | achado ao cunhar a GT-0153 |
 >
 > **O defeito não é do campo `contraparte:` — é de toda superfície que carrega identificador de
-> GT.** Canonizar a forma do ponteiro conserta uma delas. As outras duas continuam de pé, e uma
-> varredura maiúsculo-só continuará perdendo entrega em cada uma. Quem for canonizar deve saber que
-> está fechando **um terço** do problema, não o problema.
+> GT.** Canonizar a forma do ponteiro conserta **uma das três superfícies**. As outras duas
+> continuam de pé, e uma varredura maiúsculo-só continuará perdendo entrega em cada uma.
+>
+> **Não são três terços, e a diferença importa:** as três superfícies não são do mesmo tipo. O
+> `contraparte:` é a única cujo valor seria **consumido por um mecanismo**; nome de arquivo e nome
+> de branch são superfícies que uma varredura **lê**; assunto de commit é **prosa**. Dizer "um
+> terço" reivindicaria um denominador que ninguém mediu — que é a forma de afirmação que o resto
+> deste documento passa o tempo a desmontar.
+>
+> **E as três são independentemente consertáveis.** Esta GT não fica à espera das outras duas: o
+> conserto do ponteiro está correto sozinho e não depende de nenhuma delas. A nota existe para a
+> GT não reivindicar o que não entrega — **não** para sugerir que entregar menos que o conjunto
+> seja insuficiente.
 
 ## Comportamento atual
 
@@ -324,9 +347,10 @@ a siga chega ao mesmo conjunto.
       uma varredura por número os marca como saudáveis.
 - [ ] **CA-04b:** a correção trata os **quatro defeitos separadamente** — barra, direção, estado
       de pasta e forma —, porque têm consertos diferentes e zero dos 16 falha por absolutez.
-- [ ] **CA-05:** varredura produto → hub devolve **0 não-conformes sob os três predicados** —
-      literal, normalizando só `org/repo`, e normalizando as duas formas. Um número que só fecha
-      sob o predicado mais permissivo não fecha este CA.
+- [ ] **CA-05:** a varredura produto → hub devolve **0 não-conformes sob as três resoluções** —
+      literal puro, normalizando só `org/repo`, e normalizando as duas formas. As duas últimas
+      são os predicados que foram de fato usados; a primeira entra porque um número que só fecha
+      sob a resolução mais permissiva não prova nada sobre as outras.
 - [ ] **CA-06:** a varredura lê de **commit nos dois lados** (`git ls-tree` / `git show`), nunca da
       árvore de trabalho, e passa os argumentos por **lista ao subprocess, sem shell** — que é como
       a Lívia mediu, e faz o mangling de caminho do Git Bash **não se aplicar** em vez de precisar
@@ -364,7 +388,7 @@ Nenhum.
       16 falha por absolutez, e o motivo errado convida a reintrodução.
 - [ ] Etapa 2 — declarar nos quatro documentos (CA-01).
 - [ ] Etapa 3 — corrigir os 34 campos (CA-02, CA-03) e os 3 auto-ponteiros (CA-04).
-- [ ] Etapa 4 — varredura final sob os três predicados, com controle positivo e prestação de contas
+- [ ] Etapa 4 — varredura final sob as três resoluções, com controle positivo e prestação de contas
       (CA-05 a CA-10).
 
 > **Aviso a quem executar a Etapa 3:** não use `sed` cego no front-matter. Um `/^contraparte:/`

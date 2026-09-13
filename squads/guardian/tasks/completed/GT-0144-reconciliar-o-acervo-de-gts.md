@@ -377,9 +377,16 @@ o fechamento desta GT o herda.
 16 absolutos (6 são as duas coisas) e os 3 auto-ponteiros, com critério próprio para cada grupo.
 
 O motivo pelo qual a GT-0151 existe **não é o número**: é que três janelas mediram este mesmo
-acervo de boa-fé e chegaram a 24, 34 e 46, cada uma sob um predicado diferente e **nenhuma sabendo
-estar medindo uma pergunta diferente das outras**. Enquanto não houver forma canônica declarada,
+acervo de boa-fé e chegaram a **24 e 34**, sob **dois** predicados diferentes, e **nenhuma sabendo
+estar medindo uma pergunta diferente da outra**. Enquanto não houver forma canônica declarada,
 qualquer varredura futura escolhe sozinha o que conta como quebrado.
+
+**Correção a uma versão anterior deste parágrafo, e ela é do mesmo tipo que o documento denuncia.**
+Escrevi *"24, 34 e 46"*, como se fossem três números de três predicados. Eram **dois**: a Lívia e a
+Vision usaram o mesmo predicado — normalizar `org/repo` e resolver por caminho —, e o `46` não é um
+terceiro resultado, é **o complemento do 34** sobre os 80 ponteiros preenchidos. Somar um número a
+uma lista de divergências quando ele é o outro lado de um dos itens dela inventa uma divergência
+que não houve.
 
 ### Achado posterior ao fechamento — o censo ganha uma quarta célula (GT-0153)
 
