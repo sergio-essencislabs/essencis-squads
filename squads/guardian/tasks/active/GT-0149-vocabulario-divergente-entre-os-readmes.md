@@ -210,14 +210,33 @@ justificada, o que também é resposta válida.
       | GT-0146, GT-0147 | `active/` e `active/` | **✅ verde** | arquivo-task do hub **vazio** |
       | GT-0145 em trânsito | `completed/` e `active/` | **❌ vermelho** | **fechada corretamente** |
 
-      **A formulação que funciona é local, não relacional:**
+      **A formulação tem duas metades, e a versão de uma linha comprime com perda.** Achado do
+      Rui: *"a versão curta só carrega a segunda"*.
 
-      > **Nenhum ponteiro aponta para pasta de onde o arquivo já saiu.**
+      | | o ponteiro nomeia | veredito | porque |
+      |---|---|---|---|
+      | **adiantado** | pasta onde o arquivo **ainda não chegou** | **tolera** | o par está a caminho; resolve-se no segundo merge |
+      | **atrasado** | pasta **de onde o arquivo já saiu** | **acusa** | não se resolve sozinho — é a fila inteira da GT-0145 |
 
-      Ela acusa os 17 da GT-0145 — todos apontavam para `active/` com o par já em `completed/` —
-      e absolve a janela de trânsito, onde o ponteiro aponta para onde o par **ainda não chegou**,
-      não para onde ele **já não está**. E faz isso **sem precisar saber qual PR mesclou
-      primeiro**, que é o que tira a sensibilidade à ordem de merge.
+      Escrita só como *"nenhum ponteiro aponta para pasta de onde o arquivo já saiu"*, a regra
+      carrega a linha "atrasado" e **perde a linha "adiantado"** — e aí volta a acusar trânsito.
+
+      **Resíduo declarado, e é meu:** mesmo com as duas metades, existe **uma** janela em que um
+      ponteiro legitimamente atrasado **não é defeito**. Quando o primeiro dos dois PRs mescla, o
+      lado que **ainda não mesclou** continua na `main` com o ponteiro antigo — e o par já saiu da
+      pasta que ele nomeia. Pela tabela, isso é "atrasado" e seria acusado, mas está correto: o
+      segundo PR o conserta.
+
+      Não é decidível localmente — daí a cláusula que o CA-08 exige:
+
+      > **A trava é sólida sobre estado assentado.** Entre o merge do primeiro PR de um par e o do
+      > segundo, ela tem **falso positivo conhecido** no lado ainda não mesclado. Quem a ler
+      > precisa saber disso, senão o primeiro alarme legítimo que ela der será descartado como
+      > "deve ser a janela".
+
+      **E a prática que zera a janela em vez de tolerá-la:** pôr o move dentro do mesmo PR, e cada
+      lado mesclar já apontando para o destino final do outro. Decisão da Lívia no `squads#11` —
+      **elimina a janela em vez de apostar em como o Git a resolve.**
 
       Trocar condição relacional por condição local é o que resolve: relacional depende do estado
       do outro lado e por isso depende da ordem; local é verificável de um lado só.
@@ -248,6 +267,12 @@ Nenhum direto.
   deliberada — `blocked` pode existir só no produto por um motivo que ninguém escreveu. A RN-01
   existe para isso: declarar é resposta.
 - **Risco:** aproveitar a GT para converter os 11 vazios. A RN-03 veta; é conferência um a um.
+- **Risco medido, sem dono:** o diff de fechamento do `squads#11` sai com `similarity index 55%`,
+  e o limiar de detecção de renomeação do Git é **50%**. **Cinco pontos de folga, num arquivo que
+  só cresce** — todo fechamento acrescenta Registro. Um dia um Registro grande o bastante faz o
+  Git parar de ver renomeação, e a topologia do merge muda de comportamento **sem aviso**. Medido
+  pelo Rui; não é resolvido por esta GT, mas quem propuser trava precisa saber que o terreno se
+  move.
 - **Risco, e é o que mata a utilidade:** uma trava que acuse ponteiro adiantado. Ela estaria
   punindo a única prática possível sem atomicidade entre repositórios, e o custo não é o
   falso-positivo — é que **quem aprende a ignorar o alarme deixa de ver o verdadeiro**.
