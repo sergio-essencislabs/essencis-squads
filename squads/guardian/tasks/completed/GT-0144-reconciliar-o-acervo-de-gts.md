@@ -381,6 +381,30 @@ acervo de boa-fé e chegaram a 24, 34 e 46, cada uma sob um predicado diferente 
 estar medindo uma pergunta diferente das outras**. Enquanto não houver forma canônica declarada,
 qualquer varredura futura escolhe sozinha o que conta como quebrado.
 
+### Achado posterior ao fechamento — o censo ganha uma quarta célula (GT-0153)
+
+Registrado em 13/09/2026, depois de esta GT fechar, porque **o achado é sobre o censo daqui** e o
+ponteiro precisa existir nos dois sentidos.
+
+O censo classificou o acervo em três células — **só-hub 39**, **só-produto 31**, **nos-dois 43**.
+Falta uma quarta, e ela **não podia** aparecer aqui: o censo enumera arquivos e cruza os dois
+lados, então uma entrega **sem arquivo em lado nenhum** é invisível para ele por construção.
+
+Existem **29** delas na janela 08–12/09 — derivação do Otávio, com controle positivo e com o
+artefato da heurística removido. Conferi três por conta própria: `GT-0054`, `GT-0100` e `GT-0105`
+não têm arquivo nem aqui nem no hub, e os merges que as entregaram (`#474`, `#544`, `#552`) estão
+depois da âncora `8ef54558`.
+
+**Isto não contradiz a conclusão desta GT.** *"Nenhum par está faltando"* continua verdadeiro
+**dentro do que esta GT media**: dos ponteiros que existem, nenhum aponta para par ausente. A
+GT-0153 diz outra coisa, de outra ordem — que **o conjunto medido era menor que o universo**.
+
+A distinção vale ser guardada, porque é a diferença entre um número errado e um número certo sobre
+um universo menor do que se supunha: nenhum predicado sobre `.agents/tasks/` revela a falta,
+porque a falta está **dentro do conjunto que ele varre**.
+
+Continuação: **GT-0153** — `squads/guardian/tasks/backlog/GT-0153-as-29-entregas-sem-arquivo-de-task.md`.
+
 ## Handoff
 Cunhada e promovida no mesmo despacho. Decisão do Sergio, via Vision, em 12/09/2026: mapear agora,
 reconciliar depois.
