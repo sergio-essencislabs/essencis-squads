@@ -277,6 +277,21 @@ Eu não reviso: escrevi a GT. A Vision não revisa: adjudicou a divergência que
 - **Criar a trava automática.** Esta GT deixa o acervo em condição de a trava nascer sem ruído; a
   trava em si é da GT-0149.
 
+> **Nota de alcance, e ela limita o que esta GT pode prometer.** Os dois achados acima não são
+> vizinhos do `contraparte:` por acaso. O identificador de GT aparece hoje em **três superfícies**,
+> e a nomenclatura falha nas três:
+>
+> | superfície | como falha | onde apareceu |
+> |---|---|---|
+> | nome de arquivo | `gt-0113`–`gt-0117` minúsculos | detector da Marta |
+> | assunto de commit/PR | forma abreviada `(GT-0111, 0113, ...)` | achado do Otávio |
+> | **nome de branch** | `fix/gt-0054-...` minúsculo no merge sem squash | achado ao cunhar a GT-0153 |
+>
+> **O defeito não é do campo `contraparte:` — é de toda superfície que carrega identificador de
+> GT.** Canonizar a forma do ponteiro conserta uma delas. As outras duas continuam de pé, e uma
+> varredura maiúsculo-só continuará perdendo entrega em cada uma. Quem for canonizar deve saber que
+> está fechando **um terço** do problema, não o problema.
+
 ## Comportamento atual
 
 Três formas convivem no campo. Nenhum documento diz qual é a certa. O `_template.md` do hub diz
