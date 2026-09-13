@@ -170,9 +170,26 @@ vez de pedir que o procurem.
       nível abaixo.
 - [ ] **CA-04:** o guarda **traz** o `tail` do arquivo que o `log_error` da configuração nomear, em
       vez de mandar procurar.
-- [ ] **CA-05:** a citação do `setup-cloud-env.sh` ganha **atribuição** — de quem é o script e
+- [x] **CA-05:** a citação do `setup-cloud-env.sh` ganha **atribuição** — de quem é o script e
       quando roda —, e **não** troca de nome. A citação está correta sobre o arquivo que nomeia; o
       conserto óbvio a estragaria.
+
+      **Feito na PR #671 do produto** (`28be9c35`), em `docs/quality/rodar-a-suite-localmente.md`.
+      A citação `setup-cloud-env.sh:113-127` foi **conferida antes de escrever**: as linhas 114-126
+      escrevem o `geocloud.cnf`, apagam `/var/lib/mysql` e rodam `mysqld --initialize-insecure`. O
+      nome não mudou. Entrou uma tabela com os dois contratos — onde se usa, quando roda, o que faz
+      ao falhar, quem chama — e a frase que faltava: **o CI não roda o `setup-cloud-env.sh`**, roda
+      o `provision-env.sh` (`ci.yml:126`). Corrigida junto a abertura da página, *"o CI faz o
+      mesmo, pelos mesmos scripts"*, que era a frase que atribuía o script errado ao CI.
+
+      **Segunda ocorrência, fora do corpo, achada pelo Jarvis:** o `fonte:` do cabeçalho também
+      nomeava só o `setup-cloud-env.sh`. É de outra classe — declara **procedência**, não
+      comportamento do CI — e **estava correto quando foi escrito**: em `79b42190` (12/09 13:14), o
+      commit que criou esta página, o `ci.yml` invocava `setup-cloud-env.sh`; a troca para
+      `provision-env.sh` veio em `c566b559` (12/09 17:55), **4h41 depois**. Resolvido
+      acrescentando o `provision-env.sh` **sem remover** o outro — procedência correta não se apaga
+      porque a fonte envelheceu —, com os dois SHAs escritos no próprio documento para o próximo
+      leitor não reabrir.
 - [ ] **CA-06:** a causa da intermitência está **escrita**, ou está escrito **o que foi descartado
       e com que evidência**. Fechar sem causa é resultado legítimo; fechar sem dizer o que se
       olhou, não.
@@ -199,7 +216,7 @@ CI com senha vazia por desenho —, mas é o sinal que prova que o datadir é re
 - [ ] Etapa 1 — rodar `head -c 4000` no `error.log` e **nomear o primeiro escritor** (CA-02, CA-03).
 - [ ] Etapa 2 — medir o que produz os 28 MB (CA-01). Esta é a etapa que provavelmente responde a GT.
 - [ ] Etapa 3 — o guarda passa a trazer o `tail` (CA-04, CA-03).
-- [ ] Etapa 4 — atribuição na citação do `setup-cloud-env.sh` (CA-05).
+- [x] Etapa 4 — atribuição na citação do `setup-cloud-env.sh` (CA-05). PR #671, `28be9c35`.
 - [ ] Etapa 5 — escrever a causa, ou o que foi descartado e com que evidência (CA-06, CA-07).
 
 ## Estratégia de testes
