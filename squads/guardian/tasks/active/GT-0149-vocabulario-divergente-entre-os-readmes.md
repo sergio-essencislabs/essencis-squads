@@ -184,6 +184,35 @@ justificada, o que também é resposta válida.
 - [ ] CA-06: os READMEs declaram **o que torna um arquivo fechado por dentro** — Registro
       preenchido, Validação com saída real, caixas marcadas ou `- [ ]` com motivo ao lado. É a
       parte que vive no **corpo**, e que um validador de front-matter não alcança.
+
+      **E a notação precisa separar as duas ausências**, porque hoje ela não separa:
+
+      > **Caixa vazia com motivo é resultado registrado; caixa vazia sem motivo é trabalho não
+      > feito. As duas são `- [ ]`, e nenhuma varredura as separa.**
+
+      Caso real, achado pela Lívia ao revisar o fechamento da GT-0146: há um `- [ ]` em cada lado
+      daquela GT e **os dois estão certos** — é a Etapa 2' condicional, com o motivo ao lado
+      (*"não se aplica: a hipótese foi confirmada, não refutada"*), que é exatamente a forma que
+      este CA prescreve. *"Mas um revisor contando caixas a marcaria como pendência, e um
+      verificador automático também."*
+
+      **É o terceiro sinal do mesmo defeito nesta task**, e é o que o torna um padrão e não três
+      casos:
+
+      | onde | ausência que significa duas coisas |
+      |---|---|
+      | `issue_url` vazio | "nunca teve issue" **ou** "tem e não registrou" |
+      | `contraparte` vazia | "não há par" **ou** "ninguém preencheu" |
+      | **caixa `- [ ]`** | **"não se aplica, e eis o motivo"** ou **"não foi feito"** |
+
+      Os dois primeiros já têm forma declarada nesta GT — `N/A — <motivo>`. **O terceiro não tem**,
+      e é o único que vive no corpo em vez do front-matter, o que o põe fora do alcance de
+      qualquer trava que valide campos.
+
+      Qualquer notação serve desde que seja **legível por varredura**; o que não serve é o estado
+      atual, em que a distinção existe só na prosa ao lado. E, pelo CA-08, **quem propuser contagem
+      de caixas como verificação precisa declarar que ela não separa as duas** — senão a contagem
+      vira o mesmo alarme falso que o CA-10 evita no ponteiro.
 - [ ] CA-07: os READMEs declaram que **quem marca uma caixa é quem verificou**, e que critério
       alheio não se fecha por conveniência de fechamento — com a razão: *a caixa marcada é a
       afirmação de que alguém verificou*.
