@@ -50,23 +50,48 @@ errada. O script conta os processos e pede confirmação.
 
 ## O device (Remote Control)
 
-A última aba roda `claude --remote-control <nome>`. Os padrões estão no `param()`
-do script; passe `-DeviceDir` e `-DeviceNome` se mudarem.
+**Há duas coisas com nome parecido e elas não são a mesma.** Confundi-las custou
+uma rodada inteira deste PR:
 
-**Medido, e ao contrário do que este README dizia antes:** subir com o **mesmo
-nome não reconecta a sessão anterior**. Cria uma sessão nova, e a antiga fica na
-lista como `offline`, ao lado:
+| | o que é |
+|---|---|
+| `claude remote-control` **(subcomando)** | **o device.** Servidor persistente que faz a máquina aparecer no celular e em `claude.ai/code`, criando sessões sob demanda |
+| `claude --remote-control <nome>` **(flag)** | uma sessão interativa comum, controlável remotamente. **Não é o device**, e **nem aparece** no `/agents` |
+
+A aba do device roda o **subcomando**:
 
 ```
-VaultS [909199]  ·  Remote Control  ·  idle       <- a que acabou de subir
-VaultS [b956da]  ·  Remote Control  ·  offline    <- a anterior, ainda listada
+claude remote-control --spawn worktree --capacity 11 --permission-mode acceptEdits --name <nome>
 ```
 
-O que o nome compra é **reconhecimento**, não reconexão. Trocá-lo só acrescenta
-um nome diferente ao que já seria uma entrada nova de qualquer jeito.
+### O nome do device
 
-Use `-SomenteDevice` quando só o device tiver caído — ele abre a aba do Remote
-Control e nenhuma janela de persona.
+Sem `--name`, o nome é gerado como `<hostname>-<duas-palavras>` — por exemplo
+`essencis002-snazzy-rocket` — e **muda a cada subida**. Por isso o padrão aqui é
+**fixo**: fixar mantém o mesmo rótulo no celular entre reinícios, em vez de
+acumular devices com nomes diferentes.
+
+### O device morre com as abas
+
+Medido: o processo do device é **filho de uma aba** do Windows Terminal. Fechar
+todas as abas o derruba junto — não é um serviço que sobrevive à janela.
+
+### `-SomenteDevice`
+
+Abre só a aba do device, nenhuma janela de persona. É o caso de "só o device
+caiu".
+
+### O que o `/agents` mostra sobre o device: nada
+
+Uma entrada `Remote Control · offline` no `/agents` **não é o device** — é
+resíduo de uma sessão interativa antiga que foi morta sem se desregistrar. O
+device em funcionamento **não aparece nessa lista**. Para saber se ele está de
+pé, procure o processo:
+
+```powershell
+Get-CimInstance Win32_Process -Filter "Name='claude.exe'" |
+  Where-Object { $_.CommandLine -match 'remote-control' }
+```
 
 ## Como conferir que deu certo
 
@@ -100,7 +125,7 @@ quando ninguém quer diagnosticar.
 | `-w new` cria janela nova | **verificado** enumerando janelas da classe `CASCADIA_HOSTING_WINDOW_CLASS`: 2 → 3 → 2 |
 | `-Apenas`, nome inexistente, `-Base` inexistente, `-SemDevice`, `-Sim` | testados, incluindo os ramos de erro |
 | o atalho | criado e **lido de volta do disco** — `Save()` não acusa alvo inexistente |
-| **a aba do device** | **testada** com `-SomenteDevice`: o device saiu de `offline` para `Remote Control · idle`, e a contagem de `claude` subiu exatamente 1 |
+| **a aba do device** | **não testada.** O que eu testei foi a flag `--remote-control`, que **não é o device** — o comando certo é o subcomando, e ele só será exercitado no primeiro reinício de verdade |
 | `-SomenteDevice` com `-SemDevice` e com `-Apenas` | testados: o script recusa as duas combinações nomeando a contradição |
 | **o disparo com as 12 sessões vivas no mesmo diretório** | **não testado, de propósito** — duas janelas `--continue` no mesmo diretório retomam o mesmo arquivo de conversa, e já houve um caso em que isso fez trabalho ser atribuído a quem não o fez |
 
@@ -129,5 +154,20 @@ Antes disso, uma sonda de 1,5 s medida aos 3 s deu o mesmo resultado pelo motivo
 oposto: **a janela já tinha fechado quando eu contei.** Duas medições erradas
 concordaram, e a concordância pareceu confirmação.
 
-Os três produziam **comportamento plausível a partir de entrada errada**, que é
-a forma que não se detecta lendo o código.
+**4. A aba do device rodava o comando errado, e o teste "passou".** O script
+chamava `claude --remote-control VaultS` — a **flag**, que abre uma sessão
+interativa controlável. O device é o **subcomando** `claude remote-control`.
+
+O que fez isso atravessar: eu **verifiquei o resultado errado**. Vi surgir
+`VaultS · Remote Control · idle` no `/agents` e declarei o device no ar. Mas o
+device de verdade **nunca aparece nessa lista** — e estava de pé o tempo todo,
+noutro processo, com outro nome. Também declarei que ele tinha caído quando
+fecharam as abas de teste; não tinha.
+
+Quem percebeu foi o Sergio, por um caminho que nenhum teste meu tinha: **o nome
+não batia.** O device dele chama-se `essencis002-snazzy-rocket`; o que eu subi
+chamava-se `VaultS`.
+
+Os quatro produziam **comportamento plausível a partir de entrada errada**, que
+é a forma que não se detecta lendo o código. E o quarto acrescenta uma variante
+pior: **o teste confirmava, porque media a coisa errada.**

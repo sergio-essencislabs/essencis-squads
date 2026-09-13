@@ -18,13 +18,17 @@
                       Use so quando voce ja sabe que ha sessoes vivas e quer
                       abrir assim mesmo -- ou para testar o script sem teclado
   -Base <caminho>     raiz das worktrees (padrao: C:\Software\GeoCloud)
-  -DeviceDir <cam>    diretorio de onde o Remote Control sobe
-  -DeviceNome <nome>  nome com que o device aparece no celular. Medido: subir
-                      com o MESMO nome nao reconecta a sessao anterior -- cria
-                      uma sessao nova, e a antiga fica na lista como 'offline'.
-                      O que o nome compra e reconhecimento, nao reconexao;
-                      troca-lo so acrescenta um nome novo ao que ja e uma
-                      entrada nova
+  -DeviceDir <cam>    diretorio de onde o servidor de Remote Control sobe.
+                      Com --spawn worktree, as sessoes sob demanda ganham
+                      worktrees isoladas, mas o servidor mora neste diretorio
+  -DeviceNome <nome>  nome com que o device aparece no celular e no
+                      claude.ai/code. Sem --name o nome e gerado
+                      automaticamente como <hostname>-<duas-palavras>, e muda
+                      a cada subida -- por isso o padrao aqui e FIXO: fixar
+                      mantem o mesmo rotulo no celular entre reinicios
+  -DeviceSpawn        same-dir | worktree | session  (padrao: worktree)
+  -DeviceCapacidade   maximo de sessoes simultaneas  (padrao: 11)
+  -DevicePermissao    modo de permissao das sessoes criadas sob demanda
 
 .COMO CADA JANELA VOLTA
   `claude --continue` retoma a conversa MAIS RECENTE do diretorio. Nao ha id
@@ -54,8 +58,11 @@ param(
   [switch]   $Conferir,
   [switch]   $Sim,
   [string]   $Base       = 'C:\Software\GeoCloud',
-  [string]   $DeviceDir  = 'C:\VaultS\VaultS',
-  [string]   $DeviceNome = 'VaultS'
+  [string]   $DeviceDir        = 'C:\Software\GeoCloud\_wt_vision',
+  [string]   $DeviceNome       = 'essencis002-snazzy-rocket',
+  [string]   $DeviceSpawn      = 'worktree',
+  [int]      $DeviceCapacidade = 11,
+  [string]   $DevicePermissao  = 'acceptEdits'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -168,9 +175,15 @@ if (-not $SemDevice) {
     # e um ';' solto na frente faz o wt receber um comando vazio.
     if (-not $primeira) { $wtArgs.Add(';') }
     $primeira = $false
+    # `claude remote-control` (SUBCOMANDO) sobe o servidor persistente que faz a
+    # maquina aparecer como device. Nao confundir com `claude --remote-control`
+    # (FLAG), que so abre uma sessao interativa controlavel -- ela nao e o
+    # device, e nem sequer aparece no /agents.
+    $cmdDevice = "claude remote-control --spawn $DeviceSpawn --capacity $DeviceCapacidade --permission-mode $DevicePermissao"
+    if ($DeviceNome) { $cmdDevice += " --name $DeviceNome" }
     $wtArgs.AddRange([string[]]@(
-      'new-tab', '--title', "$DeviceNome (device)", '-d', $DeviceDir,
-      'powershell', '-NoExit', '-Command', "claude --remote-control $DeviceNome"
+      'new-tab', '--title', 'device', '-d', $DeviceDir,
+      'powershell', '-NoExit', '-Command', $cmdDevice
     ))
   } else {
     Write-Warning "Device nao aberto: $DeviceDir nao existe. Use -DeviceDir."
