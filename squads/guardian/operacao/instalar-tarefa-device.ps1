@@ -1,8 +1,8 @@
 <#
 .SINOPSE
-  Registra no Agendador de Tarefas a tarefa que mantem o device de pe:
-  dois gatilhos -- no logon e a cada 30 minutos -- chamando garantir-device.ps1.
-  Rodar uma vez por maquina. E idempotente: reexecutar substitui a tarefa.
+  Registra no Agendador de Tarefas a tarefa que mantem o device e o squad
+  de pe. Tres gatilhos -- no logon, ao retornar da suspensao, e a cada 30
+  minutos. Rodar uma vez por maquina. E idempotente: reexecutar substitui.
 
 .COMO USAR
   powershell -ExecutionPolicy Bypass -NoProfile -File .\instalar-tarefa-device.ps1
@@ -84,6 +84,33 @@ $g1 = New-ScheduledTaskTrigger -AtLogOn -User "$env:USERDOMAIN\$env:USERNAME"
 $g2 = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) `
         -RepetitionInterval (New-TimeSpan -Minutes $Minutos)
 
+# Gatilho 3: ao RETORNAR DA SUSPENSAO.
+#
+# Suspender derruba o daemon inteiro, e com ele TODAS as sessoes de fundo de
+# uma vez -- nao e uma persona que cai, e o conjunto. O log nao deixa duvida:
+#   [supervisor] --- daemon start --- origin=transient
+#   [bg] bg adopt: adopted=0 respawned=0 dead=12
+# Aconteceu em 13/09 as 13:58: suspendeu, voltou 2s depois, e as 12 morreram.
+# So a repeticao de 30 min trouxe de volta -- por sorte ela caiu 1 min depois.
+# Sem este gatilho, uma suspensao logo apos uma execucao deixa o squad fora por
+# quase meia hora, em silencio.
+#
+# `New-ScheduledTaskTrigger` nao sabe fazer gatilho por evento; e preciso
+# montar o MSFT_TaskEventTrigger a mao. O evento e o mesmo que aparece no
+# Visualizador: Power-Troubleshooter, id 1, "O sistema continuou apos retornar
+# do modo de suspensao".
+#
+# O Delay nao e enfeite: no instante do evento a rede e o perfil ainda estao
+# voltando, e subir 12 sessoes ali da erro intermitente e dificil de explicar.
+$classeEvt = Get-CimClass -ClassName MSFT_TaskEventTrigger `
+                          -Namespace Root/Microsoft/Windows/TaskScheduler
+$g3 = New-CimInstance -CimClass $classeEvt -ClientOnly
+$g3.Enabled      = $true
+$g3.Delay        = 'PT20S'
+$g3.Subscription = @'
+<QueryList><Query Id="0" Path="System"><Select Path="System">*[System[Provider[@Name='Microsoft-Windows-Power-Troubleshooter'] and EventID=1]]</Select></Query></QueryList>
+'@
+
 $principal = New-ScheduledTaskPrincipal -UserId "$env:USERDOMAIN\$env:USERNAME" `
                                         -LogonType Interactive -RunLevel Limited
 
@@ -101,6 +128,7 @@ if ($Conferir) {
   Write-Host "  argumentos: $arg"
   Write-Host "  gatilho 1 : no logon de $env:USERDOMAIN\$env:USERNAME"
   Write-Host "  gatilho 2 : a cada $Minutos min, indefinidamente"
+  Write-Host "  gatilho 3 : ao retornar da suspensao (Power-Troubleshooter id 1, +20s)"
   Write-Host "  sessao    : Interactive (NUNCA servico -- Sessao 0 quebra as janelas)"
   Write-Host "  instancias: IgnoreNew"
   $oQue = if ($SemSquad) { 'so o device' } else { 'device, depois squad' }
@@ -115,9 +143,9 @@ if ($existente) { Unregister-ScheduledTask -TaskName $Nome -Confirm:$false }
 $velha = Get-ScheduledTask -TaskName $NomeAntigo -ErrorAction SilentlyContinue
 if ($velha) { Unregister-ScheduledTask -TaskName $NomeAntigo -Confirm:$false; Write-Host "removida a tarefa antiga: $NomeAntigo" }
 
-Register-ScheduledTask -TaskName $Nome -Action $acoes -Trigger @($g1, $g2) `
+Register-ScheduledTask -TaskName $Nome -Action $acoes -Trigger @($g1, $g2, $g3) `
                        -Principal $principal -Settings $cfg `
-                       -Description 'Mantem o device e as 12 sessoes do squad de pe: checa no logon e a cada 30 min; o que ja estiver rodando e ignorado.' | Out-Null
+                       -Description 'Mantem o device e as 12 sessoes do squad de pe: checa no logon, ao voltar da suspensao e a cada 30 min; o que ja estiver rodando e ignorado.' | Out-Null
 
 # Conferir lendo de volta, nao confiar no Register.
 $v = Get-ScheduledTask -TaskName $Nome -ErrorAction SilentlyContinue
