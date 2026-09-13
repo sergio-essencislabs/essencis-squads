@@ -193,9 +193,33 @@ justificada, o que também é resposta válida.
       adiantado é **o estado correto** durante a janela entre os dois merges — não um defeito
       tolerado. Como não há commit que atravesse os dois repositórios, **cada lado deve mesclar já
       apontando para o destino final do outro**.
-- [ ] CA-10: qualquer trava proposta **não acusa ponteiro adiantado**. Acusar o transitório correto
-      treina quem lê a ignorar o alarme, e aí ela deixa de valer para o atrasado, que é a fila
-      real.
+- [ ] CA-10: qualquer trava proposta **não acusa ponteiro adiantado** — e a formulação que
+      consegue isso está abaixo, porque a óbvia falha ao contrário.
+
+      **A condição relacional — "os dois lados concordam" — inverte a leitura por completo**, não
+      meio sinal. No instante em que o primeiro dos dois PRs mescla, o lado **certo** mostra
+      ponteiro desalinhado (adiantado), e o lado que **nunca fez o fechamento** mostra ponteiro
+      alinhado, porque os dois seguem em `active/`. **A trava acusaria o primeiro e daria verde ao
+      segundo.** Achado da Lívia.
+
+      Medido em 12/09/2026 — produto na integração, hub em `9774f53`:
+
+      | | pasta dos dois lados | "os dois concordam"? | e a verdade |
+      |---|---|---|---|
+      | GT-0146, GT-0147 | `active/` e `active/` | **✅ verde** | arquivo-task do hub **vazio** |
+      | GT-0145 em trânsito | `completed/` e `active/` | **❌ vermelho** | **fechada corretamente** |
+
+      **A formulação que funciona é local, não relacional:**
+
+      > **Nenhum ponteiro aponta para pasta de onde o arquivo já saiu.**
+
+      Ela acusa os 17 da GT-0145 — todos apontavam para `active/` com o par já em `completed/` —
+      e absolve a janela de trânsito, onde o ponteiro aponta para onde o par **ainda não chegou**,
+      não para onde ele **já não está**. E faz isso **sem precisar saber qual PR mesclou
+      primeiro**, que é o que tira a sensibilidade à ordem de merge.
+
+      Trocar condição relacional por condição local é o que resolve: relacional depende do estado
+      do outro lado e por isso depende da ordem; local é verificável de um lado só.
 
 ## Impacto técnico
 ### Backend / Frontend / Banco de dados
