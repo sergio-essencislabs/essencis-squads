@@ -82,10 +82,13 @@ quando ninguém quer diagnosticar.
 | | |
 |---|---|
 | caminhos das janelas, e a sessão que cada `--continue` pega | conferido contra as sessões vivas |
-| a forma de invocação do `wt` com várias abas | testado com duas abas descartáveis, saída 0 |
-| `-Apenas`, nome inexistente, `-Base` inexistente, `-SemDevice` | testados, incluindo os ramos de erro |
+| **o disparo real das 12 abas** | **testado**: `-Base` apontado para diretórios descartáveis, `-SemDevice`. Subiram **exatamente 12** processos `claude` novos, e as **13 sessões vivas sobreviveram** — conferido por PID, antes e depois |
+| o fechamento do que o teste abriu | os 12 shells mortos por três critérios simultâneos (filho do Windows Terminal + idade < 5 min + linha de comando exata). Nenhum processo original morreu |
+| `-w new` cria janela nova | **verificado** enumerando janelas da classe `CASCADIA_HOSTING_WINDOW_CLASS`: 2 → 3 → 2 |
+| `-Apenas`, nome inexistente, `-Base` inexistente, `-SemDevice`, `-Sim` | testados, incluindo os ramos de erro |
 | o atalho | criado e **lido de volta do disco** — `Save()` não acusa alvo inexistente |
-| **o disparo real das N abas** | **não testado** — testar significaria duplicar todas as sessões vivas |
+| **a aba do device** | **não testada** — subir o Remote Control agora mudaria o estado do device de verdade |
+| **o disparo com as 12 sessões vivas no mesmo diretório** | **não testado, de propósito** — duas janelas `--continue` no mesmo diretório retomam o mesmo arquivo de conversa, e já houve um caso em que isso fez trabalho ser atribuído a quem não o fez |
 
 ## Dois defeitos que só apareceram porque os ramos de erro foram exercidados
 
@@ -101,5 +104,16 @@ procurar em `rui\_wt_vision` e a mensagem de erro falava de um diretório que
 ninguém escreveu. Corrigido com `PositionalBinding = $false`: argumento solto
 agora dá erro nomeando o argumento, em vez de virar raiz de diretório.
 
-Os dois produziam **comportamento plausível a partir de entrada errada**, que é
+**3. Contar processos do Windows Terminal não conta janelas.** No teste do
+disparo, o número de processos `WindowsTerminal.exe` não mudou, e eu concluí que
+`-w new` não tinha criado janela nova — que as 12 abas tinham entrado na janela
+viva. **Errado nas duas metades:** o Windows Terminal hospeda **várias janelas
+num processo só**, então o instrumento não media o objeto. Enumerando janelas da
+classe `CASCADIA_HOSTING_WINDOW_CLASS`, o `-w new` cria janela nova: 2 → 3 → 2.
+
+Antes disso, uma sonda de 1,5 s medida aos 3 s deu o mesmo resultado pelo motivo
+oposto: **a janela já tinha fechado quando eu contei.** Duas medições erradas
+concordaram, e a concordância pareceu confirmação.
+
+Os três produziam **comportamento plausível a partir de entrada errada**, que é
 a forma que não se detecta lendo o código.

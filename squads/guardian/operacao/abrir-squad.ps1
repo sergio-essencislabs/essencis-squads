@@ -11,6 +11,9 @@
   -Apenas vision,rui  abre so as janelas nomeadas -- SEPARADAS POR VIRGULA,
                       sem espaco: com -File, "vision rui" nao passa as duas
   -SemDevice          nao abre a aba do Remote Control
+  -Sim                pula a confirmacao do aviso de sessoes ja vivas.
+                      Use so quando voce ja sabe que ha sessoes vivas e quer
+                      abrir assim mesmo -- ou para testar o script sem teclado
   -Base <caminho>     raiz das worktrees (padrao: C:\Software\GeoCloud)
   -DeviceDir <cam>    diretorio de onde o Remote Control sobe
   -DeviceNome <nome>  nome do device -- trocar cria um device NOVO no celular
@@ -41,6 +44,7 @@ param(
   [switch]   $SemDevice,
   [string[]] $Apenas,
   [switch]   $Conferir,
+  [switch]   $Sim,
   [string]   $Base       = 'C:\Software\GeoCloud',
   [string]   $DeviceDir  = 'C:\VaultS\VaultS',
   [string]   $DeviceNome = 'VaultS'
@@ -90,9 +94,11 @@ if ($vivos.Count -gt 0) {
   Write-Warning "Abrir agora cria janelas DUPLICADAS na mesma pasta -- e duas janelas"
   Write-Warning "na mesma worktree fazem trabalho ser atribuido a quem nao o fez."
   Write-Warning "Feche-as antes, ou use -Apenas para abrir so o que falta."
-  if (-not $Conferir) {
+  if (-not $Conferir -and -not $Sim) {
     $r = Read-Host "Continuar mesmo assim? (s/N)"
     if ($r -ne 's') { Write-Host "Cancelado."; return }
+  } elseif ($Sim) {
+    Write-Warning "-Sim: seguindo sem perguntar."
   }
 }
 
@@ -119,9 +125,15 @@ if ($Conferir) { Write-Host "-Conferir: nada foi aberto."; return }
 
 # ---- monta e dispara --------------------------------------------------------
 
+# "-w new" de proposito: sem isso, o comportamento depende do windowingBehavior
+# do Windows Terminal, e numa maquina configurada para reusar janela as abas
+# entram na janela que ja esta aberta, misturadas com as sessoes vivas.
 $wtArgs = New-Object System.Collections.Generic.List[string]
+$wtArgs.AddRange([string[]]@('-w', 'new'))
+$primeira = $true
 foreach ($j in $janelas) {
-  if ($wtArgs.Count -gt 0) { $wtArgs.Add(';') }
+  if (-not $primeira) { $wtArgs.Add(';') }
+  $primeira = $false
   $wtArgs.AddRange([string[]]@(
     'new-tab', '--title', $j.Nome, '-d', $j.Dir,
     'powershell', '-NoExit', '-Command', 'claude --continue'
