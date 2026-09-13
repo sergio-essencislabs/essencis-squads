@@ -174,8 +174,19 @@ não derivável de `.agents/tasks/`, exige varredura de commits"*.
       **A declaração é redigida como afirmação auto-contida**, e esta é a regra que governa a
       redação dela:
 
-      > **Toda afirmação absoluta traz o conjunto na própria frase. Antecedente em outro parágrafo
-      > não conta.**
+      > **Em declaração de acervo, toda afirmação absoluta traz o conjunto na própria frase.
+      > Antecedente em outro parágrafo não conta.**
+
+      **A preposição inicial não é enfeite — a regra falhou no próprio teste sem ela.** Escrita como
+      *"Toda afirmação absoluta traz o conjunto na própria frase"*, ela **é ela mesma uma afirmação
+      absoluta cujo conjunto não está na frase**: o escopo morava no parágrafo deste CA. E como o
+      formato de citação convida a levantar o bloco sozinho — que é exatamente o mecanismo que a
+      regra prevê —, quem o levantasse receberia um **imperativo universal sobre toda a escrita do
+      repositório**, que é a versão larga que este CA acabou de repelir.
+
+      Achado do Otávio ao ler o texto em vez de julgar pela descrição dele. Fica registrado porque
+      **é a evidência mais forte a favor da regra**: ela foi corrigida pelo defeito que ela nomeia,
+      aplicado a si mesma, em uma rodada.
 
       A razão é operacional, não estilística: **slide, citação e resumo viajam por frase.** Uma
       sentença cujo escopo mora no parágrafo anterior chega ao leitor **sem ele** — que é
