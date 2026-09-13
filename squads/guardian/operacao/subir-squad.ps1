@@ -1,9 +1,26 @@
 <#
 .SINOPSE
   Sobe o squad em SESSOES DE FUNDO -- sem janela, sem Windows Terminal.
-  Cada persona volta pelo `claude --bg --resume <sessionId> -n <Nome>`.
+  Cada persona volta pelo `claude --bg --resume <sessionId>`, SEM MAIS NADA.
 
   Para VER uma delas depois: `claude attach <id>` (ou o /start-guardian).
+
+.POR QUE NENHUMA FLAG -- a regra mais importante deste arquivo
+  Uma sessao de fundo guarda as PROPRIAS opcoes (-n, --add-dir, --model).
+  Passar qualquer flag no resume nao as sobrescreve: FORKA uma copia. O claude
+  avisa, e o aviso e literal:
+
+    "background session <id> keeps its own saved options, so the flags you
+     passed started a copy as <novo>. Without flags, the same command
+     continues <id> itself."
+
+  Enquanto este script passava `-n <Nome>`, toda subida gerava um id novo. Como
+  ele entao "corrigia" o mapa com o id da copia, o sessoes.json foi perdendo os
+  ids reais ate apontar so para copias -- e copia de sessao inexistente morre em
+  segundos. Foi essa a falha do logon, nao o diretorio.
+
+  Sem flag, a saida e "woke session <id> with its saved options". Mesmo id,
+  mesmo nome, mesma historia.
 
 .POR QUE --resume <id> E NAO --continue
   `--continue` retoma a conversa MAIS RECENTE do diretorio -- escolhe pela
@@ -34,10 +51,24 @@
 
   Nao serve contar processos: o device cria sessoes proprias.
 
+.ONDE OLHAR QUANDO UMA NAO SOBE
+  `~/.claude/daemon.log`. Ele diz o motivo com todas as letras:
+
+    bg settled <id> (crashed): source session <id-origem> not found
+
+  Isso quer dizer que o `--resume` foi chamado de um diretorio cujo
+  ~/.claude/projects/<dir-codificado>/ nao contem <id-origem>.jsonl. Por isso
+  este script faz Push-Location para o diretorio da persona antes de chamar.
+
 .O QUE ESTE SCRIPT NAO RESOLVE
   Sessao de fundo nao tem quem responda a um pedido de permissao. Ela fica
   parada em silencio ate alguem atender -- do celular, ou dando attach. E o
   risco operacional deste desenho, e nao ha conserto dentro do script.
+
+  O DIRETORIO DE TRABALHO tambem nao. Ele vem do `dispatch.cwd` gravado no
+  roster quando a sessao nasceu, e acordar so repete o gravado. As doze nasceram
+  em _wt_vision e continuam la. Consertar exige recriar cada sessao no diretorio
+  certo -- o que troca o id. O script ACUSA (DIRETORIO ERRADO) e nao esconde.
 #>
 
 [CmdletBinding(PositionalBinding = $false)]
@@ -125,6 +156,10 @@ function JaDePe([string]$nome, [string]$sid) {
     # `--session-id <id>`, nao o id em qualquer posicao: a linha de uma COPIA
     # carrega `--resume <id-da-original>` e casaria por engano.
     if ($sid -and $l -match ("--session-id\s+" + [regex]::Escape($sid) + "(\s|$)")) { return $true }
+    # Sessao ACORDADA nao tem `--session-id`: o daemon a relanca como
+    # `--resume <...\projects\...\<id>.jsonl> -n <Nome> --add-dir ...`.
+    # Casar o `.jsonl` e seguro -- e o transcript que ela E, nao o que retomou.
+    if ($sid -and $l -match ([regex]::Escape($sid) + "\.jsonl")) { return $true }
   }
   return $false
 }
@@ -151,136 +186,113 @@ Write-Host ""
 $ESC = [char]27   # `e so existe no PowerShell 6+. No 5.1 vira a letra "e", e o
                   # strip de ANSI falha em silencio -- foi o que fez este laco
                   # rotular de FALHOU onze sessoes que tinham subido.
-# A original esta viva NESTE momento, no processo local? E a unica fonte que
-# sabe a verdade depois de um reinicio -- o servico pode achar que sim e estar
-# olhando registro obsoleto.
-# ATENCAO ao criterio: procurar o id em QUALQUER posicao da linha e circular.
-# A COPIA carrega `--resume <id-da-original>` na propria linha de comando, entao
-# "achei o id" acha a copia e conclui que a original esta viva. Foi assim que o
-# primeiro conserto apagou a copia e deixou a persona fora.
-#
-# A marca de uma sessao VIVA e `--session-id <id>`: o id que ela E, nao o que
-# ela retomou.
-function ProcessoVivo([string]$sid) {
-  if (-not $sid) { return $false }
-  $agora = @(Get-CimInstance Win32_Process -Filter "Name='claude.exe'" -ErrorAction SilentlyContinue |
-             ForEach-Object { $_.CommandLine } | Where-Object { $_ })
-  foreach ($l in $agora) {
-    if ($l -match ("--session-id\s+" + [regex]::Escape($sid) + "(\s|$)")) { return $true }
-  }
-  return $false
-}
-
-$mapaMudou = $false
 foreach ($p in $subir) {
   $antes = $ErrorActionPreference
 
-  # PASSO 1 -- limpar registro obsoleto ANTES de tentar retomar.
-  # Depois de um reinicio os processos morrem, mas o servico ainda pode
-  # considerar a sessao "rodando". Nesse estado o --resume nao retoma: cria uma
-  # COPIA. Foi o que derrubou o teste de logon -- as doze viraram copia, e o
-  # conserto anterior apagava a copia deixando de pe uma "original" inexistente.
-  # `claude stop` sobre sessao ja parada e inofensivo.
+  # PASSO 1 -- limpar registro obsoleto ANTES de acordar.
+  # O roster (~/.claude/daemon/roster.json) sobrevive ao reinicio; os processos
+  # nao. Nesse estado o daemon pode tentar reatar a um worker morto.
+  # `claude stop` sobre sessao ja parada e inofensivo, e so chega aqui quem o
+  # JaDePe nao viu na lista de processos.
   $ErrorActionPreference = 'Continue'
   & $ClaudeExe stop $p.sessionId.Substring(0,8) 2>&1 | Out-Null
 
-  # PASSO 2 -- retomar.
+  # PASSO 2 -- ACORDAR a sessao. SEM NENHUMA FLAG, e este e o ponto inteiro.
+  #
+  # O proprio claude explica, quando se passa flag:
+  #   "background session <id> keeps its own saved options, so the flags you
+  #    passed started a copy as <novo>. Without flags, the same command
+  #    continues <id> itself."
+  #
+  # Ou seja: `-n <Nome>` NAO era inofensivo. Era ele que forkava. Cada subida
+  # gerava um id novo, o mapa envelhecia a cada boot, e a copia nascia sem
+  # historia. Sem flag a saida vira "woke session <id> with its saved options
+  # (-n, --add-dir, --model)" -- o nome, o diretorio concedido e o modelo voltam
+  # de onde ja estavam gravados. Nao ha o que repassar.
+  #
+  # Push-Location continua importando por outro motivo: depois de um reinicio o
+  # daemon nao lembra de nada, e o `--resume <id>` so acha o transcript na pasta
+  # de projeto que corresponde ao diretorio de onde se chamou. Chamar do lugar
+  # errado da `bg settled <id> (crashed): source session ... not found` -- foi
+  # exatamente isso que derrubou as doze no teste de logon, e o motivo estava
+  # escrito no ~/.claude/daemon.log o tempo todo.
+  Push-Location -LiteralPath $p.dir
   try {
-    $saida = & $ClaudeExe --bg --resume $p.sessionId -n $p.nome --add-dir $p.dir 2>&1
+    $saida = & $ClaudeExe --bg --resume $p.sessionId 2>&1
   } finally {
+    Pop-Location
     $ErrorActionPreference = $antes
   }
   $limpo = ($saida | Out-String) -replace ([regex]::Escape($ESC) + '\[[0-9;]*[a-zA-Z]'), ''
 
-  # PASSO 3 -- se AINDA assim veio copia, decidir MEDINDO, nao acreditando.
-  if ($limpo -match 'started a copy as\s+([0-9a-f]{6,})') {
-    $copia = $matches[1]
-    Start-Sleep -Seconds 2
-    if (ProcessoVivo $p.sessionId) {
-      # A original existe de verdade: a copia e que sobra.
-      $ErrorActionPreference = 'Continue'
-      & $ClaudeExe stop $copia 2>&1 | Out-Null
-      & $ClaudeExe rm   $copia 2>&1 | Out-Null
-      $ErrorActionPreference = $antes
-      Registrar ("  {0,-13} ja estava viva de verdade; copia {1} removida" -f $p.nome, $copia)
-    } else {
-      # "Ja esta rodando" era afirmacao do servico sobre um processo que nao
-      # existe. A copia E a sessao desta persona agora -- ela fica, e o mapa
-      # passa a apontar para ela. Apagar a copia aqui deixaria a persona FORA.
-      $p.sessionId = $copia
-      $mapaMudou = $true
-      Registrar ("  {0,-13} registro obsoleto: a original nao existe. A copia {1} FICA e vira a sessao desta persona" -f $p.nome, $copia)
-    }
-    continue
+  # PASSO 3 -- ler a resposta. Sao tres desfechos, e so um e o certo.
+  if ($limpo -match 'woke session') {
+    Registrar ("  {0,-13} acordou  {1}" -f $p.nome, $p.sessionId.Substring(0,8))
   }
-
-  if ($limpo -match 'backgrounded') {
-    $curto = if ($limpo -match '([0-9a-f]{8})') { $matches[1] } else { $p.sessionId.Substring(0,8) }
-    Registrar ("  {0,-13} subiu  id={1}" -f $p.nome, $curto)
-  } else {
+  elseif ($limpo -match 'started a copy as\s+([0-9a-f]{6,})') {
+    # Copia sem flag nenhuma quer dizer que o id do mapa nao e um id de sessao
+    # de fundo conhecida -- id curto, ou id de uma copia que ja morreu. A copia
+    # nasce e o daemon a mata em segundos com "source session ... not found".
+    # NAO adotar a copia no mapa: foi assim que os ids de verdade se perderam e
+    # o mapa passou a apontar so para fantasmas.
+    $copia = $matches[1]
+    Registrar ("  {0,-13} COPIOU {1} em vez de acordar -- o id do mapa nao e o id real desta sessao" -f $p.nome, $copia)
+  }
+  elseif ($limpo -match 'backgrounded') {
+    Registrar ("  {0,-13} subiu  {1}" -f $p.nome, $p.sessionId.Substring(0,8))
+  }
+  else {
     Registrar ("  {0,-13} FALHOU: {1}" -f $p.nome, (($limpo -split "`n")[0]).Trim())
   }
 }
 
-# Se algum id mudou, o mapa em disco ficou velho. Gravar agora: deixar para
-# depois faz o proximo boot repetir o mesmo caminho de copia.
-if ($mapaMudou) {
-  try {
-    # RELER o arquivo e alterar so as personas tocadas. Escrever $mapa direto
-    # APAGA as demais quando se usou -Apenas -- ja aconteceu: uma execucao com
-    # `-Apenas rui,dante` deixou o mapa com 2 entradas em vez de 12.
-    $atualCru = Get-Content -LiteralPath $Sessoes -Raw -Encoding UTF8 | ConvertFrom-Json
-    $todas = @(); foreach ($x in $atualCru) { $todas += $x }
+# O mapa NAO e mais reescrito por este script, e isso e de proposito.
+# Acordar sem flag preserva o id, entao o mapa nao envelhece. Enquanto o script
+# passava `-n <Nome>`, cada subida forkava um id novo e o script "consertava" o
+# mapa gravando o id da copia -- ate o mapa inteiro apontar so para copias
+# mortas e nenhum id real sobrar. O mapa e fonte, nao rascunho: se um id estiver
+# errado, o -Conferir acusa e a correcao e manual.
 
-    # Guardar o id COMPLETO, nao o curto que a nota do claude imprime: o mapa e
-    # a entrada do --resume, e id curto ali nao e o mesmo identificador.
-    $vivas = @{}
-    $ErrorActionPreference = 'Continue'
-    $ag = (& $ClaudeExe agents --json 2>$null | Out-String)
-    $ErrorActionPreference = 'Stop'
-    try {
-      foreach ($a in ($ag | ConvertFrom-Json)) { if ($a.name) { $vivas[[string]$a.name] = [string]$a.sessionId } }
-    } catch {
-      Registrar "ATENCAO: nao consegui ler os ids completos por 'claude agents --json'."
-    }
+# Conferir pelo ESTADO, e esperar o bastante.
+# Uma sessao que nao acha o proprio transcript nasce e morre com atraso: no
+# daemon.log o "bg settled ... (crashed)" chega de 8 a 12 segundos depois do
+# "bg spawned". Conferir aos 6 segundos dava as 12 de pe e mentia.
+Start-Sleep -Seconds 20
 
-    $tocadas = @($subir | ForEach-Object { $_.nome })
-    $n = 0
-    foreach ($t in $todas) {
-      if ($tocadas -notcontains $t.nome) { continue }
-      $completo = $vivas[[string]$t.nome]
-      if ($completo -and $completo -ne $t.sessionId) {
-        Registrar ("  mapa: {0,-13} {1} -> {2}" -f $t.nome, $t.sessionId.Substring(0,8), $completo.Substring(0,8))
-        $t.sessionId = $completo
-        $t.ultima_atividade = (Get-Date -Format 'yyyy-MM-dd HH:mm')
-        $n++
-      }
-    }
-    if ($n -gt 0) {
-      ($todas | ConvertTo-Json -Depth 5) | Set-Content -LiteralPath $Sessoes -Encoding UTF8
-      Registrar ("mapa atualizado: $n de $($todas.Count) entradas; as outras preservadas")
-    } else {
-      Registrar "mapa nao precisou mudar (ids completos ja conferem)"
-    }
-  } catch {
-    Registrar ("ATENCAO: ids mudaram e NAO consegui gravar o mapa: " + $_.Exception.Message)
-  }
+$ErrorActionPreference = 'Continue'
+$agJson = (& $ClaudeExe agents --json 2>$null | Out-String)
+$ErrorActionPreference = 'Stop'
+$vivas = @{}
+try {
+  foreach ($a in ($agJson | ConvertFrom-Json)) { if ($a.name) { $vivas[[string]$a.name] = $a } }
+} catch {
+  Registrar "ATENCAO: nao consegui ler 'claude agents --json' para conferir."
 }
 
-# Conferir pelo estado, nao pelo que o laco imprimiu.
-Start-Sleep -Seconds 6
-$linhas2 = @(Get-CimInstance Win32_Process -Filter "Name='claude.exe'" -ErrorAction SilentlyContinue |
-             ForEach-Object { $_.CommandLine } | Where-Object { $_ })
 $naoSubiu = @()
-foreach ($p in $mapa) {
-  $achou = $false
-  foreach ($l in $linhas2) {
-    if ($l -match ("-n\s+" + [regex]::Escape($p.nome) + "(\s|$)")) { $achou = $true; break }
-    if ($p.sessionId -and $l -like ("*" + $p.sessionId + "*"))      { $achou = $true; break }
-  }
-  if (-not $achou) { $naoSubiu += $p.nome }
-}
+foreach ($p in $mapa) { if (-not $vivas.ContainsKey([string]$p.nome)) { $naoSubiu += $p.nome } }
 Write-Host ""
+
+# Estar viva nao basta: tem de estar viva NO DIRETORIO CERTO.
+# ATENCAO ao que isto mede. O diretorio de uma sessao de fundo nao vem de onde
+# o lancador rodou -- vem do `dispatch.cwd` gravado no roster quando a sessao
+# NASCEU, e acordar so repete o que esta gravado. Push-Location nao muda isso.
+# Consertar de verdade exige recriar a sessao (fork) no diretorio certo, o que
+# troca o id. Ate la esta checagem existe para nao deixar o defeito invisivel.
+$lugarErrado = @()
+foreach ($p in $mapa) {
+  $a = $vivas[[string]$p.nome]
+  if (-not $a -or -not $a.cwd) { continue }
+  $esperado = ([string]$p.dir).Replace('/','\').TrimEnd('\')
+  if ($a.cwd.TrimEnd('\') -ne $esperado) {
+    $lugarErrado += ("{0,-13} esta em {1}  (esperado {2})" -f $a.name, $a.cwd, $esperado)
+  }
+}
+if ($lugarErrado.Count -gt 0) {
+  Registrar ("DIRETORIO ERRADO em " + $lugarErrado.Count + " sessao(oes):")
+  foreach ($e in $lugarErrado) { Registrar ("   " + $e) }
+}
+
 if ($naoSubiu.Count -eq 0) {
   Registrar ("conferido: as " + $mapa.Count + " estao de pe.")
   Write-Host "Para ver uma delas: claude attach <id>   |   lista: claude agents"
