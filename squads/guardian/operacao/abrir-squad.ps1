@@ -1,8 +1,11 @@
 <#
 .SINOPSE
   Reabre o squad inteiro depois de um reinicio: as janelas do Claude Code em
-  abas de uma unica janela do Windows Terminal, mais a aba do device
-  (Remote Control), que e o que deixa a maquina visivel no celular.
+  abas de uma unica janela do Windows Terminal.
+
+  A aba do device (Remote Control) so e aberta se NAO houver device de pe.
+  Quem mantem o device e a tarefa agendada "Guardian - garantir device"; este
+  script so cobre o caso de ela nao ter rodado ainda.
 
 .COMO USAR
   powershell -ExecutionPolicy Bypass -File .\abrir-squad.ps1
@@ -21,11 +24,11 @@
   -DeviceDir <cam>    diretorio de onde o servidor de Remote Control sobe.
                       Com --spawn worktree, as sessoes sob demanda ganham
                       worktrees isoladas, mas o servidor mora neste diretorio
-  -DeviceNome <nome>  nome com que o device aparece no celular e no
-                      claude.ai/code. Sem --name o nome e gerado
-                      automaticamente como <hostname>-<duas-palavras>, e muda
-                      a cada subida -- por isso o padrao aqui e FIXO: fixar
-                      mantem o mesmo rotulo no celular entre reinicios
+  -DeviceNome <nome>  nome da sessao do device. Padrao VAZIO, e de proposito:
+                      medido que o nome automatico ja e estavel por maquina
+                      (<hostname>-<duas-palavras> igual a cada subida), entao
+                      fixar nao acrescenta nada e so faz a subida viva e as
+                      mortas terem rotulos identicos na lista do celular
   -DeviceSpawn        same-dir | worktree | session  (padrao: worktree)
   -DeviceCapacidade   maximo de sessoes simultaneas  (padrao: 11)
   -DevicePermissao    modo de permissao das sessoes criadas sob demanda
