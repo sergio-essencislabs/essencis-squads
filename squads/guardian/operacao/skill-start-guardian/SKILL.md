@@ -6,8 +6,10 @@ description: Garante que as 12 sessões do squad Guardian estejam de pé nesta m
 # Subir o squad Guardian
 
 O squad roda em **sessões de fundo** — sem janela. Cada persona volta pelo
-`claude --bg --resume <sessionId> -n <Nome>`, retomando **por identidade**, não
-por data.
+`claude --bg --resume <sessionId>`, **sem mais nada**, retomando **por
+identidade** e não por data. O nome, o `--add-dir` e o modelo voltam sozinhos,
+das opções salvas da própria sessão — ver *"A regra que não se quebra"* abaixo,
+que é a instrução mais importante deste arquivo.
 
 Dois scripts, e a diferença importa:
 
@@ -48,9 +50,18 @@ cria novas**. Por isso `-Sim` aqui é seguro.
 
 ## Como conferir, e com qual instrumento
 
-**`claude agents --json` não basta.** Ele lista só as sessões locais de fundo.
-Com o device de pé, sessões aparecem como `Remote Control` e **não entram nessa
-lista** — já aconteceu de ele devolver `1` com 11 de pé.
+**`claude agents --json` lista só as sessões locais de fundo.** No desenho atual
+as doze são de fundo, então ele devolve as doze e é um instrumento honesto.
+
+A ressalva é para quem estiver em **Remote Control**: essa sessão sai da lista.
+Medido em 13/09 — a Selma em Remote Control sumiu do `agents --json` e o total
+caiu para 11, continuando viva e alcançável por nome no `/agents`.
+
+> Correção de um diagnóstico antigo deste arquivo: ele dizia que
+> *"já aconteceu de devolver `1` com 11 de pé"* por causa do Remote Control.
+> **Não era isso.** Naquele episódio as onze estavam de fato mortas — eram
+> cópias que o daemon matou por não achar a sessão de origem. O `agents --json`
+> estava certo; a leitura é que estava errada.
 
 Confira pelos dois:
 
@@ -59,12 +70,18 @@ Confira pelos dois:
 
 ```powershell
 Get-CimInstance Win32_Process -Filter "Name='claude.exe'" |
-  Where-Object { $_.CommandLine -match '-n ' } |
-  ForEach-Object { ($_.CommandLine -replace '.*-n ', '') }
+  ForEach-Object { if ($_.CommandLine -match '-n\s+(\S+)') { $matches[1] } } |
+  Sort-Object -Unique
 ```
 
-**Nunca conte processos `claude.exe`** para concluir: o device cria sessões
-próprias e o total é maior que 12 — isso é normal, não é duplicata.
+O `-Unique` **não é enfeite**. Cada persona aparece em *duas* linhas de comando:
+o processo da sessão e o anfitrião de pty que o daemon põe na frente
+(`--bg-pty-host ... -- claude --session-id ...`), que carrega a linha interna
+inteira. Sem `-Unique` a lista vem com 24 entradas para 12 personas — e a versão
+anterior deste trecho tinha exatamente esse defeito.
+
+**Nunca conte processos `claude.exe`** para concluir: além do pty-host dobrando
+cada uma, o device tem processo próprio. O total ser maior que 12 é normal.
 
 ## O que relatar sempre
 
