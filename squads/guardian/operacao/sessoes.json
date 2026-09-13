@@ -1,74 +1,74 @@
-[
+﻿[
     {
         "nome":  "Vision",
         "dir":  "C:/Software/GeoCloud",
         "sessionId":  "1ec21052-ebe8-4229-a9a6-8614f3fd1021",
-        "ultima_atividade":  "2026-09-13 13:40"
+        "ultima_atividade":  "2026-09-13 13:55"
     },
     {
         "nome":  "Jarvis",
         "dir":  "C:/Software/GeoCloud/_wt_jarvis",
-        "sessionId":  "5399f7fd-4176-446a-ab5c-35d2e6079c36",
-        "ultima_atividade":  "2026-09-13 13:40"
+        "sessionId":  "67bdda6a-edca-4e83-8fb7-65c15b1e318a",
+        "ultima_atividade":  "2026-09-13 13:55"
     },
     {
         "nome":  "Breno",
         "dir":  "C:/Software/GeoCloud/_wt_breno",
-        "sessionId":  "d9482f38-69a4-43d1-b90f-8c864e4079aa",
-        "ultima_atividade":  "2026-09-13 13:40"
+        "sessionId":  "2566628a-4df6-4116-9124-0fbe10fdf3ee",
+        "ultima_atividade":  "2026-09-13 13:55"
     },
     {
         "nome":  "Otavio",
         "dir":  "C:/Software/GeoCloud/_wt_otavio",
-        "sessionId":  "88b96135-d7ff-4c2a-abdb-bd3d76cf0ab5",
-        "ultima_atividade":  "2026-09-13 13:40"
+        "sessionId":  "f1762513-cecf-4ee9-bd40-abdc0de1600a",
+        "ultima_atividade":  "2026-09-13 13:55"
     },
     {
         "nome":  "Tomas",
         "dir":  "C:/Software/GeoCloud/_wt_tomas",
-        "sessionId":  "63e92bf6-932d-47e6-ae35-ec2474794684",
-        "ultima_atividade":  "2026-09-13 13:40"
+        "sessionId":  "d931311f-3268-47aa-898f-0c16953fe33f",
+        "ultima_atividade":  "2026-09-13 13:55"
     },
     {
         "nome":  "Rui",
         "dir":  "C:/Software/GeoCloud/_wt_rui",
-        "sessionId":  "88fb2ee2-679b-4968-a19f-0044ef703b63",
-        "ultima_atividade":  "2026-09-13 13:40"
+        "sessionId":  "eaf47f6b-0930-44db-b06d-0dbef90c1090",
+        "ultima_atividade":  "2026-09-13 13:55"
     },
     {
         "nome":  "Dante",
         "dir":  "C:/Software/GeoCloud/_wt_dante",
-        "sessionId":  "90977cbb-9e0f-4aa9-9812-1a2645c6d965",
-        "ultima_atividade":  "2026-09-13 13:40"
+        "sessionId":  "504ccdfa-3978-40a6-9d67-f51344cfed50",
+        "ultima_atividade":  "2026-09-13 13:55"
     },
     {
         "nome":  "Selma",
         "dir":  "C:/Software/GeoCloud/_wt_selma",
-        "sessionId":  "87b623a2-992c-4f4b-bc03-bde1b2b8fd58",
-        "ultima_atividade":  "2026-09-13 13:40"
+        "sessionId":  "207b212c-6b39-4ecc-b74c-56074960bda2",
+        "ultima_atividade":  "2026-09-13 13:55"
     },
     {
         "nome":  "Livia",
         "dir":  "C:/Software/GeoCloud/_wt_livia",
-        "sessionId":  "f4df770c-26d6-4866-abcc-6f4f8e420a79",
-        "ultima_atividade":  "2026-09-13 13:40"
+        "sessionId":  "e598b531-05f4-4ec6-8ee0-acc94d3dca58",
+        "ultima_atividade":  "2026-09-13 13:55"
     },
     {
         "nome":  "Flavia",
         "dir":  "C:/Software/GeoCloud/_wt_flavia",
-        "sessionId":  "e6ac85db-823a-42d4-8601-025cb296c5d0",
-        "ultima_atividade":  "2026-09-13 13:40"
+        "sessionId":  "4b1cea37-cdf9-4500-87f7-a8bcb75fe8eb",
+        "ultima_atividade":  "2026-09-13 13:55"
     },
     {
         "nome":  "Marta",
         "dir":  "C:/Software/GeoCloud/_wt_marta",
-        "sessionId":  "ebca5388-0507-4521-8e2e-30aa88380646",
-        "ultima_atividade":  "2026-09-13 13:40"
+        "sessionId":  "4cfdd3ee-9099-4269-9b97-bb16df3e4068",
+        "ultima_atividade":  "2026-09-13 13:55"
     },
     {
         "nome":  "GeoCloudAI",
         "dir":  "C:/Software/GeoCloud/GeoCloudAI",
-        "sessionId":  "2d45d98e-0ba0-4b9c-aa1f-e5766af2a109",
-        "ultima_atividade":  "2026-09-13 13:40"
+        "sessionId":  "81314e43-cd7b-4863-8fb2-db9543ab6a76",
+        "ultima_atividade":  "2026-09-13 13:55"
     }
 ]
