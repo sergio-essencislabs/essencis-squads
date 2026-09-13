@@ -9,7 +9,7 @@ severidade: media
 produto: GeoCloudAI
 camada: documentacao
 run_origem: "N/A — despacho direto, fora de run de pipeline"
-issue_url: ""
+issue_url: "https://github.com/Essencis-Labs/GeoCloudAI/issues/667"
 grupo_execucao: ""
 depende_de: []
 owner: Sergio
