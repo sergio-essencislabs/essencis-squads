@@ -45,10 +45,31 @@ param(
   [switch]   $Conferir,
   [string[]] $Apenas,
   [string]   $Sessoes   = 'C:\Software\GeoCloud\sessoes.json',
-  [string]   $ClaudeExe = ''
+  [string]   $ClaudeExe = '',
+  [string]   $LogDir    = 'C:\Software\GeoCloud\_device-log'
 )
 
 $ErrorActionPreference = 'Stop'
+
+# O log nao e enfeite: este script roda pelo Agendador, com -WindowStyle Hidden.
+# Sem registro, uma falha no logon nao deixa rastro nenhum -- e foi exatamente
+# isso que aconteceu: a acao que falhou era a unica sem log.
+function Registrar([string]$texto) {
+  $linha = '{0:yyyy-MM-dd HH:mm:ss}  {1}' -f (Get-Date), $texto
+  Write-Host $linha
+  try {
+    if (-not (Test-Path -LiteralPath $LogDir)) { New-Item -ItemType Directory -Force -Path $LogDir | Out-Null }
+    Add-Content -LiteralPath (Join-Path $LogDir 'subir-squad.log') -Value $linha -Encoding UTF8
+  } catch { Write-Warning ("nao consegui escrever o log: " + $_.Exception.Message) }
+}
+
+# Qualquer erro nao tratado tem de virar linha no log antes de derrubar o script.
+trap {
+  Registrar ("ERRO NAO TRATADO: " + $_.Exception.Message + " | em: " + $_.InvocationInfo.Line.Trim())
+  exit 1
+}
+
+Registrar ("inicio (Conferir=" + [bool]$Conferir + ")")
 
 if (-not (Test-Path -LiteralPath $Sessoes)) {
   throw "Mapa de sessoes nao existe: $Sessoes  (veja o README: ele e gerado do acervo de conversas)"
@@ -119,19 +140,48 @@ foreach ($p in $mapa) {
   }
 }
 Write-Host ""
-Write-Host ("a subir: " + $subir.Count + " de " + $mapa.Count)
+Registrar ("a subir: " + $subir.Count + " de " + $mapa.Count)
 
-if ($Conferir) { Write-Host "-Conferir: nada foi subido."; return }
-if ($subir.Count -eq 0) { Write-Host "nada a fazer."; return }
+if ($Conferir) { Registrar "-Conferir: nada foi subido."; exit 0 }
+if ($subir.Count -eq 0) { Registrar "nada a fazer: as $($mapa.Count) ja estao de pe."; exit 0 }
 
 Write-Host ""
+$ESC = [char]27   # `e so existe no PowerShell 6+. No 5.1 vira a letra "e", e o
+                  # strip de ANSI falha em silencio -- foi o que fez este laco
+                  # rotular de FALHOU onze sessoes que tinham subido.
 foreach ($p in $subir) {
-  $saida = & $ClaudeExe --bg --resume $p.sessionId -n $p.nome --add-dir $p.dir 2>&1
-  $id = ($saida | Out-String) -replace "`e\[[0-9;]*[a-zA-Z]", ''
-  if ($id -match 'backgrounded[^\w]*([0-9a-f]{6,})') {
-    Write-Host ("  {0,-13} subiu  id={1}" -f $p.nome, $matches[1]) -ForegroundColor Green
+  # `Stop` + `2>&1` faz o PowerShell tratar QUALQUER escrita em stderr de um
+  # comando nativo como erro FATAL -- e o claude usa stderr para notas
+  # informativas. Era isso que derrubava o script na primeira persona, sem
+  # rastro, quando ele rodava pelo Agendador.
+  $antes = $ErrorActionPreference
+  $ErrorActionPreference = 'Continue'
+  try {
+    $saida = & $ClaudeExe --bg --resume $p.sessionId -n $p.nome --add-dir $p.dir 2>&1
+  } finally {
+    $ErrorActionPreference = $antes
+  }
+  $limpo = ($saida | Out-String) -replace ([regex]::Escape($ESC) + '\[[0-9;]*[a-zA-Z]'), ''
+
+  # A nota "started a copy as X" nao e aviso: e uma sessao a mais, viva, com o
+  # mesmo nome. Deixar passar produz duas personas identicas na lista, e
+  # despacho indo para a errada. Desfazer aqui e a unica hora barata.
+  if ($limpo -match 'started a copy as\s+([0-9a-f]{6,})') {
+    $copia = $matches[1]
+    Registrar ("  {0,-13} JA ESTAVA VIVA -- o claude criou a copia {1}; desfazendo" -f $p.nome, $copia)
+    $ErrorActionPreference = 'Continue'
+    & $ClaudeExe stop $copia 2>&1 | Out-Null
+    & $ClaudeExe rm   $copia 2>&1 | Out-Null
+    $ErrorActionPreference = $antes
+    Registrar ("  {0,-13} copia {1} removida; a original segue de pe" -f $p.nome, $copia)
+    continue
+  }
+
+  if ($limpo -match 'backgrounded') {
+    $curto = if ($limpo -match '([0-9a-f]{8})') { $matches[1] } else { $p.sessionId.Substring(0,8) }
+    Registrar ("  {0,-13} subiu  id={1}" -f $p.nome, $curto)
   } else {
-    Write-Host ("  {0,-13} FALHOU: {1}" -f $p.nome, (($id -split "`n")[0]).Trim()) -ForegroundColor Red
+    Registrar ("  {0,-13} FALHOU: {1}" -f $p.nome, (($limpo -split "`n")[0]).Trim())
   }
 }
 
@@ -150,8 +200,10 @@ foreach ($p in $mapa) {
 }
 Write-Host ""
 if ($naoSubiu.Count -eq 0) {
-  Write-Host ("conferido: as " + $mapa.Count + " estao de pe.") -ForegroundColor Green
+  Registrar ("conferido: as " + $mapa.Count + " estao de pe.")
+  Write-Host "Para ver uma delas: claude attach <id>   |   lista: claude agents"
+  exit 0
 } else {
-  Write-Host ("NAO subiram: " + ($naoSubiu -join ', ')) -ForegroundColor Red
+  Registrar ("NAO subiram: " + ($naoSubiu -join ', '))
+  exit 1
 }
-Write-Host "Para ver uma delas: claude attach <id>   |   lista: claude agents"
