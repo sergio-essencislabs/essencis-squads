@@ -246,6 +246,27 @@ não derivável de `.agents/tasks/`, exige varredura de commits"*.
       — **a âncora de fim também perde entrega**. O padrão que o CA exige não deve fechar em
       `\b` depois dos dígitos.
 
+      **E o controle positivo sozinho não fecha este CA, porque o padrão erra nas duas
+      polaridades.** Um padrão pode **perder** o que está lá — e um padrão pode **casar o que não
+      está**. O artefato `GT-1440` documentado abaixo é precisamente o segundo caso: presença
+      fabricada. **Um padrão que casa demais passa no controle positivo com louvor**, porque ele
+      acha tudo o que se pede que ache.
+
+      Então a verificação exige **três**, não um:
+
+      | controle | o que prova | pega qual polaridade |
+      |---|---|---|
+      | **positivo** | o padrão acha o que sabidamente está lá (`GT-0099`, 2 rastros minúsculos) | ausência fabricada |
+      | **controle negativo** | o padrão **não** acha algo que sabidamente **não** está | **presença fabricada** |
+      | **cardinalidade crua** | para ausência, contar linhas em vez de filtrar | as duas, sem depender de entender o padrão |
+
+      O terceiro é o único que **não depende de quem escreveu o padrão tê-lo entendido** — e por
+      isso é o que vale quando o resultado for zero.
+
+      Distinção do Otávio, e ela veio de um achado falso que ele quase reportou: uma varredura dele
+      usou `\b` dentro de um ERE, onde vira **fronteira de palavra** e casa em toda linha. O filtro
+      **não apagou evidência — fabricou**. Um controle positivo teria passado.
+
       O artefato: a regra de lista abreviada produz `GT-1440` a partir de *"720 e nao 1440
       (GT-0105)"*. Quem rodar de novo e obtiver 30 precisa saber disso antes de contar — **e saber
       também que o artefato depende do alcance**: uma varredura que case só em assunto de commit
