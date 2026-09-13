@@ -48,6 +48,16 @@ da árvore de trabalho. 98 arquivos `.md` em `.agents/tasks/`:
       absoluto   (C:/Software/EssencisSquads/...)           16
       relativo-repo                                         21
 
+**As duas âncoras acima não são formalidade, e este par é a prova.** `contraparte:` é uma **relação
+entre os dois repositórios**, não uma propriedade de um deles: o mesmo produto `658ba708` dá
+**34** contra o hub `fcb581ff` e **35** contra `6b9e7d5`. O 35º é a própria GT-0144 — e quem a
+tornou atrasada foi `6b9e7d5`, **a metade-hub deste mesmo par**, ao mover a GT-0144 para
+`completed/`; o lado produto conserta o ponteiro no mesmo par e o número volta a 34.
+
+O número saiu certo, ficou errado por um commit do próprio par, e voltou a ficar certo por outro
+commit do próprio par. **Um número anotado de um lado só não é auditável** — quem remedir depois
+lê outro valor e conclui que o documento está errado. É o que o CA-06 existe para impedir.
+
 ### Dois predicados entre três pessoas, nenhum deles declarado
 
 | predicado | quem usou | não-conformes |
@@ -81,23 +91,40 @@ foi convergência independente. O desconforto da Lívia, que é método e não a
 > diferentes. **A discordância foi o instrumento.** Uma varredura sozinha não teria produzido isso
 > — é argumento a favor de medir em paralelo coisas que já parecem resolvidas."*
 
-As contagens decompõem umas nas outras, e isso foi conferido nos dois sentidos:
+As contagens decompõem umas nas outras:
 
-    A) quebrados depois de normalizar as duas formas ....... 24
+    A) quebrados depois de normalizar as duas formas ....... 27
     B) escritos como caminho absoluto ..................... 16
-       A interseção B ..................................... 6
+       A interseção B ..................................... 9
        A união B ......................................... 34   = 16 absolutos + 18 relativos
-       A menos B ......................................... 18   = 24 − 6
+       A menos B ......................................... 18
 
 E a decomposição dos 16 absolutos, medida pela Vision contra `fcb581ff`:
 
     absolutos ................................. 16
-      auto-ponteiros (apontam para o produto) ..  3
-      resolvem no hub depois de normalizar .....  7
-      não resolvem .............................  6   <- a interseção A ∩ B
+      auto-ponteiros (apontam para o produto) ..  3   <- também dentro de A
+      resolvem no hub depois de normalizar .....  7   <- os únicos fora de A
+      não resolvem .............................  6
 
-`7 + 3 = 10` ficam fora de A, o que fecha `A menos B = 18` e `A união B = 34`. A aritmética está
-inteira nos três sentidos.
+Ficam fora de `A` os **7**, o que fecha `A menos B = 18` e `A união B = 34`.
+
+> **Correção de 13/09/2026 — e ela é sobre a conferência, não sobre o número.** Este bloco publicava
+> `A = 24` e `A ∩ B = 6`, excluindo de `A` os três auto-ponteiros sob a premissa — falsa, medida na
+> ressalva abaixo — de que *"o arquivo existe"*. São **27** e **9**. Sob o predicado como ele está
+> escrito (*"quebrados depois de normalizar as duas formas"*), o número é 27; o `24` é o
+> **subconjunto que ancora no hub**, que é o que o CA-03 trata, e os 3 viram o CA-04. Os dois ficam,
+> cada um com o predicado colado.
+>
+> E a frase que este bloco trazia — *"a aritmética está inteira nos três sentidos"* — era verdadeira
+> e não provava nada. Os três auto-ponteiros estão **dentro de `B`**; logo `A união B` e
+> `A menos B` são **invariantes** a eles pertencerem ou não a `A`, e eram exatamente esses dois que
+> a frase exibia. **A conferência confirmou o que não podia desmentir.**
+>
+> *"Antes de usar uma identidade como prova de que uma partição está inteira, pergunte de que erro
+> ela é função. Se o item suspeito está contido no outro operando, ela não o vê — e 'a soma fecha' é
+> o controle mais barato de fabricar sem querer."* — Lívia
+>
+> `A união B = 34` não se mexeu: **o escopo desta GT continua o mesmo.**
 
 **A causa, nas palavras da Vision:**
 
@@ -137,15 +164,30 @@ torneira vista do lado do produto: cada GT que anda para `completed/` deixa o po
 apontando para trás.
 
 **A ressalva, e ela é da Lívia.** `GT-0049`, `GT-0050` e `GT-0051` apontam para
-`C:/Software/GeoCloud/GeoCloudAI/.agents/tasks/active/...` — **o próprio produto, não o hub**. Eles
-ficam fora dos 24 porque o arquivo existe, mas existem no lugar errado:
+`C:/Software/GeoCloud/GeoCloudAI/.agents/tasks/active/...` — **o próprio produto, não o hub** — e
+**não resolvem**. Os três arquivos estão em `completed/` no produto, medido nos três anchors
+(`8cbc67e2`, `658ba708`, `a443432a`); não há arquivo naquele caminho, em repositório nenhum:
+
+    GT-0049 -> .agents/tasks/active/GT-0049-vida-do-token-configuravel.md    existe? NÃO
+       o arquivo vive em .agents/tasks/completed/GT-0049-vida-do-token-configuravel.md
+    GT-0050 -> .agents/tasks/active/GT-0050-suite-de-api-...md               existe? NÃO
+    GT-0051 -> .agents/tasks/active/GT-0051-escopo-multitenant-...md         existe? NÃO
 
 > *"Os três estão quebrados sob as duas leituras, e a resolução por número marca os três como
 > **saudáveis**."*
 
+**Uma versão anterior deste parágrafo dizia que eles *"ficam fora dos 24 porque o arquivo existe"*.**
+Não existe. Era essa frase que sustentava a exclusão dos três de `A`, e é o reparo de `A = 24` para
+`27` do bloco acima.
+
 Portanto **o mínimo não é zero sob nenhum predicado**, e a frase "nenhum par está faltando" só vale
 com a ressalva: os pares existem, mas três ponteiros não apontam para eles. Isso não muda o escopo
 desta GT — os 3 já estão entre os 16 absolutos —, muda o que a GT **afirma ter medido**.
+
+**E o conserto dos três é o mais barato dos quatro defeitos, ao contrário do que o texto sugeria:**
+no hub, `GT-0049`, `GT-0050` e `GT-0051` estão em **`active/`** — a mesma pasta que os ponteiros
+nomeiam. Trocar a raiz pela do hub, e só isso, faz os três resolverem. O CA-04 não muda; muda a
+descrição do estado que ele conserta.
 
 ### Não há consumidor automático hoje, e é por isso que urge
 
@@ -343,8 +385,10 @@ a siga chega ao mesmo conjunto.
 - [ ] **CA-02:** os **16** ponteiros em forma absoluta no produto estão na forma canônica.
 - [ ] **CA-03:** os **24** ponteiros atrasados apontam para a pasta real do par.
 - [ ] **CA-04:** os **3** auto-ponteiros (GT-0049, GT-0050, GT-0051) apontam para o **hub**, não
-      para o próprio produto. Este CA existe separado do CA-02 de propósito: os três resolvem, e
-      uma varredura por número os marca como saudáveis.
+      para o próprio produto. Este CA existe separado do CA-02 de propósito: uma varredura **por
+      número** os marca como saudáveis, porque o número existe no hub — e é a única classe de
+      defeito a que esse predicado é cego. O conserto é a troca de raiz, e só ela: no hub os três
+      estão em `active/`, a mesma pasta que os ponteiros nomeiam.
 - [ ] **CA-04b:** a correção trata os **quatro defeitos separadamente** — barra, direção, estado
       de pasta e forma —, porque têm consertos diferentes e zero dos 16 falha por absolutez.
 - [ ] **CA-05:** a varredura produto → hub devolve **0 não-conformes sob as três resoluções** —
@@ -354,11 +398,16 @@ a siga chega ao mesmo conjunto.
 - [ ] **CA-06:** a varredura lê de **commit nos dois lados** (`git ls-tree` / `git show`), nunca da
       árvore de trabalho, e passa os argumentos por **lista ao subprocess, sem shell** — que é como
       a Lívia mediu, e faz o mangling de caminho do Git Bash **não se aplicar** em vez de precisar
-      ser contornado.
+      ser contornado. **O script existe e está versionado no produto:**
+      `scripts/acervo/medir-contraparte.py`, com as duas revisões como argumento obrigatório e sem
+      valor padrão. Herdar o predicado é o ponto; reinventá-lo foi o que produziu os números
+      divergentes.
 - [ ] **CA-07:** **controle positivo** junto do resultado: a mesma varredura, sem o filtro
       restritivo, mostra quantos ponteiros ela enxerga. Um zero sem controle não fecha este CA.
-- [ ] **CA-08:** **prestação de contas:** os 98 arquivos aparecem classificados 100% e a soma
-      fecha. Reportar *quantos*, não só *quais*.
+- [ ] **CA-08:** **prestação de contas:** **todos** os arquivos de `.agents/tasks/` aparecem
+      classificados 100% e a soma fecha, contra o total medido na revisão em que a varredura rodar.
+      Eram **98** no censo; com esta GT cunhada já são **99**, e por isso o denominador é medido,
+      não copiado daqui. Reportar *quantos*, não só *quais*.
 - [ ] **CA-09:** a varredura pula valores que começam com `N/A` — não são caminho e não contam como
       quebrados.
 - [ ] **CA-10:** o registro de execução declara **o que esta verificação não alcança**.
