@@ -155,7 +155,13 @@ não derivável de `.agents/tasks/`, exige varredura de commits"*.
 ## Critérios de aceitação
 
 - [ ] **CA-01:** as **29** estão enumeradas por número, com o commit ou PR que as entregou ao lado
-      de cada uma. Lista, não contagem.
+      de cada uma — **ou com a declaração de que não há commit de trabalho**, que é o caso de pelo
+      menos uma (`GT-0096`, cujo único commit é de acervo). Lista, não contagem.
+
+      A oração existe porque a versão anterior dizia só *"com o commit ou PR que as entregou"*, e
+      isso **presume que toda linha tem um**. É a mesma forma que o CA-05 corrige logo abaixo — a
+      consequência estava escrita na seção do achado, e **a seção do achado não é o que o executor
+      lê para conferir critério**.
 - [ ] **CA-02:** cada uma tem par criado **ou** ausência declarada com motivo, na forma
       `N/A — motivo` que já vale no acervo. Criar arquivo de task para trabalho já entregue é
       decisão do Sergio, não de quem executa — as duas saídas são legítimas, o silêncio não é.
@@ -199,9 +205,35 @@ não derivável de `.agents/tasks/`, exige varredura de commits"*.
       perder justamente as entregas cujo rastro é `fix/gt-0054-...`. A exigência tinha ficado na
       cópia que o executor não usa para conferir critério.
 
-      **Escolha do controle positivo:** ele precisa incluir **pelo menos um caso minúsculo**, senão
-      não distingue as duas varreduras. Um controle que passa igual sob os dois modos não controla
-      nada aqui.
+      **O controle positivo é a `GT-0099`**, e o nome importa tanto quanto a regra. Medido na
+      janela, ancorado em `f1f01214`:
+
+          numeros distintos no assunto ... 101
+            so MAIUSCULO ................. 32
+            so minusculo .................  5   GT-0096 GT-0098 GT-0099 GT-0103 GT-0104
+            os dois ...................... 64
+                                          ---
+                                           101   (a soma fecha)
+
+      A `GT-0099` tem **dois rastros, os dois minúsculos** (`#541` e `#542`) — é o único dos cinco
+      com mais de um, e por isso o controle mais forte: não depende de um único commit sobreviver.
+
+      **Não use a `GT-0054` como controle.** Ela aparece nos dois modos — `gt-0054` no nome da
+      branch e **`GT-0054` em dois assuntos de commit** —, então **uma varredura maiúsculo-só a
+      encontra**. Um controle que passa igual sob os dois modos **não controla nada**, e a versão
+      anterior desta GT exibia exatamente esse exemplo para ilustrar o risco: **o exemplo era imune
+      ao risco que ilustrava**.
+
+      **E o tamanho da aposta é o que torna isto sério:** uma varredura maiúsculo-só **não zera**
+      esses cinco — ela **nunca os vê entrar** no conjunto, e a derivação devolve **24 em vez de
+      29, sem sinal nenhum**. Não é um zero suspeito; é um total menor que parece completo.
+
+      **Um terceiro modo de falha do detector, achado ao escolher o controle.** O rastro do `#542`
+      é `gt-0099b` — **letra depois dos quatro dígitos**. Um padrão ancorado em `\b` no fim
+      (`[Gg][Tt]-[0-9]{4}\b`) **descarta esse rastro**, e foi o que aconteceu na minha primeira
+      medição: ela deu **um** rastro para a `GT-0099` quando são dois. A caixa não é o único eixo
+      — **a âncora de fim também perde entrega**. O padrão que o CA exige não deve fechar em
+      `\b` depois dos dígitos.
 
       O artefato: a regra de lista abreviada produz `GT-1440` a partir de *"720 e nao 1440
       (GT-0105)"*. Quem rodar de novo e obtiver 30 precisa saber disso antes de contar — **e saber
