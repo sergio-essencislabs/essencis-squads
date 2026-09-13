@@ -73,6 +73,26 @@ próprias e o total é maior que 12 — isso é normal, não é duplicata.
 3. A contagem pelo `/agents`.
 4. **Qualquer persona que não subiu**, nomeada. Não diga "quase todas".
 
+## A regra que não se quebra: `--resume` sem flag
+
+Uma sessão de fundo guarda as **próprias** opções (`-n`, `--add-dir`,
+`--model`). Passar qualquer flag no resume não as sobrescreve — **forka uma
+cópia** com id novo, e cópia de sessão que não é achada morre em ~10s.
+
+Nunca acrescente flags ao comando do script. A saída certa é
+`woke session <id> with its saved options`. Se aparecer
+`started a copy as <novo>`, o id do mapa está errado — **relate, não adote a
+cópia**.
+
+Quando uma não sobe, o motivo está escrito em `~/.claude/daemon.log`:
+
+```
+bg settled <id> (crashed): source session <origem> not found
+```
+
+Isso significa que o `--resume` foi chamado de um diretório cuja pasta
+`~/.claude/projects/<dir-codificado>/` não contém `<origem>.jsonl`.
+
 ## Duas coisas que este desenho não resolve
 
 **Sessão de fundo não tem quem responda a pedido de permissão.** Ela fica parada
