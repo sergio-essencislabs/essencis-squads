@@ -11,6 +11,7 @@ duplo clique em vez de uma reconstrução de memória.
 | `criar-atalho.ps1` | cria o atalho na área de trabalho que chama o de cima. Rodar uma vez por máquina |
 | `garantir-device.ps1` | checa se o device está de pé; sobe só se não estiver. Feito para o Agendador |
 | `instalar-tarefa-device.ps1` | registra a tarefa que chama o de cima no logon e a cada 30 min. Rodar uma vez por máquina |
+| `skill-start-guardian/SKILL.md` | a skill `/start-guardian` — abre o squad numa frase, inclusive do celular |
 
 ## Uso
 
@@ -139,6 +140,38 @@ Get-CimInstance Win32_Process -Filter "Name='claude.exe'" |
 Não conte abas: **aba aberta não é sessão viva**. Abra `/agents` numa das janelas
 e confira que os pares aparecem e que o device aparece como `Remote Control`, não
 como `offline`.
+
+## Abrir o squad de longe: a skill `/start-guardian`
+
+Com o device mantido pela tarefa, o celular sempre encontra alguém nesta
+máquina. Uma sessão nova no device, a frase `/start-guardian`, e as janelas
+abrem aqui.
+
+Instalar (uma vez por máquina):
+
+```powershell
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills\start-guardian" | Out-Null
+Copy-Item .\skill-start-guardian\SKILL.md "$env:USERPROFILE\.claude\skills\start-guardian\SKILL.md" -Force
+```
+
+Fica no **nível de usuário** de propósito: as sessões que o device cria nascem
+em worktrees novas, e uma skill presa a um repositório não estaria lá.
+
+### O que a skill faz antes de abrir, e por quê
+
+Ela **confere se já não está aberto** antes de qualquer coisa. Não é
+formalidade: de longe não há ninguém para responder a um prompt, então o script
+vai com `-Sim`, que **pula a confirmação**. Com `-Sim` e as janelas já abertas,
+ele duplicaria tudo — e duas janelas na mesma worktree fazem trabalho ser
+atribuído a quem não o fez.
+
+Se achar sessões vivas, ela **para e relata**, em vez de abrir.
+
+### O que ela relata sempre
+
+A lista das datas inteira, qualquer linha marcada `(de N sessoes)` ou
+`SEM SESSAO`, e a contagem final por `claude agents --json` — **não por contar
+abas nem processos**.
 
 ## A cópia local e esta aqui
 

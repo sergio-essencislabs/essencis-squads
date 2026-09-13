@@ -126,6 +126,27 @@ if ($vivos.Count -gt 0) {
   }
 }
 
+# Device ja de pe? Desde que a tarefa agendada passou a mante-lo, abrir a aba
+# sem checar criaria um SEGUNDO device. A checagem e a mesma do
+# garantir-device.ps1 -- pela LINHA DE COMANDO, porque ha muitos claude.exe e
+# so um e o device. Fica ANTES do -Conferir de proposito: a conferencia tem de
+# dizer se abriria a aba ou nao.
+if (-not $SemDevice) {
+  $deviceVivo = @(Get-CimInstance Win32_Process -Filter "Name='claude.exe'" -ErrorAction SilentlyContinue |
+                  Where-Object { $_.CommandLine -and $_.CommandLine -match 'remote-control' })
+  if ($deviceVivo.Count -gt 0) {
+    Write-Host ""
+    Write-Host ("device ja de pe (PID " + (($deviceVivo | ForEach-Object { $_.ProcessId }) -join ', ') +
+                ") -- nao abro outra aba.") -ForegroundColor Cyan
+    Write-Host "  quem o mantem e a tarefa 'Guardian - garantir device'." -ForegroundColor Cyan
+    $SemDevice = $true
+    if ($SomenteDevice) {
+      Write-Host "-SomenteDevice sem nada a fazer: o device ja esta de pe." -ForegroundColor Cyan
+      return
+    }
+  }
+}
+
 # Qual conversa cada janela vai retomar, pela data do .jsonl mais recente.
 Write-Host ""
 if ($SomenteDevice) {
