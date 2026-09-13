@@ -1,7 +1,7 @@
 ---
 id: GT-0146
 title: "Grupo A: as 39 GTs do hub sem par no produto"
-status: active
+status: completed
 type: documentation
 achado_origem: "Censo de acervo da GT-0144 (#627) — divisão em três decidida pelo Sergio em 12/09/2026"
 auditor_origem: "Tomás Ticket (censo), divisão recomendada por Jarvis no Step 09 (PR #632)"
@@ -18,7 +18,7 @@ updated_at: 2026-09-12
 affected_modules: [acervo-de-tasks]
 related_adrs: []
 guarda_chuva: "GT-0144 — o censo, o método e a evidência vivem lá e não são copiados aqui"
-contraparte: "GeoCloudAI/.agents/tasks/active/GT-0146-grupo-a-as-39-sem-par.md"
+contraparte: "GeoCloudAI/.agents/tasks/completed/GT-0146-grupo-a-as-39-sem-par.md"
 ---
 
 # GT-0146 — Grupo A: as 39 GTs do hub sem par no produto
