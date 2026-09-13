@@ -118,9 +118,10 @@ Os 17 ponteiros consertados na GT-0145 eram **todos atrasados**. Nenhum ia se re
 
 **Consequência para qualquer trava que saia desta GT:** uma verificação que trate os dois como o
 mesmo defeito **marca como quebrado um estado transitório que está correto** — e, nas palavras
-dela, *"a primeira coisa que um alarme falso ensina é a ignorar o alarme"*. É o mesmo princípio que
-o Otávio aplicou à caixa do `provision-env.sh`: **errar para o lado cauteloso ensina o operador a
-desconfiar da caixa.**
+dela, *"a primeira coisa que um alarme falso ensina é a ignorar o alarme"*. É o mesmo princípio
+que o **Rui** aplicou à caixa do `provision-env.sh`, na revisão dele do **#644**: *"errar para o
+lado cauteloso numa caixa que sustenta decisão destrutiva ensina o operador a desconfiar dela, e
+trava em que não se confia é trava que se contorna na terceira vez"*.
 
 **E a inversão:** o estado adiantado não é tolerado, é **o certo**. Como não há atomicidade entre
 dois repositórios — *"não há commit que atravesse os dois"* —, o melhor alcançável é **cada lado já
