@@ -52,15 +52,26 @@ enxerga; os zeros são ausência medida.
 
 ### Não são menções — são entregas
 
-Excluindo commits de acervo (`cunha|acervo|normaliza|roteamento|promover|divide a GT`), **29 de 29
-continuam tendo commit de trabalho que as cita.** Em boa parte pelo nome da branch no merge sem
-squash:
+Excluindo commits de acervo (`cunha|acervo|normaliza|roteamento|promover|divide a GT`), **a
+grande maioria continua tendo commit de trabalho que a cita.** Em boa parte pelo nome da branch no
+merge sem squash:
 
 ```
 Merge pull request #474 from Essencis-Labs/fix/gt-0054-zoom-nos-cores-multiview
 Merge pull request #544 from Essencis-Labs/fix/gt-0100-down-das-migrations-de-permissao
 Merge pull request #552 from Essencis-Labs/chore/gt-0105-vida-do-token-de-volta
 ```
+
+**Uma versão anterior desta frase dizia "29 de 29", e é falso.** O revisor achou pelo menos uma
+exceção e eu a confirmei: a **`GT-0096`** vem do merge **#536**, que traz um único commit —
+`docs: alinhar registros de task ao que ja esta mesclado` — tocando **quatro arquivos de task e
+nada mais**. É acervo pela definição desta própria GT, e *"alinhar registros"* **não casa com
+nenhuma das seis palavras do filtro**.
+
+**O número 29 não muda**: a `GT-0096` tem PR mesclado e nenhum arquivo em lado nenhum, que é
+exatamente a definição da célula. O que estava errado era a frase de apoio — e o filtro, que deixa
+passar acervo escrito com outras palavras. **O CA-01 herda isso:** a lista tem de dizer, por GT,
+qual é o commit de trabalho **ou** que não há um.
 
 ### Estão dentro da janela da sprint
 
@@ -89,9 +100,25 @@ A consequência é a frase que esta GT existe para tornar regra:
 > **Qualquer população derivada de arquivos de task está 29 abaixo, e nenhum predicado sobre
 > `.agents/tasks/` vai revelar isso — porque a falta está no conjunto que ele varre.**
 
-Isso contamina silenciosamente toda contagem de entrega, toda métrica de sprint e todo censo de
-acervo já feito. É **alta** por isso: não porque 29 arquivos faltem, mas porque **o instrumento de
-medida não consegue relatar a própria cegueira**.
+### É alta porque o dano já se realizou, não porque a categoria importe
+
+O argumento de taxonomia acima prova que a **categoria** existe. Não prova **urgência** — e quem lê
+"alta" quer saber o que acontece se ficar para depois. A resposta é que **aconteceu anteontem**:
+
+> O **#659** teve de ser bloqueado por conter *"nenhum par está faltando"*, **em negrito**, num
+> documento que ia para a apresentação. A frase é **falsa sobre o universo** por causa destas 29 —
+> ela só é verdadeira recortada aos 80 arquivos que a GT-0144 mediu. O PR hoje traz o recorte e um
+> parágrafo dizendo *"sem ele a frase é falsa"*; o recorte existe porque a frase sem ele passou
+> por várias revisões sem ninguém poder notar.
+
+**Esse é o dano, e ele é reincidente por construção:** contamina silenciosamente toda contagem de
+entrega, toda métrica de sprint e todo censo de acervo já feito. O argumento de que *o instrumento
+de medida não consegue relatar a própria cegueira* explica **por que** ninguém pegou — não é o que
+sustenta a prioridade, é o que explica a reincidência.
+
+**Reparo declarado:** uma versão anterior desta seção sustentava "alta" só pelo argumento de
+taxonomia. Está trocado pelo caso realizado, a pedido do revisor, e a razão dele fica escrita
+porque vale além desta GT — *"quem lê 'alta' quer saber o que acontece se ficar para depois"*.
 
 É a mesma forma do controle positivo, um nível acima: lá, a peneira que não enxerga devolve zero e
 parece resposta; aqui, o **enumerador** não tem célula onde pôr o que não viu.
@@ -134,14 +161,36 @@ não derivável de `.agents/tasks/`, exige varredura de commits"*.
       decisão do Sergio, não de quem executa — as duas saídas são legítimas, o silêncio não é.
 - [ ] **CA-03:** **a taxonomia do censo ganha a quarta célula**, escrita nos dois READMEs. Um censo
       de três células volta a ser apresentado como completo no dia em que esta GT for esquecida.
-- [ ] **CA-04:** **todo documento que enumerar GTs por arquivo declara, no próprio resultado, que a
-      quarta categoria existe e está fora do alcance daquela varredura.** É a aplicação do
-      princípio de que toda verificação declara o que não alcança — aqui obrigatória, porque a
-      omissão não é detectável de dentro do método.
-- [ ] **CA-05:** a varredura de commits que produz a lista fica **versionada**, com **controle
-      positivo** (`GT-0146`, `GT-0128`, `GT-0137` devolvendo `1/1`) e com o **artefato conhecido
-      documentado** — a regra de lista abreviada produz `GT-1440` a partir de *"720 e nao 1440
-      (GT-0105)"*, e quem rodar de novo precisa saber disso antes de contar 30.
+- [ ] **CA-04:** **a declaração vive nos dois READMEs e nos dois `_template.md`** — os mesmos
+      quatro arquivos do CA-03 —, redigida para ser **citada junto com o censo**, de modo que
+      qualquer enumeração que se apoie nele herde a frase da fonte.
+
+      **Reparo declarado, e a razão é boa.** A versão anterior obrigava *"todo documento que
+      enumerar GTs por arquivo"* a declarar o limite. O revisor mostrou que isso é **inalcançável
+      de dentro, pela tese desta própria GT**: quem escreve uma varredura não tem como saber que
+      deve a declaração **a menos que já conheça esta GT** — e critério que só quem já sabe cumpre
+      não muda o comportamento de quem não sabe, que são justamente os que produzem o defeito.
+      Mirar o **lugar onde a enumeração nasce** põe o ônus em dois arquivos que o squad controla e
+      deixa o conhecimento no caminho de quem vai precisar dele.
+- [ ] **CA-05:** a varredura de commits que produz a lista fica **versionada**, casa
+      **insensível a caixa** (`[Gg][Tt]-`, nunca `GT-` só), traz **controle positivo** e documenta
+      o **artefato conhecido**.
+
+      **A exigência de caixa é critério e não prosa, de propósito.** Ela estava escrita só no lado
+      produto, e o revisor apontou o buraco: **o hub é onde vivem os critérios**, e quem executar
+      lendo os critérios podia versionar varredura maiúsculo-só **com o controle positivo
+      passando** — porque `GT-0146`, `GT-0128` e `GT-0137` são maiúsculos nos nomes de arquivo — e
+      perder justamente as entregas cujo rastro é `fix/gt-0054-...`. A exigência tinha ficado na
+      cópia que o executor não usa para conferir critério.
+
+      **Escolha do controle positivo:** ele precisa incluir **pelo menos um caso minúsculo**, senão
+      não distingue as duas varreduras. Um controle que passa igual sob os dois modos não controla
+      nada aqui.
+
+      O artefato: a regra de lista abreviada produz `GT-1440` a partir de *"720 e nao 1440
+      (GT-0105)"*. Quem rodar de novo e obtiver 30 precisa saber disso antes de contar — **e saber
+      também que o artefato depende do alcance**: uma varredura que case só em assunto de commit
+      não o produz, porque aquela frase nunca entra.
 - [ ] **CA-06:** o registro declara **o que esta verificação não alcança** — em particular, que ela
       cobre a janela 08–12/09 e não diz nada sobre sprints anteriores.
 
