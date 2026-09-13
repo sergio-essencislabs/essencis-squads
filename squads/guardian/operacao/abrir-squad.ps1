@@ -58,8 +58,8 @@ param(
   [switch]   $Conferir,
   [switch]   $Sim,
   [string]   $Base       = 'C:\Software\GeoCloud',
-  [string]   $DeviceDir        = 'C:\Software\GeoCloud\_wt_vision',
-  [string]   $DeviceNome       = 'essencis002-snazzy-rocket',
+  [string]   $DeviceDir        = 'C:\Software\GeoCloud\_device',
+  [string]   $DeviceNome       = '',
   [string]   $DeviceSpawn      = 'worktree',
   [int]      $DeviceCapacidade = 11,
   [string]   $DevicePermissao  = 'acceptEdits'
@@ -163,9 +163,12 @@ $primeira = $true
 foreach ($j in $janelas) {
   if (-not $primeira) { $wtArgs.Add(';') }
   $primeira = $false
+  # `-n <Nome>` fixa o nome da sessao. Sem isso o nome e derivado do diretorio
+  # com sufixo aleatorio (wt-rui-8d, depois wt-rui-f7) e MUDA a cada reinicio --
+  # e despacho por nome obriga a reler a lista toda vez.
   $wtArgs.AddRange([string[]]@(
     'new-tab', '--title', $j.Nome, '-d', $j.Dir,
-    'powershell', '-NoExit', '-Command', 'claude --continue'
+    'powershell', '-NoExit', '-Command', "claude --continue -n $($j.Nome)"
   ))
 }
 
@@ -179,7 +182,14 @@ if (-not $SemDevice) {
     # maquina aparecer como device. Nao confundir com `claude --remote-control`
     # (FLAG), que so abre uma sessao interativa controlavel -- ela nao e o
     # device, e nem sequer aparece no /agents.
-    $cmdDevice = "claude remote-control --spawn $DeviceSpawn --capacity $DeviceCapacidade --permission-mode $DevicePermissao"
+    # --no-create-session-in-dir: sem isso o servidor pre-cria uma sessao no
+    # proprio diretorio. Quando ele rodava de _wt_vision, isso punha uma SEGUNDA
+    # sessao na pasta da Vision -- e no reinicio seguinte o --continue escolhe a
+    # mais recente do diretorio, entao a janela podia voltar na conversa errada.
+    $cmdDevice = "claude remote-control --spawn $DeviceSpawn --capacity $DeviceCapacidade --permission-mode $DevicePermissao --no-create-session-in-dir"
+    # Sem --name de proposito: cada subida ganha nome proprio, para a sessao
+    # viva se distinguir das mortas que ainda constam na lista do celular.
+    # Fixar o nome faz a subida de agora e a de ontem terem o MESMO rotulo.
     if ($DeviceNome) { $cmdDevice += " --name $DeviceNome" }
     $wtArgs.AddRange([string[]]@(
       'new-tab', '--title', 'device', '-d', $DeviceDir,

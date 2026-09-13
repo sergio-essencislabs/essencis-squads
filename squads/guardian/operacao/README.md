@@ -9,6 +9,8 @@ duplo clique em vez de uma reconstrução de memória.
 |---|---|
 | `abrir-squad.ps1` | abre as janelas em abas de uma única janela do Windows Terminal, mais a aba do device |
 | `criar-atalho.ps1` | cria o atalho na área de trabalho que chama o de cima. Rodar uma vez por máquina |
+| `garantir-device.ps1` | checa se o device está de pé; sobe só se não estiver. Feito para o Agendador |
+| `instalar-tarefa-device.ps1` | registra a tarefa que chama o de cima no logon e a cada 30 min. Rodar uma vez por máquina |
 
 ## Uso
 
@@ -80,6 +82,45 @@ todas as abas o derruba junto — não é um serviço que sobrevive à janela.
 
 Abre só a aba do device, nenhuma janela de persona. É o caso de "só o device
 caiu".
+
+### O device fora do terminal — a tarefa agendada
+
+Enquanto o device for filho de uma aba, fechar as abas o derruba, e **não há
+ninguém do outro lado para o celular chamar**. A tarefa resolve isso:
+
+```powershell
+powershell -ExecutionPolicy Bypass -NoProfile -File .\instalar-tarefa-device.ps1
+```
+
+Registra `Guardian - garantir device` com **dois gatilhos** — no logon e a cada
+30 minutos — chamando `garantir-device.ps1`, que **checa antes de agir**: se o
+device já estiver de pé, não faz nada.
+
+**Nunca como serviço.** Serviço roda na Sessão 0, isolada da área de trabalho:
+o device subiria, mas as janelas que ele abrisse seriam **invisíveis**. Pareceria
+funcionar e não funcionaria. Por isso `LogonType Interactive`.
+
+**A consequência aceita:** depois de um reinício, o device só sobe **após o
+login**. Não há como contornar sem cair na Sessão 0. Uma vez logado, bloquear a
+tela não derruba nada.
+
+**Por que checagem explícita e não a política do Agendador.** O `IgnoreNew`
+impede duas execuções *da tarefa*, não dois devices — e a tarefa termina
+deixando o processo vivo, então a política não diz nada sobre ele. Quem impede
+device duplicado é o `garantir-device.ps1`, olhando a **linha de comando** dos
+processos: há muitos `claude.exe` na máquina e só um é o device.
+
+**O log não é opcional.** Sem terminal, a saída do device some — e é no caso
+extremo que se precisa dela. O script grava em `C:\Software\GeoCloud\_device-log\`:
+
+```
+2026-09-13 11:12:30  device ausente -- subindo
+2026-09-13 11:12:39  subiu: PID 13908 | saida: ...\device-20260913-111230.out.log
+```
+
+**Testado de ponta a ponta:** device morto → `Start-ScheduledTask` → device de
+volta com PID novo, tarefa em `Ready` (não presa em `Running`), `LastTaskResult`
+= 0, e as duas linhas no log.
 
 ### O que o `/agents` mostra sobre o device: nada
 
