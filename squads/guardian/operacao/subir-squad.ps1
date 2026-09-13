@@ -122,7 +122,9 @@ $linhas = @(Get-CimInstance Win32_Process -Filter "Name='claude.exe'" -ErrorActi
 function JaDePe([string]$nome, [string]$sid) {
   foreach ($l in $linhas) {
     if ($l -match ("-n\s+" + [regex]::Escape($nome) + "(\s|$)")) { return $true }
-    if ($sid -and $l -like ("*" + $sid + "*"))                   { return $true }
+    # `--session-id <id>`, nao o id em qualquer posicao: a linha de uma COPIA
+    # carrega `--resume <id-da-original>` e casaria por engano.
+    if ($sid -and $l -match ("--session-id\s+" + [regex]::Escape($sid) + "(\s|$)")) { return $true }
   }
   return $false
 }
@@ -149,13 +151,40 @@ Write-Host ""
 $ESC = [char]27   # `e so existe no PowerShell 6+. No 5.1 vira a letra "e", e o
                   # strip de ANSI falha em silencio -- foi o que fez este laco
                   # rotular de FALHOU onze sessoes que tinham subido.
+# A original esta viva NESTE momento, no processo local? E a unica fonte que
+# sabe a verdade depois de um reinicio -- o servico pode achar que sim e estar
+# olhando registro obsoleto.
+# ATENCAO ao criterio: procurar o id em QUALQUER posicao da linha e circular.
+# A COPIA carrega `--resume <id-da-original>` na propria linha de comando, entao
+# "achei o id" acha a copia e conclui que a original esta viva. Foi assim que o
+# primeiro conserto apagou a copia e deixou a persona fora.
+#
+# A marca de uma sessao VIVA e `--session-id <id>`: o id que ela E, nao o que
+# ela retomou.
+function ProcessoVivo([string]$sid) {
+  if (-not $sid) { return $false }
+  $agora = @(Get-CimInstance Win32_Process -Filter "Name='claude.exe'" -ErrorAction SilentlyContinue |
+             ForEach-Object { $_.CommandLine } | Where-Object { $_ })
+  foreach ($l in $agora) {
+    if ($l -match ("--session-id\s+" + [regex]::Escape($sid) + "(\s|$)")) { return $true }
+  }
+  return $false
+}
+
+$mapaMudou = $false
 foreach ($p in $subir) {
-  # `Stop` + `2>&1` faz o PowerShell tratar QUALQUER escrita em stderr de um
-  # comando nativo como erro FATAL -- e o claude usa stderr para notas
-  # informativas. Era isso que derrubava o script na primeira persona, sem
-  # rastro, quando ele rodava pelo Agendador.
   $antes = $ErrorActionPreference
+
+  # PASSO 1 -- limpar registro obsoleto ANTES de tentar retomar.
+  # Depois de um reinicio os processos morrem, mas o servico ainda pode
+  # considerar a sessao "rodando". Nesse estado o --resume nao retoma: cria uma
+  # COPIA. Foi o que derrubou o teste de logon -- as doze viraram copia, e o
+  # conserto anterior apagava a copia deixando de pe uma "original" inexistente.
+  # `claude stop` sobre sessao ja parada e inofensivo.
   $ErrorActionPreference = 'Continue'
+  & $ClaudeExe stop $p.sessionId.Substring(0,8) 2>&1 | Out-Null
+
+  # PASSO 2 -- retomar.
   try {
     $saida = & $ClaudeExe --bg --resume $p.sessionId -n $p.nome --add-dir $p.dir 2>&1
   } finally {
@@ -163,17 +192,25 @@ foreach ($p in $subir) {
   }
   $limpo = ($saida | Out-String) -replace ([regex]::Escape($ESC) + '\[[0-9;]*[a-zA-Z]'), ''
 
-  # A nota "started a copy as X" nao e aviso: e uma sessao a mais, viva, com o
-  # mesmo nome. Deixar passar produz duas personas identicas na lista, e
-  # despacho indo para a errada. Desfazer aqui e a unica hora barata.
+  # PASSO 3 -- se AINDA assim veio copia, decidir MEDINDO, nao acreditando.
   if ($limpo -match 'started a copy as\s+([0-9a-f]{6,})') {
     $copia = $matches[1]
-    Registrar ("  {0,-13} JA ESTAVA VIVA -- o claude criou a copia {1}; desfazendo" -f $p.nome, $copia)
-    $ErrorActionPreference = 'Continue'
-    & $ClaudeExe stop $copia 2>&1 | Out-Null
-    & $ClaudeExe rm   $copia 2>&1 | Out-Null
-    $ErrorActionPreference = $antes
-    Registrar ("  {0,-13} copia {1} removida; a original segue de pe" -f $p.nome, $copia)
+    Start-Sleep -Seconds 2
+    if (ProcessoVivo $p.sessionId) {
+      # A original existe de verdade: a copia e que sobra.
+      $ErrorActionPreference = 'Continue'
+      & $ClaudeExe stop $copia 2>&1 | Out-Null
+      & $ClaudeExe rm   $copia 2>&1 | Out-Null
+      $ErrorActionPreference = $antes
+      Registrar ("  {0,-13} ja estava viva de verdade; copia {1} removida" -f $p.nome, $copia)
+    } else {
+      # "Ja esta rodando" era afirmacao do servico sobre um processo que nao
+      # existe. A copia E a sessao desta persona agora -- ela fica, e o mapa
+      # passa a apontar para ela. Apagar a copia aqui deixaria a persona FORA.
+      $p.sessionId = $copia
+      $mapaMudou = $true
+      Registrar ("  {0,-13} registro obsoleto: a original nao existe. A copia {1} FICA e vira a sessao desta persona" -f $p.nome, $copia)
+    }
     continue
   }
 
@@ -182,6 +219,51 @@ foreach ($p in $subir) {
     Registrar ("  {0,-13} subiu  id={1}" -f $p.nome, $curto)
   } else {
     Registrar ("  {0,-13} FALHOU: {1}" -f $p.nome, (($limpo -split "`n")[0]).Trim())
+  }
+}
+
+# Se algum id mudou, o mapa em disco ficou velho. Gravar agora: deixar para
+# depois faz o proximo boot repetir o mesmo caminho de copia.
+if ($mapaMudou) {
+  try {
+    # RELER o arquivo e alterar so as personas tocadas. Escrever $mapa direto
+    # APAGA as demais quando se usou -Apenas -- ja aconteceu: uma execucao com
+    # `-Apenas rui,dante` deixou o mapa com 2 entradas em vez de 12.
+    $atualCru = Get-Content -LiteralPath $Sessoes -Raw -Encoding UTF8 | ConvertFrom-Json
+    $todas = @(); foreach ($x in $atualCru) { $todas += $x }
+
+    # Guardar o id COMPLETO, nao o curto que a nota do claude imprime: o mapa e
+    # a entrada do --resume, e id curto ali nao e o mesmo identificador.
+    $vivas = @{}
+    $ErrorActionPreference = 'Continue'
+    $ag = (& $ClaudeExe agents --json 2>$null | Out-String)
+    $ErrorActionPreference = 'Stop'
+    try {
+      foreach ($a in ($ag | ConvertFrom-Json)) { if ($a.name) { $vivas[[string]$a.name] = [string]$a.sessionId } }
+    } catch {
+      Registrar "ATENCAO: nao consegui ler os ids completos por 'claude agents --json'."
+    }
+
+    $tocadas = @($subir | ForEach-Object { $_.nome })
+    $n = 0
+    foreach ($t in $todas) {
+      if ($tocadas -notcontains $t.nome) { continue }
+      $completo = $vivas[[string]$t.nome]
+      if ($completo -and $completo -ne $t.sessionId) {
+        Registrar ("  mapa: {0,-13} {1} -> {2}" -f $t.nome, $t.sessionId.Substring(0,8), $completo.Substring(0,8))
+        $t.sessionId = $completo
+        $t.ultima_atividade = (Get-Date -Format 'yyyy-MM-dd HH:mm')
+        $n++
+      }
+    }
+    if ($n -gt 0) {
+      ($todas | ConvertTo-Json -Depth 5) | Set-Content -LiteralPath $Sessoes -Encoding UTF8
+      Registrar ("mapa atualizado: $n de $($todas.Count) entradas; as outras preservadas")
+    } else {
+      Registrar "mapa nao precisou mudar (ids completos ja conferem)"
+    }
+  } catch {
+    Registrar ("ATENCAO: ids mudaram e NAO consegui gravar o mapa: " + $_.Exception.Message)
   }
 }
 
