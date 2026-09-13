@@ -355,10 +355,17 @@ canônica) e de **estado de pasta** (ponteiro que ficou para trás quando o par 
 `completed/`), e nada disso é acervo faltando.
 
 **Ressalva, e ela não é decorativa.** Três ponteiros — `GT-0049`, `GT-0050`, `GT-0051` — apontam
-para este mesmo repositório em vez de para o hub. Eles *resolvem*, então uma varredura por número
-os marca como saudáveis, mas quem os seguir cai no arquivo de onde saiu. Então "nenhum par está
-faltando" é verdade; **"todo ponteiro leva ao par" não é.** Achado da Lívia, registrado aqui porque
-o fechamento desta GT o herda.
+para **o próprio produto** em vez de para o hub, e **não resolvem**: dizem
+`.agents/tasks/active/`, e os três arquivos estão em `completed/` lá. Uma varredura **por número**
+os marca como saudáveis mesmo assim, porque o número existe aqui. Então "nenhum par está faltando"
+é verdade; **"todo ponteiro leva ao par" não é.** Achado da Lívia, registrado aqui porque o
+fechamento desta GT o herda.
+
+> **Correção de 13/09/2026.** Uma versão anterior deste parágrafo dizia que eles *"resolvem"*, que
+> *"quem os seguir cai no arquivo de onde saiu"*, e que apontavam para *"este mesmo repositório"* —
+> as três erradas: não resolvem em repositório nenhum, o auto-laço descrito não existe, e o
+> repositório para o qual apontam é o produto, não este. A mesma premissa sustentava `A = 24` na
+> GT-0151, corrigido para `27`.
 
 ### O que esta GT não alcançou
 
