@@ -255,14 +255,31 @@ justificada, o que também é resposta válida.
 
       E a cláusula que o CA-08 exige continua valendo, agora com o que a supre:
 
-      > **A trava é sólida sobre estado assentado.** Entre o merge do primeiro PR de um par e o do
-      > segundo, ela tem **falso positivo conhecido** — e o insumo (a) ou (b) é o que o remove.
-      > Quem a ler precisa saber disso, senão o primeiro alarme legítimo será descartado como
-      > "deve ser a janela".
+      > **A trava é sólida sobre estado assentado.** Na **janela entre repositórios** — entre o
+      > merge do primeiro PR do par e o do segundo — ela tem **falso positivo conhecido**, e o
+      > insumo (a) ou (b) é o que o remove. Quem a ler precisa saber disso, senão o primeiro alarme
+      > legítimo será descartado como "deve ser a janela".
 
-      **E a prática que zera a janela em vez de tolerá-la:** pôr o move dentro do mesmo PR, e cada
-      lado mesclar já apontando para o destino final do outro. Decisão da Lívia no `squads#11` —
-      **elimina a janela em vez de apostar em como o Git a resolve.**
+      **São duas janelas diferentes, e só uma é zerável** — o parágrafo seguinte trata da outra:
+
+      | | qual janela | zerável? |
+      |---|---|---|
+      | **dentro de um repositório** | o move num PR e o ponteiro noutro | **sim**, e é ganho real |
+      | **entre os dois repositórios** | entre o primeiro merge e o segundo | **irredutível** enquanto forem dois repos mesclando separadamente |
+
+      **É a segunda que este resíduo declara.** Quem adotar a prática do parágrafo abaixo fecha a
+      primeira e **continua exposto à segunda** — e é por isso que a distinção precisa estar
+      escrita: senão quem seguiu a boa prática conclui que o resíduo não se aplica a ele e descarta
+      o alarme **pelo motivo oposto ao que esta cláusula previu**.
+
+      **E a prática que zera a janela DENTRO DE UM REPOSITÓRIO** — não a de entre os dois, que é
+      irredutível: pôr o move dentro do mesmo PR, e cada lado mesclar já apontando para o destino
+      final do outro. Decisão da Lívia no `squads#11` — **elimina essa janela em vez de apostar em
+      como o Git a resolve.**
+
+      **Fechar esta não fecha a outra.** Quem adota a prática elimina a janela intra-repositório e
+      segue exposto à janela entre repositórios, que é a do resíduo acima e a que exige o insumo
+      (a) ou (b).
 
       **O que resolve é trocar condição sobre a RELAÇÃO ENTRE DOIS ESTADOS por condição sobre uma
       PROPRIEDADE DO ALVO** — "o arquivo saiu desta pasta?" é fato do alvo, e não comparação entre
