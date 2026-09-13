@@ -104,6 +104,24 @@ Se ele sumir, o `abrir-squad` cai para `--continue`, que escolhe **pela data** �
 e aí uma janela pode voltar na conversa errada sem avisar. O script avisa quando
 isso acontece; **não ignore esse aviso**.
 
+## Decidido: as personas não aparecem no celular, e está certo assim
+
+Só a **Vision** tem ponte com o app. As outras onze rodam em segundo plano e
+**não** aparecem na lista de sessões do celular. Isso é decisão de 13/09/2026,
+não defeito: as aprovações estão centralizadas na Vision, e o usuário recusou
+a alternativa por causa da poluição na lista.
+
+**Não troque o `claude attach <id>` do `abrir-squad.ps1`.** Já foi proposto e
+recusado. Para o registro, com o que foi medido:
+
+- `attach` é local — **não** cria ponte.
+- `claude remote-control --session-id <id-de-fundo>` não serve: aquele id é de
+  sessão de Remote Control.
+- O que funcionaria: `claude --remote-control <Nome> --resume <id>`. Testado na
+  Selma, ida e volta completa, id preservado, sem device extra. O custo é que
+  a sessão passa a viver presa ao terminal — fechar a janela encerra — e sai do
+  `claude agents --json` (mas segue alcançável por nome, como `Remote Control`).
+
 ## O que este skill não faz
 
 - **Não sobe o device.** Isso é da tarefa agendada `Guardian - manter de pe`.
