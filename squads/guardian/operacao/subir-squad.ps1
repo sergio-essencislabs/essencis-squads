@@ -263,15 +263,31 @@ foreach ($p in $subir) {
   # processo. Se ele continua vivo depois da espera, a sessao subiu; se saiu, o
   # codigo de saida e o que se tem. A conferencia de verdade e a do fim, que le
   # as linhas de comando dos processos vivos.
-  $proc = Start-Process -FilePath $ClaudeExe `
-            -ArgumentList "--remote-control $($p.nome) --resume $($p.sessionId)" `
-            -WorkingDirectory $p.dir -WindowStyle Hidden -PassThru
-  Start-Sleep -Seconds 14
-  $ErrorActionPreference = $antes
-  if ($proc.HasExited) {
-    $limpo = "FALHOU: processo saiu com codigo $($proc.ExitCode)"
-  } else {
-    $limpo = "woke session $($p.sessionId) em remote control"
+  #
+  # A VISION E A EXCECAO, e de proposito. Ela NASCEU no app, ja tem
+  # `bridgeSessionId` proprio e ja aparece no celular sendo de fundo -- nao
+  # precisa de Remote Control para isso. E o caminho de fundo dela e o unico
+  # provado atravessando reinicio (95 s do boot as doze de pe, medido em 13/09).
+  # Trocar o que funciona por um caminho nao testado, justamente na persona que
+  # coordena as outras, seria comprar risco sem comprar nada.
+  if ($p.nome -eq 'Vision') {
+    Push-Location $p.dir
+    $saida = (& $ClaudeExe --bg --resume $p.sessionId 2>&1 | Out-String)
+    Pop-Location
+    $ErrorActionPreference = $antes
+    $limpo = ($saida -replace ([char]27 + '\[[0-9;]*[a-zA-Z]'), '')
+  }
+  else {
+    $proc = Start-Process -FilePath $ClaudeExe `
+              -ArgumentList "--remote-control $($p.nome) --resume $($p.sessionId)" `
+              -WorkingDirectory $p.dir -WindowStyle Hidden -PassThru
+    Start-Sleep -Seconds 14
+    $ErrorActionPreference = $antes
+    if ($proc.HasExited) {
+      $limpo = "FALHOU: processo saiu com codigo $($proc.ExitCode)"
+    } else {
+      $limpo = "woke session $($p.sessionId) em remote control"
+    }
   }
 
   # PASSO 3 -- ler a resposta. Sao tres desfechos, e so um e o certo.
