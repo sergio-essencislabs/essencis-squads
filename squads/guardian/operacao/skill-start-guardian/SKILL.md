@@ -1,24 +1,29 @@
 ---
 name: start-guardian
-description: Garante que as 12 sessões do squad Guardian estejam de pé nesta máquina — em segundo plano, sem janela — e, se pedirem para ver, abre abas do Windows Terminal anexando às sessões que já rodam. Use quando pedirem para iniciar, subir, levantar ou abrir o squad, o Guardian, os agentes ou as janelas dos agentes, inclusive de longe pelo celular. Não use para subir o device: o device é mantido pela tarefa agendada.
+description: Garante que as 11 sessões do squad Guardian estejam de pé nesta máquina — em Remote Control, visíveis no celular, sem janela no notebook — e, se pedirem para ver, reabre as mesmas sessões em abas do Windows Terminal. Use quando pedirem para iniciar, subir, levantar ou abrir o squad, o Guardian, os agentes ou as janelas dos agentes, inclusive de longe pelo celular. Não use para subir o device: o device é mantido pela tarefa agendada.
 ---
 
 # Subir o squad Guardian
 
-O squad roda em **sessões de fundo** — sem janela. Cada persona volta pelo
-`claude --bg --resume <sessionId>`, **sem mais nada**, retomando **por
-identidade** e não por data. O nome, o `--add-dir` e o modelo voltam sozinhos,
-das opções salvas da própria sessão — ver *"A regra que não se quebra"* abaixo,
-que é a instrução mais importante deste arquivo.
+Desde **14/09/2026** as dez rodam em **Remote Control**, em processo oculto:
+
+```
+claude --remote-control <Nome> --resume <sessionId>
+```
+
+É esse comando que cria a conversa do lado do servidor — e é por isso que **as
+onze aparecem na lista de sessões do celular**. Mesma sessão, mesmo id, mesma
+história. A Vision é a única exceção de forma: ela é de fundo e já nasceu no
+app, então já tinha ponte.
 
 Dois scripts, e a diferença importa:
 
 | | |
 |---|---|
-| `C:\Software\GeoCloud\subir-squad.ps1` | **sobe** as sessões em fundo. É o padrão |
-| `C:\Software\GeoCloud\abrir-squad.ps1` | **abre abas** anexando às que já rodam. Só quando pedirem para *ver* |
+| `C:\Software\GeoCloud\subir-squad.ps1` | **sobe** as sessões ocultas. É o padrão |
+| `C:\Software\GeoCloud\abrir-squad.ps1` | **abre abas** reerguendo as mesmas sessões. Só quando pedirem para *ver* |
 
-## O padrão: subir em fundo
+## O padrão: subir oculto
 
 ```powershell
 powershell -ExecutionPolicy Bypass -NoProfile -File C:\Software\GeoCloud\subir-squad.ps1 -Conferir
@@ -33,11 +38,45 @@ Depois, se houver alguma a subir:
 powershell -ExecutionPolicy Bypass -NoProfile -File C:\Software\GeoCloud\subir-squad.ps1
 ```
 
-Ele **confere sozinho no fim** e diz `conferido: as 12 estao de pe` ou
+Ele **confere sozinho no fim** e diz `conferido: as 11 estao de pe` ou
 `NAO subiram: <nomes>`. Relate o que ele disser, literalmente.
 
-**Não precisa de guarda contra duplicata**: o script checa cada persona pela
-linha de comando (`-n <Nome>`) antes de subir, e pula as que já estão de pé.
+**Não precisa de guarda contra duplicata**: antes de subir, o script checa cada
+persona pelas linhas de comando dos processos vivos — tanto `-n <Nome>` (fundo)
+quanto `--remote-control <Nome>` (celular) — e pula as que já estão de pé.
+
+## A regra que não se quebra: nada de redirecionar a saída
+
+`--remote-control ... --resume <id>` **só funciona se o processo nascer com
+terminal**. Redirecionar stdout ou stderr tira o terminal, e o claude cai no
+caminho headless (`--print`), que exige prompt. O sintoma é esta mensagem:
+
+```
+Error: No deferred tool marker found in the resumed session. Either the session
+was not deferred, the marker is stale (tool already ran), or it exceeds the
+tail-scan window. Provide a prompt to continue the conversation.
+```
+
+**A mensagem engana.** Ela fala de marcador e de janela de varredura, e faz
+perder horas conferindo transcript. A causa não está no arquivo — está em como
+o processo nasceu. No binário ela vive entre as mensagens de `--print` sobre
+stdin e prompt; foi assim que o diagnóstico fechou, em 14/09.
+
+Duas consequências práticas:
+
+- `Start-Process ... -RedirectStandardError <arquivo>` **quebra** a subida.
+  Confira o desfecho pelo processo (`$proc.HasExited`) e pela conferência final,
+  que lê as linhas de comando.
+- Dar prompt posicional **não resolve**: o claude roda uma volta só, imprime a
+  resposta e sai. A conversa chega a aparecer no celular e morre em seguida.
+
+## A outra regra: `--resume` sem flag no fundo
+
+Sessão de fundo guarda as **próprias** opções (`-n`, `--add-dir`, `--model`).
+Passar qualquer flag no resume não as sobrescreve — **forka uma cópia** com id
+novo. A saída certa é `woke session <id> with its saved options`. Se aparecer
+`started a copy as <novo>`, o id do mapa está errado — **relate, não adote a
+cópia**.
 
 ## Se pedirem para ver as janelas
 
@@ -45,99 +84,74 @@ linha de comando (`-n <Nome>`) antes de subir, e pula as que já estão de pé.
 powershell -ExecutionPolicy Bypass -NoProfile -File C:\Software\GeoCloud\abrir-squad.ps1 -Sim
 ```
 
-Ele abre abas com `claude attach <id>` — **anexa às sessões que já rodam, não
-cria novas**. Por isso `-Sim` aqui é seguro.
+Para cada persona que está em Remote Control, ele **derruba o processo oculto e
+reabre o MESMO comando numa aba visível**. A sessão é a mesma, o id é o mesmo, a
+conversa continua no celular — e agora tem janela.
+
+**Nunca use `claude attach` numa persona de Remote Control.** Medido no Dante em
+14/09: o attach responde `Waking session ...` e sobe uma **segunda sessão viva
+sobre a mesma conversa** — ficaram três processos no mesmo id (o de remote
+control, um pty-host e um `--resume`). O `attach` continua correto para sessão
+de fundo; hoje só a Vision é de fundo.
 
 ## Como conferir, e com qual instrumento
 
-**`claude agents --json` lista só as sessões locais de fundo.** No desenho atual
-as doze são de fundo, então ele devolve as doze e é um instrumento honesto.
+**Sessão em Remote Control NÃO aparece no `claude agents --json`** — ela se
+registra do lado do servidor. Com o desenho atual, esse comando devolve **1**
+(a Vision) e isso é o certo, não defeito. Confira pelos dois:
 
-A ressalva é para quem estiver em **Remote Control**: essa sessão sai da lista.
-Medido em 13/09 — a Selma em Remote Control sumiu do `agents --json` e o total
-caiu para 11, continuando viva e alcançável por nome no `/agents`.
-
-> Correção de um diagnóstico antigo deste arquivo: ele dizia que
-> *"já aconteceu de devolver `1` com 11 de pé"* por causa do Remote Control.
-> **Não era isso.** Naquele episódio as onze estavam de fato mortas — eram
-> cópias que o daemon matou por não achar a sessão de origem. O `agents --json`
-> estava certo; a leitura é que estava errada.
-
-Confira pelos dois:
-
-1. **`/agents`** — a lista de pares, que mostra as `Remote Control`.
+1. **`/agents`** — a lista de pares, onde as dez aparecem como `Remote Control`.
 2. **A linha de comando dos processos**, que é o que o próprio script usa:
 
 ```powershell
 Get-CimInstance Win32_Process -Filter "Name='claude.exe'" |
-  ForEach-Object { if ($_.CommandLine -match '-n\s+(\S+)') { $matches[1] } } |
+  ForEach-Object { if ($_.CommandLine -match '--remote-control[= ](\S+)') { $matches[1] } } |
   Sort-Object -Unique
 ```
 
-O `-Unique` **não é enfeite**. Cada persona aparece em *duas* linhas de comando:
-o processo da sessão e o anfitrião de pty que o daemon põe na frente
-(`--bg-pty-host ... -- claude --session-id ...`), que carrega a linha interna
-inteira. Sem `-Unique` a lista vem com 24 entradas para 12 personas — e a versão
-anterior deste trecho tinha exatamente esse defeito.
+Para as de fundo o padrão é `-n\s+(\S+)`, e aí o `-Unique` **não é enfeite**:
+cada uma aparece em duas linhas (a sessão e o pty-host que o daemon põe na
+frente).
 
-**Nunca conte processos `claude.exe`** para concluir: além do pty-host dobrando
-cada uma, o device tem processo próprio. O total ser maior que 12 é normal.
+**Nunca conte processos `claude.exe`** para concluir: o device tem processo
+próprio e o pty-host dobra as de fundo. Total maior que 11 é normal.
 
 ## O que relatar sempre
 
 1. A lista do `-Conferir`, inteira, com quem estava `ja de pe` e quem foi subir.
 2. A conferência final do script, literal.
-3. A contagem pelo `/agents`.
-4. **Qualquer persona que não subiu**, nomeada. Não diga "quase todas".
+3. **Qualquer persona que não subiu**, nomeada. Não diga "quase todas".
 
-## A regra que não se quebra: `--resume` sem flag
+## O `sessoes.json` precisa estar certo
 
-Uma sessão de fundo guarda as **próprias** opções (`-n`, `--add-dir`,
-`--model`). Passar qualquer flag no resume não as sobrescreve — **forka uma
-cópia** com id novo, e cópia de sessão que não é achada morre em ~10s.
+É o mapa persona → `sessionId`. Se ele sumir, o `abrir-squad` cai para
+`--continue`, que escolhe **pela data** — e aí uma janela pode voltar na conversa
+errada sem avisar. O script avisa; **não ignore esse aviso**.
 
-Nunca acrescente flags ao comando do script. A saída certa é
-`woke session <id> with its saved options`. Se aparecer
-`started a copy as <novo>`, o id do mapa está errado — **relate, não adote a
-cópia**.
+**Não regenere o `sessoes.json` por conta própria. Se estiver errado, relate.**
 
-Quando uma não sobe, o motivo está escrito em `~/.claude/daemon.log`:
+Duas armadilhas medidas em 14/09:
 
-```
-bg settled <id> (crashed): source session <origem> not found
-```
+- **O mapa tinha uma persona que não existe.** A entrada `GeoCloudAI` não era
+  persona nenhuma: **`GeoCloudAI` é o nome do DEVICE** — é o que aparece em
+  `·✔︎· Ready · GeoCloudAI` no log do device e no app. A conversa por trás
+  daquele slot era uma janela antiga do Jarvis, que se apresentava como
+  *"Jarvis, janela 2"*. Entrada removida. O squad são **11**: Vision, Jarvis,
+  Breno, Otavio, Tomas, Rui, Dante, Selma, Livia, Flavia, Marta.
+- **Uma persona pode ter mais de uma conversa, e só uma tem a ponte.** Resumir a
+  errada põe a persona de pé numa conversa NOVA e vazia, e a que o usuário vê no
+  celular fica **desconectada**. Foi o que aconteceu com o Dante: subi um fork
+  (`caf11f81`, ponte com `lastSequenceNum: 0`) em vez da conversa real
+  (`90977cbb`, 2143 sequências). No celular ele apareceu desconectado.
 
-Isso significa que o `--resume` foi chamado de um diretório cuja pasta
-`~/.claude/projects/<dir-codificado>/` não contém `<origem>.jsonl`.
+  **Como escolher**: a conversa certa é a que tem linha `"type":"bridge-session"`
+  com `lastSequenceNum` alto no `.jsonl`. Fork recém-criado tem 0.
 
-## Duas coisas que este desenho não resolve
+## Uma coisa que este desenho não resolve
 
-**Sessão de fundo não tem quem responda a pedido de permissão.** Ela fica parada
-em silêncio até alguém atender — do celular, ou dando `claude attach`. Se uma
-persona parecer travada, é a primeira hipótese.
-
-**O `sessoes.json` precisa estar atualizado.** É o mapa persona → `sessionId`.
-Se ele sumir, o `abrir-squad` cai para `--continue`, que escolhe **pela data** —
-e aí uma janela pode voltar na conversa errada sem avisar. O script avisa quando
-isso acontece; **não ignore esse aviso**.
-
-## Decidido: as personas não aparecem no celular, e está certo assim
-
-Só a **Vision** tem ponte com o app. As outras onze rodam em segundo plano e
-**não** aparecem na lista de sessões do celular. Isso é decisão de 13/09/2026,
-não defeito: as aprovações estão centralizadas na Vision, e o usuário recusou
-a alternativa por causa da poluição na lista.
-
-**Não troque o `claude attach <id>` do `abrir-squad.ps1`.** Já foi proposto e
-recusado. Para o registro, com o que foi medido:
-
-- `attach` é local — **não** cria ponte.
-- `claude remote-control --session-id <id-de-fundo>` não serve: aquele id é de
-  sessão de Remote Control.
-- O que funcionaria: `claude --remote-control <Nome> --resume <id>`. Testado na
-  Selma, ida e volta completa, id preservado, sem device extra. O custo é que
-  a sessão passa a viver presa ao terminal — fechar a janela encerra — e sai do
-  `claude agents --json` (mas segue alcançável por nome, como `Remote Control`).
+**Sessão oculta não tem quem responda a pedido de permissão** na máquina. Ela
+fica parada em silêncio até alguém atender — do celular, ou abrindo a janela
+pelo `abrir-squad`. Se uma persona parecer travada, é a primeira hipótese.
 
 ## O que este skill não faz
 
@@ -145,5 +159,4 @@ recusado. Para o registro, com o que foi medido:
   Se o device estiver fora, é essa tarefa que falhou, e o log está em
   `C:\Software\GeoCloud\_device-log\`.
 - **Não fecha nem mata nada** para "limpar" antes de subir.
-- **Não regenera o `sessoes.json`.** Se ele estiver errado, relate — não
-  reescreva por conta própria: um id errado faz a persona voltar noutra conversa.
+- **Não regenera o `sessoes.json`.**
