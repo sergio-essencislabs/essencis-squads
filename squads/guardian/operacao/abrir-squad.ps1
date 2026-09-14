@@ -77,36 +77,30 @@ if ($SomenteDevice -and $Apenas) {
   throw "-SomenteDevice e -Apenas se contradizem: -SomenteDevice nao abre janela de persona nenhuma."
 }
 
-# Nome da aba -> diretorio de trabalho. A ordem aqui e a ordem das abas.
-$janelas = @(
-  @{ Nome = 'Vision';     Sub = '_wt_vision' }
-  @{ Nome = 'Jarvis';     Sub = '_wt_jarvis' }
-  @{ Nome = 'Breno';      Sub = '_wt_breno'  }
-  @{ Nome = 'Otavio';     Sub = '_wt_otavio' }
-  @{ Nome = 'Tomas';      Sub = '_wt_tomas'  }
-  @{ Nome = 'Rui';        Sub = '_wt_rui'    }
-  @{ Nome = 'Dante';      Sub = '_wt_dante'  }
-  @{ Nome = 'Selma';      Sub = '_wt_selma'  }
-  @{ Nome = 'Livia';      Sub = '_wt_livia'  }
-  @{ Nome = 'Flavia';     Sub = '_wt_flavia' }
-  @{ Nome = 'Marta';      Sub = '_wt_marta'  }
-  @{ Nome = 'GeoCloudAI'; Sub = 'GeoCloudAI' }
-) | ForEach-Object { $_.Dir = Join-Path $Base $_.Sub; [pscustomobject]$_ }
-
-# Casar cada persona ao sessionId do mapa, para poder ANEXAR em vez de criar.
-# Sem o mapa, o script cai no comportamento antigo (--continue) e diz isso.
+# A lista de janelas vem do `sessoes.json`, que e o mapa que o subir-squad usa.
+# Ela ERA fixa aqui dentro, e isso custou caro em 14/09: o mapa perdeu a entrada
+# `GeoCloudAI` (que nunca foi persona -- e o nome do DEVICE), mas a lista fixa
+# continuou com ela. Sem sessionId, a aba caiu em `claude --continue -n
+# GeoCloudAI`, que escolhe a conversa pela DATA e CRIA sessao: nasceu uma sessao
+# solta sobre uma janela velha do Jarvis, exatamente o que estes scripts existem
+# para nao fazer.
+#
+# Duas listas para a mesma verdade sempre divergem. Agora ha uma so, e o
+# diretorio tambem vem do mapa -- a lista fixa dizia `_wt_vision` para a Vision,
+# que na verdade trabalha em `C:\Software\GeoCloud`.
 $mapaSessoes = 'C:\Software\GeoCloud\sessoes.json'
-if (Test-Path -LiteralPath $mapaSessoes) {
-  $cru = Get-Content -LiteralPath $mapaSessoes -Raw -Encoding UTF8 | ConvertFrom-Json
-  $porNome = @{}
-  foreach ($x in $cru) { $porNome[$x.nome] = $x.sessionId }
-  foreach ($j in $janelas) {
-    $j | Add-Member -NotePropertyName SessionId -NotePropertyValue $porNome[$j.Nome] -Force
-  }
-} else {
-  Write-Warning "sessoes.json nao encontrado -- as abas vao usar --continue (escolhe pela DATA)."
-  foreach ($j in $janelas) { $j | Add-Member -NotePropertyName SessionId -NotePropertyValue $null -Force }
+if (-not (Test-Path -LiteralPath $mapaSessoes)) {
+  throw "sessoes.json nao encontrado em $mapaSessoes -- sem ele nao da para saber quais janelas abrir nem em que conversa. Nao invento a lista."
 }
+$cru = Get-Content -LiteralPath $mapaSessoes -Raw -Encoding UTF8 | ConvertFrom-Json
+$janelas = @($cru | ForEach-Object {
+  [pscustomobject]@{
+    Nome      = $_.nome
+    Dir       = ($_.dir -replace '/', [string][char]92)
+    SessionId = $_.sessionId
+  }
+})
+if ($janelas.Count -eq 0) { throw "sessoes.json esta vazio." }
 
 if ($SomenteDevice) { $janelas = @() }
 
