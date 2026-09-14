@@ -243,8 +243,11 @@ foreach ($j in $janelas) {
   # O id curto e o prefixo de 8 do sessionId (conferido: "id":"f78ac08c" para
   # "sessionId":"f78ac08c-b983-...").
   #
-  # O --title nao garante nada: o claude SOBRESCREVE o titulo da aba com o nome
-  # da sessao. Fica so como rotulo do instante anterior ao claude subir.
+  # O `--title` sozinho NAO segura o nome: o programa que roda na aba
+  # sobrescreve o titulo por sequencia de escape, e em 14/09 o resultado foi
+  # todas as abas chamadas "Vision" -- justamente o contrario do que o script
+  # promete. `--suppressApplicationTitle` manda o Windows Terminal IGNORAR o
+  # titulo que a aplicacao escreve, e ai o `--title` vale.
   # Tres caminhos, e a ordem importa:
   #   1. em Remote Control -> derruba o oculto e reabre o MESMO comando aqui;
   #   2. de fundo com id   -> `attach`, que anexa e nao cria nada;
@@ -257,7 +260,7 @@ foreach ($j in $janelas) {
   elseif ($j.SessionId) { $cmdAba = "claude attach $($j.SessionId.Substring(0,8))" }
   else                  { $cmdAba = "claude --continue -n $($j.Nome)" }
   $wtArgs.AddRange([string[]]@(
-    'new-tab', '--title', $j.Nome, '-d', $j.Dir,
+    'new-tab', '--suppressApplicationTitle', '--title', $j.Nome, '-d', $j.Dir,
     'powershell', '-NoExit', '-Command', $cmdAba
   ))
 }
@@ -282,7 +285,7 @@ if (-not $SemDevice) {
     # Fixar o nome faz a subida de agora e a de ontem terem o MESMO rotulo.
     if ($DeviceNome) { $cmdDevice += " --name $DeviceNome" }
     $wtArgs.AddRange([string[]]@(
-      'new-tab', '--title', 'device', '-d', $DeviceDir,
+      'new-tab', '--suppressApplicationTitle', '--title', 'device', '-d', $DeviceDir,
       'powershell', '-NoExit', '-Command', $cmdDevice
     ))
   } else {
