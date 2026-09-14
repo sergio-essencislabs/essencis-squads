@@ -19,12 +19,13 @@ e o modelo voltam sozinhos, das opções salvas da própria sessão.
 14/09/2026, depois de as três alternativas terem sido tentadas e medidas. As
 aprovações estão centralizadas na Vision.
 
-Dois scripts, e a diferença importa:
+Três scripts, e a diferença importa:
 
 | | |
 |---|---|
 | `C:\Software\GeoCloud\subir-squad.ps1` | **sobe** as sessões em fundo. É o padrão |
 | `C:\Software\GeoCloud\abrir-squad.ps1` | **abre abas** anexando às que já rodam. Só quando pedirem para *ver* |
+| `C:\Software\GeoCloud\estado-squad.ps1` | **só lê** — quem está vivo/dormente, tokens, model/effort/autocompact, RAM, tarefa agendada. Rode antes de relatar estado, em vez de juntar 3-4 comandos à mão |
 
 ## O padrão: subir em fundo
 
@@ -167,6 +168,26 @@ O roster grava `cwd = C:\Software\GeoCloud\_wt_vision` para a conversa do Dante
 (`90977cbb`), herdado de quando ela nasceu. O `--add-dir` e o transcript estão
 certos; o diretório de trabalho não. Consertar exige refazer a sessão. Deixado
 como está por decisão — mexer nisso em 14/09 foi o que o desconectou do celular.
+
+## Degradação de contexto: `--autocompact` fixado, `/clear` sob demanda
+
+Desde 15/09/2026, todas as onze têm `--autocompact 500000` fixado em
+`respawnFlags` (50% dos 1M de janela do Sonnet 5) — dispara compactação
+automática por tamanho real, sem depender de boot nem de comando externo.
+Detalhe técnico e o porquê das alternativas descartadas:
+[[guardian-contexto-clear-vs-autocompact]].
+
+Se o usuário quiser `/clear` numa persona específica: `abrir-squad.ps1 -Sim`
+abre a aba já anexada (não cria sessão), e ele digita `/clear` lá dentro. Não
+existe (e não pode existir) forma de eu disparar isso remotamente — nem por
+`SendMessage`, nem por API. Depois do `/clear`, a sessão continua viva e
+alcançável normalmente, sem precisar de "acordar" como se fosse aposentada.
+
+**Identidade de cada persona sobrevive a isso** porque, desde 15/09, cada
+worktree tem um `CLAUDE.md` local apontando para o `.agent.md` dela no hub
+(`squads/guardian/agents/<papel>.agent.md`) — ver
+[[guardian-identidade-por-arquivo]]. Antes disso, "quem a persona é" só vivia
+na conversa, e um `/clear` a apagaria.
 
 ## O que este skill não faz
 
