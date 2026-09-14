@@ -170,8 +170,11 @@ como está por decisão — mexer nisso em 14/09 foi o que o desconectou do celu
 
 ## O que este skill não faz
 
-- **Não sobe o device.** Isso é da tarefa agendada `Guardian - manter de pe`.
-  Se o device estiver fora, é essa tarefa que falhou, e o log está em
+- **Não sobe o device nem a Vision.** Isso é da tarefa agendada `Guardian -
+  manter de pe`, que desde 14/09 cuida **só** do device e da Vision, a cada 5
+  minutos, no logon e ao voltar de suspensão. As outras dez ficam dormentes de
+  propósito — quem as acorda é a Vision, antes de cada despacho. Se o device ou
+  a Vision estiverem fora, é essa tarefa que falhou, e o log está em
   `C:\Software\GeoCloud\_device-log\`.
 - **Não fecha nem mata nada** para "limpar" antes de subir.
 - **Não regenera o `sessoes.json`.**
