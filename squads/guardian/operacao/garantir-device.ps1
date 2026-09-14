@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SINOPSE
   Garante que o device (servidor de Remote Control) esteja de pe. Checa; se ja
   estiver rodando, nao faz nada; se nao estiver, sobe e registra em log.
@@ -82,7 +82,7 @@ if (-not (Test-Path -LiteralPath $DeviceDir)) {
 # O criterio e a LINHA DE COMANDO, nao o nome do processo: ha muitos claude.exe
 # na maquina e so um deles e o device.
 $vivo = @(Get-CimInstance Win32_Process -Filter "Name='claude.exe'" -ErrorAction SilentlyContinue |
-          Where-Object { $_.CommandLine -and $_.CommandLine -match 'remote-control' })
+          Where-Object { $_.CommandLine -and $_.CommandLine -match '(?<!-)remote-control' })
 
 if ($vivo.Count -gt 0) {
   Registrar ("ok: device ja rodando (PID " + (($vivo | ForEach-Object { $_.ProcessId }) -join ', ') + ")")
@@ -128,7 +128,7 @@ Start-Sleep -Seconds 8
 
 # Confirmar pelo estado, nao pelo fato de Start-Process ter retornado.
 $conf = @(Get-CimInstance Win32_Process -Filter "Name='claude.exe'" -ErrorAction SilentlyContinue |
-          Where-Object { $_.CommandLine -and $_.CommandLine -match 'remote-control' })
+          Where-Object { $_.CommandLine -and $_.CommandLine -match '(?<!-)remote-control' })
 
 if ($conf.Count -gt 0) {
   Registrar ("subiu: PID " + (($conf | ForEach-Object { $_.ProcessId }) -join ', ') + " | saida: $saida")

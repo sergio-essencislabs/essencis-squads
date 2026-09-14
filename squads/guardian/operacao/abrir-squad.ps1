@@ -182,7 +182,7 @@ if ($semId.Count -gt 0) {
 # dizer se abriria a aba ou nao.
 if (-not $SemDevice) {
   $deviceVivo = @(Get-CimInstance Win32_Process -Filter "Name='claude.exe'" -ErrorAction SilentlyContinue |
-                  Where-Object { $_.CommandLine -and $_.CommandLine -match 'remote-control' })
+                  Where-Object { $_.CommandLine -and $_.CommandLine -match '(?<!-)remote-control' })
   if ($deviceVivo.Count -gt 0) {
     Write-Host ""
     Write-Host ("device ja de pe (PID " + (($deviceVivo | ForEach-Object { $_.ProcessId }) -join ', ') +
