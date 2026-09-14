@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SINOPSE
   Garante que o device (servidor de Remote Control) esteja de pe. Checa; se ja
   estiver rodando, nao faz nada; se nao estiver, sobe e registra em log.
@@ -82,7 +82,7 @@ if (-not (Test-Path -LiteralPath $DeviceDir)) {
 # O criterio e a LINHA DE COMANDO, nao o nome do processo: ha muitos claude.exe
 # na maquina e so um deles e o device.
 $vivo = @(Get-CimInstance Win32_Process -Filter "Name='claude.exe'" -ErrorAction SilentlyContinue |
-          Where-Object { $_.CommandLine -and $_.CommandLine -match 'remote-control' })
+          Where-Object { $_.CommandLine -and $_.CommandLine -match '(?<!-)remote-control' })
 
 if ($vivo.Count -gt 0) {
   Registrar ("ok: device ja rodando (PID " + (($vivo | ForEach-Object { $_.ProcessId }) -join ', ') + ")")
@@ -100,9 +100,22 @@ if ($Conferir) {
 }
 
 # --- subir --------------------------------------------------------------------
-# Sem --name de proposito: o nome automatico ja e estavel por maquina, e fixar
-# nao acrescenta nada. Com --no-create-session-in-dir para o servidor nao
-# pre-criar uma sessao no proprio diretorio.
+# Sem --name, e agora com o motivo medido (14/09).
+#
+# O rotulo que aparece no app -- "GeoCloudAI · ops/device" -- NAO e o nome do
+# device nem coisa que o --name mude. E `<repositorio> · <branch>` do diretorio
+# onde o servidor sobe: `_device` aponta para Essencis-Labs/GeoCloudAI, na
+# branch ops/device. Testado: subir com `--name Essencis002` nao alterou o
+# rotulo em nada. O --name nomeia SESSAO, nao ambiente, e o prefixo automatico
+# de sessao ja e o hostname (Essencis002).
+#
+# Isso confundiu de verdade: o rotulo parecia uma persona e chegou a virar uma
+# entrada errada no sessoes.json. Nao e persona -- e o repositorio do device.
+# Para o rotulo mudar seria preciso subir o device em OUTRO repositorio, e o
+# custo e alto: as sessoes que o celular cria nascem como worktrees DESSE repo.
+#
+# `--no-create-session-in-dir`: o servidor nao pre-cria sessao no proprio
+# diretorio.
 $argumentos = @(
   'remote-control',
   '--spawn', $Spawn,
@@ -128,7 +141,7 @@ Start-Sleep -Seconds 8
 
 # Confirmar pelo estado, nao pelo fato de Start-Process ter retornado.
 $conf = @(Get-CimInstance Win32_Process -Filter "Name='claude.exe'" -ErrorAction SilentlyContinue |
-          Where-Object { $_.CommandLine -and $_.CommandLine -match 'remote-control' })
+          Where-Object { $_.CommandLine -and $_.CommandLine -match '(?<!-)remote-control' })
 
 if ($conf.Count -gt 0) {
   Registrar ("subiu: PID " + (($conf | ForEach-Object { $_.ProcessId }) -join ', ') + " | saida: $saida")

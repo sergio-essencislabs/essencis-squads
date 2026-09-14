@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SINOPSE
   Sobe o squad em SESSOES DE FUNDO -- sem janela, sem Windows Terminal.
   Cada persona volta pelo `claude --bg --resume <sessionId>`, SEM MAIS NADA.
@@ -160,6 +160,16 @@ function JaDePe([string]$nome, [string]$sid) {
     # `--resume <...\projects\...\<id>.jsonl> -n <Nome> --add-dir ...`.
     # Casar o `.jsonl` e seguro -- e o transcript que ela E, nao o que retomou.
     if ($sid -and $l -match ([regex]::Escape($sid) + "\.jsonl")) { return $true }
+    # Sessao em REMOTE CONTROL nao tem `-n` nem `--session-id`, e NAO aparece no
+    # `claude agents --json` -- ela se registra do lado do servidor. A linha dela
+    # e `--remote-control <Nome> --resume <id>`.
+    #
+    # Sem este ramo o script conclui que a persona caiu e sobe uma COPIA EM
+    # FUNDO por cima da que esta viva. Aconteceu em 14/09 as 06:47: as doze
+    # foram convertidas para Remote Control e a tarefa agendada ressuscitou as
+    # doze em fundo 15 minutos depois -- nove Remote Control e dez de fundo
+    # simultaneas, duas sessoes vivas sobre a mesma conversa.
+    if ($l -match ("--remote-control[= ]" + [regex]::Escape($nome) + "(\s|$)")) { return $true }
   }
   return $false
 }
@@ -216,14 +226,48 @@ foreach ($p in $subir) {
   # errado da `bg settled <id> (crashed): source session ... not found` -- foi
   # exatamente isso que derrubou as doze no teste de logon, e o motivo estava
   # escrito no ~/.claude/daemon.log o tempo todo.
-  Push-Location -LiteralPath $p.dir
-  try {
-    $saida = & $ClaudeExe --bg --resume $p.sessionId 2>&1
-  } finally {
-    Pop-Location
-    $ErrorActionPreference = $antes
-  }
-  $limpo = ($saida | Out-String) -replace ([regex]::Escape($ESC) + '\[[0-9;]*[a-zA-Z]'), ''
+  # TODAS EM FUNDO, com ponte -- desenho de 14/09, depois de tres voltas.
+  #
+  # O que se sabia de manha: `--bg` sobe a sessao mas ela nao aparece no
+  # celular, e `--remote-control <Nome> --resume <id>` poe. Entao as dez foram
+  # para Remote Control. So que Remote Control tem dois custos que so aparecem
+  # no uso:
+  #   - a sessao vive presa ao processo: fechar a janela dela a MATA, e ela
+  #     some do celular junto (foi o que o Sergio viu);
+  #   - `claude attach` nela DUPLICA -- medido na Marta com terminal de
+  #     verdade: a de Remote Control continuou viva e o attach acordou uma
+  #     segunda sessao na mesma conversa (pty-host + `--resume`).
+  #
+  # O que fechou a questao: **a ponte sobrevive a volta para o fundo**. Uma vez
+  # que a conversa passou por Remote Control uma vez, ela tem ponte; devolver a
+  # sessao para `--bg --resume <id>` MANTEM a persona no celular. Testado na
+  # Marta em 14/09 e confirmado pelo Sergio olhando o aparelho, e so depois
+  # aplicado as outras nove.
+  #
+  # Entao o desenho e uniforme, e e o mesmo da Vision desde sempre:
+  #   - subir e manter    -> `--bg --resume <id>`, sem flag nenhuma;
+  #   - Remote Control    -> so para CRIAR a ponte de uma persona que nao tem
+  #                          (uma passagem so, e depois de volta para o fundo);
+  #   - ver a janela      -> `claude attach`, que anexa sem criar e nao derruba
+  #                          a sessao quando a aba fecha.
+  #
+  # Se um dia uma persona sumir do celular, o conserto e uma passagem por
+  # `--remote-control <Nome> --resume <id>` -- e, ai sim, SEM redirecionar
+  # stdout nem stderr: redirecionar tira o terminal do processo e o claude cai
+  # no caminho headless (`--print`), devolvendo esta mensagem enganosa:
+  #
+  #   Error: No deferred tool marker found in the resumed session. Either the
+  #   session was not deferred, the marker is stale (tool already ran), or it
+  #   exceeds the tail-scan window. Provide a prompt to continue the conversation.
+  #
+  # Ela fala de marcador e de janela de varredura, mas a causa nao esta no
+  # transcript -- esta em como o processo nasceu. No binario a string vive
+  # entre as mensagens de `--print` sobre stdin e prompt.
+  Push-Location $p.dir
+  $saida = (& $ClaudeExe --bg --resume $p.sessionId 2>&1 | Out-String)
+  Pop-Location
+  $ErrorActionPreference = $antes
+  $limpo = ($saida -replace ([char]27 + '\[[0-9;]*[a-zA-Z]'), '')
 
   # PASSO 3 -- ler a resposta. Sao tres desfechos, e so um e o certo.
   if ($limpo -match 'woke session') {
@@ -259,6 +303,14 @@ foreach ($p in $subir) {
 # "bg spawned". Conferir aos 6 segundos dava as 12 de pe e mentia.
 Start-Sleep -Seconds 20
 
+# CONFERIR PELOS DOIS INSTRUMENTOS, e o segundo nao e redundancia.
+#
+# `claude agents --json` ve SO as sessoes de fundo. Sessao em Remote Control se
+# registra do lado do servidor e NAO entra nessa lista. Conferir so por ele,
+# depois que o squad passou a subir em Remote Control, faz o script concluir que
+# as doze cairam e subir doze DUPLICATAS por cima das vivas -- foi exatamente
+# isso em 14/09 as 06:47: nove Remote Control e dez de fundo ao mesmo tempo,
+# duas sessoes vivas sobre a mesma conversa.
 $ErrorActionPreference = 'Continue'
 $agJson = (& $ClaudeExe agents --json 2>$null | Out-String)
 $ErrorActionPreference = 'Stop'
@@ -269,8 +321,21 @@ try {
   Registrar "ATENCAO: nao consegui ler 'claude agents --json' para conferir."
 }
 
+# Segundo instrumento: a linha de comando. E o unico que enxerga Remote Control.
+$linhasFim = @(Get-CimInstance Win32_Process -Filter "Name='claude.exe'" -ErrorAction SilentlyContinue |
+               ForEach-Object { $_.CommandLine } | Where-Object { $_ })
+$emRC = @{}
+foreach ($l in $linhasFim) {
+  if ($l -match '--remote-control[= ](\S+)') { $emRC[$matches[1]] = $true }
+}
+
 $naoSubiu = @()
-foreach ($p in $mapa) { if (-not $vivas.ContainsKey([string]$p.nome)) { $naoSubiu += $p.nome } }
+foreach ($p in $mapa) {
+  if (-not $vivas.ContainsKey([string]$p.nome) -and -not $emRC.ContainsKey([string]$p.nome)) {
+    $naoSubiu += $p.nome
+  }
+}
+Registrar ("de pe: " + $emRC.Count + " em remote control, " + $vivas.Count + " em fundo")
 Write-Host ""
 
 # Estar viva nao basta: tem de estar viva NO DIRETORIO CERTO.
@@ -295,7 +360,11 @@ if ($lugarErrado.Count -gt 0) {
 
 if ($naoSubiu.Count -eq 0) {
   Registrar ("conferido: as " + $mapa.Count + " estao de pe.")
-  Write-Host "Para ver uma delas: claude attach <id>   |   lista: claude agents"
+  # NAO sugerir `claude attach` aqui: em persona de Remote Control ele sobe uma
+  # SEGUNDA sessao viva sobre a mesma conversa (medido no Dante em 14/09). Quem
+  # quer ver as janelas roda o abrir-squad, que derruba o processo oculto e
+  # reabre o MESMO comando numa aba.
+  Write-Host "Para ver as janelas: abrir-squad.ps1 -Sim   |   lista: claude agents (so as de fundo) e /agents"
   exit 0
 } else {
   Registrar ("NAO subiram: " + ($naoSubiu -join ', '))

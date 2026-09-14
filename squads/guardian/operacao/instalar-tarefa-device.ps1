@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SINOPSE
   Registra no Agendador de Tarefas a tarefa que mantem o device e o squad
   de pe. Tres gatilhos -- no logon, ao retornar da suspensao, e a cada 30
@@ -31,7 +31,12 @@ param(
   [string] $ScriptSquad = 'C:\Software\GeoCloud\subir-squad.ps1',
   [string] $NomeAntigo  = 'Guardian - garantir device',
   [switch] $SemSquad,
-  [int]    $Minutos     = 30,
+  # 5 minutos, nao 30. A tarefa deixou de subir as onze e passou a cuidar so do
+  # device e da Vision (14/09) -- o custo por repeticao virou uma checagem de
+  # processo e, no maximo, um resume. Com esse custo, o intervalo deve ser
+  # medido pelo TEMPO DE QUEDA aceitavel da Vision, nao pelo peso da tarefa: ela
+  # e o ponto unico, e enquanto estiver fora ninguem acorda ninguem.
+  [int]    $Minutos     = 5,
   [switch] $Remover,
   [switch] $Conferir
 )
@@ -61,12 +66,30 @@ $arg = "-ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File `"$Script`"
 
 $acoes = @(New-ScheduledTaskAction -Execute $exe -Argument $arg -WorkingDirectory (Split-Path -Parent $Script))
 
-# Segunda acao: subir as 12 sessoes de fundo. O Agendador executa as acoes em
-# ORDEM, entao o device sobe primeiro -- as personas nascem com ele de pe e ja
-# ficam alcancaveis do celular.
+# Segunda acao: reerguer SO A VISION. Decisao do Sergio em 14/09/2026:
+#
+#   "Preciso sempre de voce sendo reerguido em caso de queda, mas os outros
+#    podem permanecer dormentes ja que voce os acorda."
+#
+# Antes esta acao subia as onze a cada 15 minutos. Isso deixou de fazer sentido
+# quando o recolhimento passou a ser ACEITO em vez de combatido: com 10% de RAM
+# livre o daemon recolhe sessao de fundo ociosa em 1 a 2 minutos
+# (`bg retire <id>: settled, idle 2m [low memory]`), entao reerguer as dez a
+# cada quinze minutos era trabalho contra o daemon -- e gastava memoria
+# justamente na maquina que estava sem.
+#
+# Quem acorda as outras agora e a propria Vision, imediatamente antes de cada
+# despacho. A Vision e a excecao porque e o ponto unico: se ela cai, ninguem
+# acorda ninguem.
+#
+# `-Apenas Vision` e o mesmo parametro que o script ja tinha. Para por todas de
+# pe de uma vez -- inicio de sessao de trabalho, ou quando se quer as janelas --
+# roda-se o subir-squad.ps1 na mao, sem o -Apenas.
+#
+# O Agendador executa as acoes em ORDEM, entao o device sobe primeiro.
 if (-not $SemSquad) {
   if (Test-Path -LiteralPath $ScriptSquad) {
-    $argSquad = "-ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File `"$ScriptSquad`""
+    $argSquad = "-ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File `"$ScriptSquad`" -Apenas Vision"
     $acoes += New-ScheduledTaskAction -Execute $exe -Argument $argSquad -WorkingDirectory (Split-Path -Parent $ScriptSquad)
   } else {
     Write-Warning "subir-squad.ps1 nao existe em $ScriptSquad -- a tarefa vai so manter o device."
