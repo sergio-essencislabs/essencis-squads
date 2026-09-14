@@ -226,69 +226,48 @@ foreach ($p in $subir) {
   # errado da `bg settled <id> (crashed): source session ... not found` -- foi
   # exatamente isso que derrubou as doze no teste de logon, e o motivo estava
   # escrito no ~/.claude/daemon.log o tempo todo.
-  # MODO REMOTE CONTROL, por decisao do Sergio em 14/09.
+  # TODAS EM FUNDO, com ponte -- desenho de 14/09, depois de tres voltas.
   #
-  # `--bg` sobe a sessao mas ela NAO aparece no celular: a ponte com o app e o
-  # identificador da conversa na nuvem, e sessao criada por script aqui nao tem
-  # nenhuma. Medido em 14/09: das doze, so a Vision tinha `bridgeSessionId`, e
-  # ele e identico ao endereco desta conversa no app -- ela aparece porque
-  # NASCEU la, nao porque e de fundo.
+  # O que se sabia de manha: `--bg` sobe a sessao mas ela nao aparece no
+  # celular, e `--remote-control <Nome> --resume <id>` poe. Entao as dez foram
+  # para Remote Control. So que Remote Control tem dois custos que so aparecem
+  # no uso:
+  #   - a sessao vive presa ao processo: fechar a janela dela a MATA, e ela
+  #     some do celular junto (foi o que o Sergio viu);
+  #   - `claude attach` nela DUPLICA -- medido na Marta com terminal de
+  #     verdade: a de Remote Control continuou viva e o attach acordou uma
+  #     segunda sessao na mesma conversa (pty-host + `--resume`).
   #
-  # `--remote-control <Nome> --resume <id>` cria a conversa do lado do servidor:
-  # mesma sessao, mesmo id, mesma historia, e a persona aparece no celular.
-  # Testado na Selma em 13/09 (ida e volta completa) e nas nove em 14/09.
+  # O que fechou a questao: **a ponte sobrevive a volta para o fundo**. Uma vez
+  # que a conversa passou por Remote Control uma vez, ela tem ponte; devolver a
+  # sessao para `--bg --resume <id>` MANTEM a persona no celular. Testado na
+  # Marta em 14/09 e confirmado pelo Sergio olhando o aparelho, e so depois
+  # aplicado as outras nove.
   #
-  # `-WindowStyle Hidden` de proposito: em Remote Control a sessao vive presa ao
-  # processo, nao ao terminal. Oculto ela sobrevive sem janela -- medido.
+  # Entao o desenho e uniforme, e e o mesmo da Vision desde sempre:
+  #   - subir e manter    -> `--bg --resume <id>`, sem flag nenhuma;
+  #   - Remote Control    -> so para CRIAR a ponte de uma persona que nao tem
+  #                          (uma passagem so, e depois de volta para o fundo);
+  #   - ver a janela      -> `claude attach`, que anexa sem criar e nao derruba
+  #                          a sessao quando a aba fecha.
   #
-  # NAO redirecionar stdout nem stderr aqui. Redirecionar tira o terminal do
-  # processo, e sem terminal o claude entra no caminho headless (`--print`) --
-  # que exige prompt. O resultado e esta saida, medida em 14/09 nas duas que
-  # faltavam, e que custou a manha inteira:
+  # Se um dia uma persona sumir do celular, o conserto e uma passagem por
+  # `--remote-control <Nome> --resume <id>` -- e, ai sim, SEM redirecionar
+  # stdout nem stderr: redirecionar tira o terminal do processo e o claude cai
+  # no caminho headless (`--print`), devolvendo esta mensagem enganosa:
   #
   #   Error: No deferred tool marker found in the resumed session. Either the
   #   session was not deferred, the marker is stale (tool already ran), or it
   #   exceeds the tail-scan window. Provide a prompt to continue the conversation.
   #
-  # A mensagem induz ao erro: ela fala de marcador e de janela de varredura,
-  # mas a causa nao esta no transcript -- esta em como o processo nasceu. No
-  # binario ela vive entre as mensagens de `--print` sobre stdin e prompt, e e
-  # ai que o diagnostico se fecha. Sem redirecionamento, o mesmo comando com o
-  # mesmo id subiu na hora.
-  #
-  # Dar prompt posicional tambem NAO serve: o claude roda uma volta so, imprime
-  # a resposta e sai -- a conversa aparece no celular e morre em seguida.
-  #
-  # Como se confere o desfecho, entao, sem ter a saida em arquivo: pelo proprio
-  # processo. Se ele continua vivo depois da espera, a sessao subiu; se saiu, o
-  # codigo de saida e o que se tem. A conferencia de verdade e a do fim, que le
-  # as linhas de comando dos processos vivos.
-  #
-  # A VISION E A EXCECAO, e de proposito. Ela NASCEU no app, ja tem
-  # `bridgeSessionId` proprio e ja aparece no celular sendo de fundo -- nao
-  # precisa de Remote Control para isso. E o caminho de fundo dela e o unico
-  # provado atravessando reinicio (95 s do boot as doze de pe, medido em 13/09).
-  # Trocar o que funciona por um caminho nao testado, justamente na persona que
-  # coordena as outras, seria comprar risco sem comprar nada.
-  if ($p.nome -eq 'Vision') {
-    Push-Location $p.dir
-    $saida = (& $ClaudeExe --bg --resume $p.sessionId 2>&1 | Out-String)
-    Pop-Location
-    $ErrorActionPreference = $antes
-    $limpo = ($saida -replace ([char]27 + '\[[0-9;]*[a-zA-Z]'), '')
-  }
-  else {
-    $proc = Start-Process -FilePath $ClaudeExe `
-              -ArgumentList "--remote-control $($p.nome) --resume $($p.sessionId)" `
-              -WorkingDirectory $p.dir -WindowStyle Hidden -PassThru
-    Start-Sleep -Seconds 14
-    $ErrorActionPreference = $antes
-    if ($proc.HasExited) {
-      $limpo = "FALHOU: processo saiu com codigo $($proc.ExitCode)"
-    } else {
-      $limpo = "woke session $($p.sessionId) em remote control"
-    }
-  }
+  # Ela fala de marcador e de janela de varredura, mas a causa nao esta no
+  # transcript -- esta em como o processo nasceu. No binario a string vive
+  # entre as mensagens de `--print` sobre stdin e prompt.
+  Push-Location $p.dir
+  $saida = (& $ClaudeExe --bg --resume $p.sessionId 2>&1 | Out-String)
+  Pop-Location
+  $ErrorActionPreference = $antes
+  $limpo = ($saida -replace ([char]27 + '\[[0-9;]*[a-zA-Z]'), '')
 
   # PASSO 3 -- ler a resposta. Sao tres desfechos, e so um e o certo.
   if ($limpo -match 'woke session') {
