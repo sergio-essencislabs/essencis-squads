@@ -1,7 +1,7 @@
 ---
 id: GT-0144
 title: "Reconciliar o acervo de GTs: 70 pares que nunca existiram"
-status: active
+status: completed
 type: documentation
 achado_origem: "N/A — achado durante a varredura de numeração da Frente 1 do despacho da Vision (12/09/2026)"
 auditor_origem: "Tomás Ticket (varredura de numeração, Step 07)"
@@ -14,10 +14,10 @@ grupo_execucao: nao-despachavel
 depende_de: ["GT-0145", "GT-0146", "GT-0147"]
 owner: Sergio
 created_at: 2026-09-12
-updated_at: 2026-09-12
+updated_at: 2026-09-13
 affected_modules: [acervo-de-tasks]
 related_adrs: []
-contraparte: "GeoCloudAI/.agents/tasks/active/GT-0144-reconciliar-o-acervo-de-gts.md"
+contraparte: "GeoCloudAI/.agents/tasks/completed/GT-0144-reconciliar-o-acervo-de-gts.md"
 ---
 
 # GT-0144 — reconciliar o acervo de GTs: 70 pares que nunca existiram
@@ -326,7 +326,102 @@ mesclados. O que a revisão encontrou foi um defeito de datação no meu documen
 recorrência do defeito que ele documenta. A distinção importa porque é a diferença entre "a regra
 falhou de novo" e "minha medição estava mal ancorada" — e só a segunda é verdade.
 
+
+---
+
+## Fechamento — 13/09/2026
+
+**Esta GT fecha.** A regra que ela mesma escreveu era *"esta GT só fecha quando as três filhas
+fecharem"*, e a pré-condição está satisfeita — conferido, não presumido:
+
+| filha | hub (`origin/main`) | produto (`8cbc67e2`) |
+|---|---|---|
+| GT-0145 | `completed/` | `completed/` |
+| GT-0146 | `completed/` | `completed/` |
+| GT-0147 | `completed/` | `completed/` |
+
+### A pergunta desta GT foi respondida, e a resposta é melhor do que a hipótese
+
+A GT nasceu chamando o problema de **"70 pares que nunca existiram"**. A varredura final mostrou que
+esse título descreve o que foi encontrado no censo, mas **não** descreve o que sobrou:
+
+    ponteiros preenchidos no produto ........... 80
+      acham o par pelo NOME ..................... 80
+      não acham par nenhum ....................... 0
+
+**Nenhum par está faltando.** A reconciliação do acervo — que é a pergunta que esta GT existiu para
+responder — está **inteira**. O que resta é defeito de **forma** (três grafias em uso, nenhuma
+canônica) e de **estado de pasta** (ponteiro que ficou para trás quando o par andou para
+`completed/`), e nada disso é acervo faltando.
+
+**Ressalva, e ela não é decorativa.** Três ponteiros — `GT-0049`, `GT-0050`, `GT-0051` — apontam
+para **o próprio produto** em vez de para o hub, e **não resolvem**: dizem
+`.agents/tasks/active/`, e os três arquivos estão em `completed/` lá. Uma varredura **por número**
+os marca como saudáveis mesmo assim, porque o número existe aqui. Então "nenhum par está faltando"
+é verdade; **"todo ponteiro leva ao par" não é.** Achado da Lívia, registrado aqui porque o
+fechamento desta GT o herda.
+
+> **Correção de 13/09/2026.** Uma versão anterior deste parágrafo dizia que eles *"resolvem"*, que
+> *"quem os seguir cai no arquivo de onde saiu"*, e que apontavam para *"este mesmo repositório"* —
+> as três erradas: não resolvem em repositório nenhum, o auto-laço descrito não existe, e o
+> repositório para o qual apontam é o produto, não este. A mesma premissa sustentava `A = 24` na
+> GT-0151, corrigido para `27`.
+
+### O que esta GT não alcançou
+
+- **O sentido produto → hub nunca esteve no escopo de nenhum dos critérios daqui.** A CA-05, que
+  migrou para a GT-0145, cobria hub → produto. O outro sentido ficou sem dono até esta varredura
+  final, e é por isso que ele aparece só agora — não porque tenha regredido.
+- **A forma canônica do campo `contraparte:` não foi decidida aqui**, e não podia ser: decidir isso
+  é decisão do Sergio, não medição.
+- **Os 34 campos não foram corrigidos aqui.** Correção em massa de front-matter durante o
+  fechamento de um guarda-chuva misturaria medição com edição, que é o que torna número não
+  auditável depois.
+
+### Para onde vai o que sobrou
+
+**GT-0151** — forma canônica do ponteiro e os 34 campos do lado produto. Carrega os 24 atrasados, os
+16 absolutos (6 são as duas coisas) e os 3 auto-ponteiros, com critério próprio para cada grupo.
+
+O motivo pelo qual a GT-0151 existe **não é o número**: é que três janelas mediram este mesmo
+acervo de boa-fé e chegaram a **24 e 34**, sob **dois** predicados diferentes, e **nenhuma sabendo
+estar medindo uma pergunta diferente da outra**. Enquanto não houver forma canônica declarada,
+qualquer varredura futura escolhe sozinha o que conta como quebrado.
+
+**Correção a uma versão anterior deste parágrafo, e ela é do mesmo tipo que o documento denuncia.**
+Escrevi *"24, 34 e 46"*, como se fossem três números de três predicados. Eram **dois**: a Lívia e a
+Vision usaram o mesmo predicado — normalizar `org/repo` e resolver por caminho —, e o `46` não é um
+terceiro resultado, é **o complemento do 34** sobre os 80 ponteiros preenchidos. Somar um número a
+uma lista de divergências quando ele é o outro lado de um dos itens dela inventa uma divergência
+que não houve.
+
+### Achado posterior ao fechamento — o censo ganha uma quarta célula (GT-0153)
+
+Registrado em 13/09/2026, depois de esta GT fechar, porque **o achado é sobre o censo daqui** e o
+ponteiro precisa existir nos dois sentidos.
+
+O censo classificou o acervo em três células — **só-hub 39**, **só-produto 31**, **nos-dois 43**.
+Falta uma quarta, e ela **não podia** aparecer aqui: o censo enumera arquivos e cruza os dois
+lados, então uma entrega **sem arquivo em lado nenhum** é invisível para ele por construção.
+
+Existem **29** delas na janela 08–12/09 — derivação do Otávio, com controle positivo e com o
+artefato da heurística removido. Conferi três por conta própria: `GT-0054`, `GT-0100` e `GT-0105`
+não têm arquivo nem aqui nem no hub, e os merges que as entregaram (`#474`, `#544`, `#552`) estão
+depois da âncora `8ef54558`.
+
+**Isto não contradiz a conclusão desta GT.** *"Nenhum par está faltando"* continua verdadeiro
+**dentro do que esta GT media**: dos ponteiros que existem, nenhum aponta para par ausente. A
+GT-0153 diz outra coisa, de outra ordem — que **o conjunto medido era menor que o universo**.
+
+A distinção vale ser guardada, porque é a diferença entre um número errado e um número certo sobre
+um universo menor do que se supunha: nenhum predicado sobre `.agents/tasks/` revela a falta,
+porque a falta está **dentro do conjunto que ele varre**.
+
+Continuação: **GT-0153** — `squads/guardian/tasks/backlog/GT-0153-as-29-entregas-sem-arquivo-de-task.md`.
+
 ## Handoff
 Cunhada e promovida no mesmo despacho. Decisão do Sergio, via Vision, em 12/09/2026: mapear agora,
 reconciliar depois.
 LLML: não consultada (branch de integração, não `main`).
+
+**Fechada em 13/09/2026.** Continuação em **GT-0151**, que não roda em paralelo com a **GT-0149**.

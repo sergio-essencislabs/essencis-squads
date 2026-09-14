@@ -91,6 +91,9 @@ assumir — o usuário pode querer auditar o outro produto ou ambos.
        `planejar-implementacao.md`: Jarvis decide sozinho quais camadas agem, com o mesmo ritual
        gradual de opções para ambiguidade arquitetural; se justificar, redige um `GADR` via
        `redigir-gadr.md`. Correção/pedido que atravessa camadas e precisa do hub de tasks (`squads/guardian/tasks/`) → pipeline completo, não ad-hoc.
+       **Quando acionar o Jarvis (revisto em 13/09/2026):** núcleo compartilhado de Conta/Identidade,
+       mais de uma camada, ou decisão que exige GADR. Pedido de **camada única e evidente** vai
+       direto ao dono do papel — ver `chief-architect.agent.md` § "Quando Jarvis é acionado".
      - **Dante Débito** (tech-debt-auditor) — `auditar-divida-tecnica.md` com escopo sintetizado
        (produto + área).
      - **Selma Segurança** (security-auditor) — `auditar-seguranca.md` com escopo sintetizado
