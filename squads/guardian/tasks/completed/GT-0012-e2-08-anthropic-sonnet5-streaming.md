@@ -1,7 +1,7 @@
 ---
 id: GT-0012
 title: "🚫 BLOCKER — Configurar API Anthropic própria, migrar para Sonnet 5 e habilitar streaming SSE"
-status: active
+status: completed
 type: feature
 achado_origem: "N/A — pedido direto de implementação"
 auditor_origem: "Jarvis — planejamento"
@@ -125,3 +125,26 @@ Bloqueado externamente — aguardando `ANTHROPIC_API_KEY`/confirmação de `BASE
 
 ## Handoff
 Fora de qualquer onda até desbloquear; ao desbloquear, entra na Onda 1 (é backend puro, sem dependência com o resto do projeto frontend).
+
+---
+
+## Reconciliacao - 21/09/2026 (GT-0156)
+
+**Obsoleto - cancelado por decisao do dono do produto, nao implementado.**
+
+Anthropic foi removida por completo do produto por ordem explicita do Sergio. Decisao registrada em
+`GeoCloudAI/.agents/decisions/004-openai-como-unico-provedor-de-llm.md` (`status: accepted`,
+`date: 2026-09-09`, `deciders: [sergio.mendes]`, supersede `ADR-002`). Commit `f9cecc26` (2026-09-09,
+GT-0040) removeu `AnthropicChatClient.cs`; nenhum arquivo-fonte Anthropic resta em `origin/main`.
+Configuracao atual: `Provider: "OpenAI"`, `Model: "gpt-5.6-luna"`.
+
+O streaming SSE (Parte 3 desta GT) foi entregue, mas contra OpenAI, nao Anthropic:
+`api/src/Back.Application/Services/ChatClient.cs:380` (`ParseStreamAsync`), com 5 testes versionados
+em `api/tests/Back.UnitTests/Ai/ChatClientTests.cs`. A intencao dos CA-13..CA-17 foi atendida por
+outra rota - nao carimbo esses CAs como cumpridos, porque eram Anthropic-especificos.
+
+Achado lateral, nao corrigido aqui: `squads/guardian/decisions/GADR-0003-anthropic-thinking-blocks-sdk.md`
+continua `status: accepted`, decidindo sobre um SDK Anthropic que nao existe mais no codigo. Candidato a
+`superseded` pela ADR-004 do produto - fica para o Sergio confirmar.
+
+Evidencia completa no relatorio da reconciliacao GT-0156.

@@ -1,7 +1,7 @@
 ---
 id: GT-0025
 title: "Portar barra lateral de marcação e profundidade do KoreGeo2"
-status: active
+status: completed
 type: feature
 achado_origem: "N/A — pedido direto de implementação"
 auditor_origem: "Jarvis — planejamento"
@@ -133,3 +133,19 @@ Nenhuma divergência de escopo além das decisões acima.
 
 ## Handoff
 Depende de GT-0023 (concluída via GADR-0002). Overlap real com GT-0024 (#334, mesmo arquivo, trabalho paralelo) documentado no PR #365 — GT-0024 reativa `loadDrillCores()`/`ngOnInit()`, este PR não toca essas linhas. Revisor humano deve decidir a ordem de merge entre #365, #356 (fix de specs legados) e o PR de GT-0024 quando existir; conflito textual esperado ser mínimo pois as regiões editadas não se sobrepõem.
+
+---
+
+## Reconciliacao - 21/09/2026 (GT-0156)
+
+**Resolvido, com prova em origin/main.** Commit `cc92fc10` (#365). Os 3 gaps portados, todos em
+`drill-hole-view-koregeo3.component.ts`: CA-04 -> `addAnnotationButtons:1093`/`updateAnnotationButtonsUI:1131`;
+CA-05 -> `highlightCore:1395`, `isHighlighted:1406`, `onImageHover:1410`, `updateCoreHighlightOverlay:1446`;
+CA-06 -> `getFallbackImageUrl:674`, `resolveCoreImage:684-690`. Depende de GT-0024 (reativacao),
+satisfeita. Os 6 CAs ja vinham marcados [x] no arquivo, com `status_atualizado: completed` - a
+contradicao de o arquivo continuar em active/ esta resolvida por este movimento.
+
+Risco residual: mesmo do GT-0024 - sem teste versionado, sem comparacao visual com KoreGeo2
+executada e registrada.
+
+Evidencia completa no relatorio da reconciliacao GT-0156.

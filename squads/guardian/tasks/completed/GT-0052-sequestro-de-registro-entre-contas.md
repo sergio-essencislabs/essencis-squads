@@ -1,7 +1,7 @@
 ---
 id: GT-0052
 title: "Sequestro de registro entre contas: a guarda decidia pelo corpo da requisicao"
-status: active
+status: completed
 type: security
 severidade: critica
 owner: sergio-essencislabs
@@ -109,3 +109,20 @@ leitura, não de escrita) e misturá-la aqui tornaria os dois lotes irrevisávei
   rede.
 - `Back.UnitTests` 287/287, `Back.IntegrationTests` 53/53, `Back.ApiTests` 114/115 (a que falta é
   a varredura universal, que exige `CAMPANHA_INVENTORY` no ambiente).
+
+---
+
+## Reconciliacao - 21/09/2026 (GT-0156)
+
+**Resolvido - a deriva anunciada (hub active x produto completed) esta confirmada e agora
+corrigida.** Commits `0bba7088` + `3507143f` (PR #469, merge `f53e9e90`). Issue #467 CLOSED. Codigo
+que demonstra a condicao satisfeita: `StructureTypeController.cs:70-75` (compara
+`registroExistente.AccountId != AccountIdToken` antes de checar o corpo);
+`UserController.cs:164-166` (eixo de omissao). Teste versionado: `TenantHijackApiTests.cs`, 11
+metodos sem Skip=. Contraparte produto em completed/, CA-10 sincronizado agora (era [ ] no
+hub, [x] no produto).
+
+Este e o unico dos quatro (GT-0049/50/51/52) cujo `contraparte:` do lado produto ja apontava
+corretamente para o hub.
+
+Evidencia completa no relatorio da reconciliacao GT-0156.

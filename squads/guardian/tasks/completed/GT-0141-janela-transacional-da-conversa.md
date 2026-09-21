@@ -1,7 +1,7 @@
 ---
 id: GT-0141
 title: "Conversa e mensagens não são gravadas na mesma transação"
-status: active
+status: completed
 type: tech-debt
 achado_origem: "N/A — achado do despacho da Vision (12/09/2026), sem run de auditoria do Guardian"
 auditor_origem: "Vision (despacho direto)"
@@ -171,3 +171,17 @@ Pendente.
 Cunhada e promovida no mesmo despacho. Sucessora direta da GT-0130 (#590): fecha a janela que
 sobrou depois que a persistência foi movida para depois do LLM.
 LLML: não consultada (branch de integração, não `main`).
+
+---
+
+## Reconciliacao - 21/09/2026 (GT-0156)
+
+**Resolvido.** Commit `e7a630af` (PR #650), em main. `IChatRepository.AddTurn` em
+`ChatRepository.cs:296`, com `conn.BeginTransaction()` explicito em :301 (divergencia do
+TransactionScope original registrada, mecanismo alternativo pelo mesmo precedente de
+FinanceRepository.PayTransaction). Testes versionados: `ChatTurnAtomicityTests.cs` (4 casos contra
+MySQL real) e `ChatServiceTurnFailureTests.cs` (3 casos). CA-04 auditavel - as DidNotReceive
+originais preservadas, as Received.InOrder substituidas com justificativa escrita. Contraparte
+produto em completed/, Registro preenchido. Issue #621 fechada.
+
+Evidencia completa no relatorio da reconciliacao GT-0156.

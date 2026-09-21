@@ -52,3 +52,24 @@ Reabrir o mérito técnico da GT. Este arquivo responde por que ela entrou na fi
 - Entrega: PR #484
 - Issue: #203
 - Estado quando reconciliada: `partial`, em `active/`
+
+---
+
+## Reconciliacao - 21/09/2026 (GT-0156)
+
+**Parcialmente resolvido - permanece active, nos dois lados.**
+
+A exportacao CSV esta feita, com prova dupla: commit 88b5ec7a (PR #484), ancestral de
+origin/main. Teste versionado: app-data-table.export.spec.ts, ~20 casos, incluindo o controle
+negativo do CA-02 ("NAO oferece exportacao quando nenhuma coluna alcanca valor"). CA-01..CA-04 todos
+[x] do lado produto.
+
+O que trava o fechamento nao e codigo, e decisao. A issue #203 original pedia exportacao E
+importacao. Tres saidas foram propostas (recomendacao (c)+(a)), e nenhuma decisao sobre a
+importacao foi registrada em lugar nenhum. Nao existe GT de importacao no acervo do produto.
+
+Pergunta direta para o Sergio: o escopo desta GT ja era so exportacao (e importacao vira demanda
+nova, separada), ou a importacao continua pendente dentro desta mesma GT? Se for a primeira leitura,
+esta GT fecha hoje. Se for a segunda, ela segue aberta ate a importacao existir.
+
+Evidencia completa no relatorio da reconciliacao GT-0156.
