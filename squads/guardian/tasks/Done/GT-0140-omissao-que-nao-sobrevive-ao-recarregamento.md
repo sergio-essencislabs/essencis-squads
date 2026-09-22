@@ -1,7 +1,7 @@
 ---
 id: GT-0140
 title: "Aviso de omissão não sobrevive ao recarregamento da conversa"
-status: active
+status: completed
 type: security
 achado_origem: "N/A — achado do despacho da Vision (12/09/2026), sem run de auditoria do Guardian"
 auditor_origem: "Vision (despacho direto)"
@@ -157,3 +157,19 @@ Pendente.
 Cunhada e promovida no mesmo despacho. Relaciona-se com a GT-0138 (#597), que introduziu o aviso
 e cobriu só o caminho ao vivo.
 LLML: não consultada (branch de integração, não `main`).
+
+---
+
+## Reconciliacao - 21/09/2026 (GT-0156)
+
+**Resolvido - escopo desta GT especifica.** Commit `5accadb3` (PR #642), em main. Tres camadas:
+`ChatRepository.cs:356,393,456` (projecao SQL), `ChatMessageDto.cs` (OmittedKinds),
+`Chat.ts:56`/`drill-box-ai-chat.component.ts:570-576` (frontend). Testes versionados:
+`ChatMessageOmittedKindsContractTests.cs` e `ChatRepositoryOmittedKindsColumnGuardTests.cs`.
+Contraparte produto em completed/, Registro preenchido.
+
+Nota: o Achado 1 do executor original (gravacao de omitted_kinds condicionada,
+`ChatService.cs:438/600`) nao e escopo desta GT - ja foi cunhado a parte como GT-0148 (hoje
+ainda aberta, ver relatorio da reconciliacao). Issue #620 continua OPEN apesar do merge.
+
+Evidencia completa no relatorio da reconciliacao GT-0156.

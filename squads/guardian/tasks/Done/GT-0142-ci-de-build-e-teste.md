@@ -1,7 +1,7 @@
 ---
 id: GT-0142
 title: "CI de build e teste (conversão da TASK-061)"
-status: active
+status: completed
 type: tech-debt
 achado_origem: "TASK-061 — achado durante a execução da GT-0132 (PR #600), não veio de run de auditoria"
 auditor_origem: "Conversão de TASK-061 (orquestrador bootstrap-*) por despacho da Vision, opção B aprovada pelo Sergio"
@@ -192,3 +192,16 @@ Execução de CI 34698146569, branch `feature/fix/refactor-08_09-11_09`, commit 
 Cunhada e promovida no mesmo despacho. Fica `active` — não `completed` — porque CA-05 e CA-07
 seguem abertos. A TASK-061 de origem recebe nota apontando para cá.
 LLML: não consultada (branch de integração, não `main`).
+
+---
+
+## Reconciliacao - 21/09/2026 (GT-0156)
+
+**Resolvido, inclusive os criterios que o hub ainda marcava abertos.** CA-05 (prova do vermelho):
+runs de CI verificados - 34702980937 @ 1e7f103d = failure (o teste quebrado de proposito),
+34703354254 @ d5fce25c (revert) = success. CA-07 (documentacao): docs/quality/rodar-a-suite-localmente.md
+existe em origin/main, ligada de dois READMEs; docs/setup-local.md traz a baseline de quatro
+numeros correta. Contraparte produto em completed/: 7/7 CAs [x], Registro preenchido. TASK-061
+marcada "Convertida em GT-0142". Issue #622 continua OPEN apesar do merge.
+
+Evidencia completa no relatorio da reconciliacao GT-0156.

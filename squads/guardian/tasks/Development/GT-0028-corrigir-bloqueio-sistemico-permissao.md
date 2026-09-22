@@ -291,3 +291,26 @@ Mitigação parcial registrada: `M20260906170000_RestrictSystemAdminBackfill` re
 A ressalva #1 não tinha issue no GitHub (`issue_url` vazio na front matter). Agora tem: **https://github.com/Essencis-Labs/GeoCloudAI/issues/422** — "Portão de produção: validar backfill de isSystemAdmin antes do deploy", com as 3 queries prontas e critérios de aceite. Labels `security`, `backend`, `priority:high`, `status:blocker`.
 
 Esta task permanece em `active/` até a #422 fechar. Ressalva #3 (campanha `geocloud-permission-tests`) e CA-04/CA-05 (reteste manual) também seguem em aberto e estão registrados no corpo da #422.
+
+---
+
+## Reconciliacao - 21/09/2026 (GT-0156)
+
+**Parcialmente resolvido - permanece active.**
+
+Defeito A (403 global no interceptor) - resolvido: error.interceptor.ts:118 +
+http-context-tokens.ts:25, commit f0937095 (#377), endurecido por 08f5a186 (GT-0106, #553).
+Teste versionado: error.interceptor.spec.ts:78,94,109.
+
+Defeito B (grant ausente de chat.drillbox/summary) - resolvido: migration
+M20260910033311_ChatDrillBoxSummaryIsAccountScoped.cs (typeId 1->2 + backfill), commit a993945f
+(#505).
+
+O que falta: o portao que a propria GT declara - issue #422 continua OPEN (label
+status:blocker), e o arquivo diz literalmente "permanece em active/ ate a #422 fechar". CA-04
+(reteste manual E2-01..E2-07) e a parte visual do CA-05 seguem [ ].
+
+Reparo lateral sugerido, nao executado: issue_url: esta vazio apesar de #422/#377/#385/#420 serem
+citadas no corpo.
+
+Evidencia completa no relatorio da reconciliacao GT-0156.

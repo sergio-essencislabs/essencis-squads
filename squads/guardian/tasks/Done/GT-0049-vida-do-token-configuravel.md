@@ -1,7 +1,7 @@
 ---
 id: GT-0049
 title: "Vida do token JWT ignorava Auth:AccessTokenMinutes — 12h fixos em constante"
-status: active
+status: completed
 type: bug
 severidade: media
 owner: sergio-essencislabs
@@ -73,3 +73,20 @@ credencial é escolha dele, não efeito colateral de uma reversão.
 
 `dotnet build Back.sln && dotnet test Back.sln`, mais decodificação do `exp` de um token real
 emitido pela API em execução.
+
+---
+
+## Reconciliacao - 21/09/2026 (GT-0156)
+
+**Resolvido, prova dupla.** Commit `83f0b852` (PR #464, merge `fa9e3c1b`). Codigo:
+`api/src/Back.Application/Helpers/AuthSettings.cs:18,24,37` (`ResolveAccessTokenLifetime`),
+consumido em `UserLoginService.cs:56`. Teste versionado: `AuthSettingsTests.cs`, 5 casos. CA-05
+confirmado: `appsettings.json:10 = 720`. Issue #463 CLOSED. Contraparte produto em completed/, 5/5
+CAs [x].
+
+Defeito de forma, nao corrigido aqui: o `contraparte:` do lado produto aponta para o proprio
+repositorio do produto (`C:/Software/GeoCloud/GeoCloudAI/.agents/tasks/active/...`) em vez do hub -
+e um dos auto-ponteiros que a GT-0151 ja cataloga, travada aguardando decisao do Sergio sobre a
+forma canonica.
+
+Evidencia completa no relatorio da reconciliacao GT-0156.

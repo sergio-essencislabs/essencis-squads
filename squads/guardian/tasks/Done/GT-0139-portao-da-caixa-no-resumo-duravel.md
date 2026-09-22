@@ -1,7 +1,7 @@
 ---
 id: GT-0139
 title: "Resumo durável não exige do leitor a chave da própria caixa"
-status: active
+status: completed
 type: security
 achado_origem: "N/A — achado do despacho da Vision (12/09/2026), sem run de auditoria do Guardian"
 auditor_origem: "Vision (despacho direto)"
@@ -172,3 +172,15 @@ Pendente.
 ## Handoff
 Cunhada e promovida no mesmo despacho. Implementação é despacho posterior da Vision.
 LLML: não consultada (branch de integração, não `main`).
+
+---
+
+## Reconciliacao - 21/09/2026 (GT-0156)
+
+**Resolvido.** Commit `8c36e1e7` (PR #630), em main. Codigo: guarda em
+`ChatService.cs:704` usando `DrillBoxChatContextService.DrillBoxPermissionKey`. Teste versionado:
+`ChatServiceSummaryBoxGateTests.cs`, 7 casos, confirmado passando (run de CI 34859293961 sobre
+0f0b0495, HEAD de main). Contraparte produto em completed/, Registro de execucao preenchido.
+Issue #619 fechada.
+
+Evidencia completa no relatorio da reconciliacao GT-0156.

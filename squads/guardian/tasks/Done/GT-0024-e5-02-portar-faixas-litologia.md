@@ -1,7 +1,7 @@
 ---
 id: GT-0024
 title: "Portar faixas de litologia do KoreGeo2 para o KoreGeo3"
-status: active
+status: completed
 type: feature
 reaberta_qa: "2026-09-03"
 achado_origem: "N/A — pedido direto de implementação"
@@ -290,3 +290,19 @@ PR, não introduzida por ele — confirmada idêntica nas duas execuções). Pen
 validação visual manual (checklist acima) antes do merge.
 
 **PR #378 mesclado (squash) em `feature/visualizadores-navegacao-layout`.** A pista prioritária (referencial de coordenadas OSD multi-imagem, GADR-0002) foi investigada e descartada — causa real era o `Rect` da faixa reutilizando os bounds da própria imagem em vez de ficar abaixo, mais um bug real em `showLithologyBars` (escondia todas as barras, não só litologia). Toggles de fratura/anotação adicionados. Validação visual manual comparando com KoreGeo2 segue pendente para o revisor.
+
+---
+
+## Reconciliacao - 21/09/2026 (GT-0156)
+
+**Resolvido, com prova em origin/main.** Commits `85e2448f` (#359, reativa litologia/marcadores) e
+`d6fdc3ef` (#378, corrige faixa sobreposta ao testemunho - o defeito especifico do QA). Codigo:
+`web/.../drill-hole-view-koregeo3.component.ts:227,229,267-268` (bloco reativado);
+`addOverlayBar:597-606` (faixa movida para a tira ANNOTATION_BAR_HEIGHT, comentario no proprio
+codigo cita "GT-0024 QA fix (2026-09-03)"); toggle em `applyBarVisibility:152`, `isBarTypeVisible:162`.
+
+Risco residual, sem correcao aqui: nao ha teste versionado que falharia se a faixa voltasse a
+cobrir o testemunho - `drill-hole-view-koregeo3.component.spec.ts` so tem `should create`. Candidato
+a task propria de blindagem.
+
+Evidencia completa no relatorio da reconciliacao GT-0156.

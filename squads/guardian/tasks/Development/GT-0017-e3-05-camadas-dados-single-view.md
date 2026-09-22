@@ -224,3 +224,27 @@ PR: https://github.com/Essencis-Labs/GeoCloudAI/pull/362 (mira
 Pendência de handoff: abrir sub-issue de geoquímica (item 6 do spike GT-0016)
 antes de fechar esta task, ou renomear/reescopar esta task para refletir que
 geoquímica ficou fora.
+
+---
+
+## Reconciliacao - 21/09/2026 (GT-0156)
+
+**Parcialmente resolvido - permanece active.**
+
+Entregue e em origin/main: commit `93762c5b` (#362) - camadas de mineralogia, textura, estrutura,
+alteracao e cor. Codigo: `drill-hole-view-unic.component.ts:1366` (drawColorFill), :1387, :3562;
+selo MOCK da caixa molhada em ...component.html:154. Teste versionado que falharia se o selo MOCK
+regredisse: ...component.spec.ts:712-751.
+
+Nao entregue: camada de geoquimica (AnalysisAssay) nunca implementada; camada de hiperespectral foi
+implementada e depois revertida por ordem explicita do usuario (0214edc1, #375). Escopo
+residual vive em GT-0030-geoquimica-e-hiperespectral-single-view.md (issue #373, Status: Blocker
+no Project).
+
+Decisao pendente do Sergio: o Handoff original ja prescrevia "abrir sub-issue de geoquimica OU
+renomear/reescopar esta task". A sub-issue foi aberta (GT-0030), mas esta GT nunca foi formalmente
+reescopada para excluir as camadas que migraram. Fechar como esta seria marcar como feito algo que
+nao foi; a alternativa e reescrever o escopo desta GT para excluir explicitamente geoquimica e
+hiperespectral, citando GT-0030 como dona delas - ai sim fecharia hoje.
+
+Evidencia completa no relatorio da reconciliacao GT-0156.

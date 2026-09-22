@@ -1,7 +1,7 @@
 ---
 id: GT-0023
 title: "Decisão: KoreGeo3 como visualizador padrão"
-status: active
+status: completed
 type: feature
 achado_origem: "N/A — pedido direto de implementação"
 auditor_origem: "Jarvis — planejamento"
@@ -93,3 +93,18 @@ Bloqueia GT-0024, GT-0025.
 Relatório de QA (Matheus, `TASKS.md`, E5-01): "Por ser um visualizador de furo único (drillcore), deveria estar disponível só a partir de DrillHole, não de Region/Deposit/Mine/MineArea. Contradiz a matriz atual, que libera nos 6 níveis — ajustar junto do rename 'Core View' (E1-03)."
 
 **Decisão confirmada pelo usuário (2026-09-03)**: "Só a partir de DrillHole. Conversamos e decidimos isso." Confirma a reversão — ver GADR-0001, "Revisão" (entrada de 2026-09-03). CA-02 desta task precisa de uma nova entrada: KoreGeo3 restrito a DrillHole/DrillBox, diferente de Single View/MultiView. Implementação roteada para GT-0026 (reabrir, reverter as 4 telas agregadoras).
+
+---
+
+## Reconciliacao - 21/09/2026 (GT-0156)
+
+**Resolvido.** A decisao foi tomada: `GADR-0002-adocao-koregeo3.md` (hub), `status: accepted`,
+`date: 2026-09-02`, Alternativa A aceita. O corte do KoreGeo2 (unico CA em aberto) esta em
+`origin/main`: `web/.../drill-hole-view/drill-hole-view.component.html:307-323` e `:325-340`
+comentadas, citando nominalmente GT-0024/GT-0025 como a paridade que habilitou o corte. Cadeia
+GT-0023 -> GT-0024/GT-0025 fecha nos dois sentidos (GADR-0002 e anterior aos PRs #359/#365/#378).
+
+Nota: o "Registro de execucao" deste arquivo estava vazio apesar do trabalho estar feito - o que
+segue sendo o defeito de forma que a GT-0144/GT-0151 catalogam. Preenchido agora com esta evidencia.
+
+Evidencia completa no relatorio da reconciliacao GT-0156.

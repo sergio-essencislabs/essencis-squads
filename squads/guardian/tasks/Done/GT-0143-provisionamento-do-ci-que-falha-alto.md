@@ -1,7 +1,7 @@
 ---
 id: GT-0143
 title: "Provisionamento do CI usa o script que sai zero (conversão da TASK-062)"
-status: active
+status: completed
 type: tech-debt
 achado_origem: "TASK-062 — revisão do CI logo após mesclar a #607, não veio de run de auditoria"
 auditor_origem: "Conversão de TASK-062 (orquestrador bootstrap-*) por despacho da Vision, opção B aprovada pelo Sergio"
@@ -167,3 +167,17 @@ pela run 34698146569.
 Cunhada e promovida no mesmo despacho. Fica `active`. Depende do escopo `workflow` na conta
 corporativa, ou de edição pela interface web. A TASK-062 de origem recebe nota apontando para cá.
 LLML: não consultada (branch de integração, não `main`).
+
+---
+
+## Reconciliacao - 21/09/2026 (GT-0156)
+
+**Resolvido.** Commits `c566b559` (PR #631) + `b4df2270` (PR #643), em main. Codigo:
+`.github/workflows/ci.yml:126` (provision-env.sh --skip-verify), :116-118 (variaveis de banco),
+:128-151 (checagem de lower_case_table_names). Prova de execucao real: run 34711724092 @
+ed3d4f1f = success. Contraparte produto em completed/: 5/5 CAs [x], Registro preenchido
+(inclui achado de seguranca sobre a trava do datadir). TASK-062 marcada "Convertida em GT-0143".
+Issue #623 continua OPEN apesar do merge. Residuos de CI ja tem GT propria no backlog do hub:
+GT-0154 e GT-0155.
+
+Evidencia completa no relatorio da reconciliacao GT-0156.

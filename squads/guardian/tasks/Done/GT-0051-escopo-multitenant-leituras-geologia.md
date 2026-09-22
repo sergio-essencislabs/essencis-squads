@@ -1,7 +1,7 @@
 ---
 id: GT-0051
 title: "Escopo multi-tenant ausente em leituras do módulo geológico (#296, #297)"
-status: active
+status: completed
 type: security
 severidade: alta
 owner: sergio-essencislabs
@@ -93,3 +93,18 @@ incondicional — ou um 403 do middleware — passaria verde. Ele não podia ter
 porque um chamador autorizado seria da entidade 1 e `ResetTransientState` a esvazia. Ganhou um
 controle: o mesmo chamador em `getByAccount` não pode levar 403; se levar, o 403 do `get` não veio
 da guarda.
+
+---
+
+## Reconciliacao - 21/09/2026 (GT-0156)
+
+**Resolvido, prova dupla.** Commits `0e80eea6` + `5cfcce2e` (PR #468, merge `450d2ad0`). Issues
+#296 e #297 ambas CLOSED. Codigo: `StructureTypeController.cs:144` (Get) e `:195` (GetById),
+guarda por EntityIdToken/AccountIdToken. Teste versionado: `TenantScopeReadApiTests.cs`, sem
+Skip=. Contraparte produto em completed/, 6/6 CAs [x] (CA-06 sincronizado agora). Os 4
+apontamentos de auditoria aceitos-e-nao-corrigidos estao declarados fora de escopo no proprio GT -
+nao tornam isto parcial.
+
+Mesmo defeito de forma do GT-0049/GT-0050: auto-ponteiro, catalogado na GT-0151.
+
+Evidencia completa no relatorio da reconciliacao GT-0156.

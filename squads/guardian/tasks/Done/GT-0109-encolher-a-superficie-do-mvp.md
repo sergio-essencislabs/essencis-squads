@@ -1,7 +1,7 @@
 ---
 id: GT-0109
 title: "Tres modulos fora do MVP: dormentes no codigo, invisiveis na interface"
-status: active
+status: completed
 type: chore
 achado_origem: "N/A — não veio de achado de auditoria; ver Achado original"
 auditor_origem: "N/A — cunhada fora de run do Guardian"
@@ -52,3 +52,24 @@ Reabrir o mérito técnico da GT. Este arquivo responde por que ela entrou na fi
 - Entrega: sem PR registrado no par
 - Issue: sem issue registrada no par
 - Estado quando reconciliada: `active`, em `active/`
+
+---
+
+## Reconciliacao - 21/09/2026 (GT-0156)
+
+**Resolvido.** Commit `82cdf039` (PR #561), ancestral de origin/main do produto. Rotas removidas:
+`web/src/app/pages/pages.routes.ts:328-329`. Teste versionado: `pages.routes.spec.ts` - 3 provas de
+rota removida + 1 controle em /chat, confirmado por mutacao (reintroduzir a rota fez o teste
+falhar). CA-01..CA-07 todos [x]. Validacao com saida real: TOTAL: 490 SUCCESS.
+
+Nota de temporizacao: o arquivo de tarefa do produto ja foi movido para completed/ (commit
+`2662a008`, 17/09), mas isso esta so na branch semanal feat/fix/refactor-14_09-18_09, ainda nao em
+origin/main do produto no momento desta reconciliacao. A evidencia de codigo (commit mesclado +
+teste versionado, ambos em origin/main) ja e suficiente para o veredito, independente disso.
+
+Correcao a premissa original desta reconciliacao: o briefing citava GT-0109/GT-0110 como
+"ponteiros pendurados" pela GT-0151. Verificado: nao procede - a GT-0151 nunca cita GT-0109 nem
+GT-0110; os auto-ponteiros catalogados la sao outros (GT-0049/50/51). Os dois arquivos existem no
+hub com nome completo e os contraparte: resolvem nos dois sentidos hoje.
+
+Evidencia completa no relatorio da reconciliacao GT-0156.

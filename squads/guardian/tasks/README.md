@@ -15,17 +15,23 @@ O estado de uma task é comunicado por onde o arquivo está, nunca por um campo
 isolado no frontmatter:
 
 ```
-backlog/   → gerada pelo Step 07 (Geração de Tasks), aguardando o Gate (Step 08)
-active/    → promovida: issue criada (Step 10), implementação em andamento/roteada
-completed/ → Step 17 (Revisão dos PRs) confirmou as 3 evidências (código, docs, testes)
+Open/        → gerada pelo Step 07 (Geração de Tasks), aguardando o Gate (Step 08)
+Development/ → promovida: issue criada (Step 10), implementação em andamento/roteada
+Blocker/     → bloqueada: o trabalho não pode seguir até a dependência ser resolvida
+Done/        → Step 17 (Revisão dos PRs) confirmou as 3 evidências (código, docs, testes)
 ```
+
+As quatro pastas têm exatamente os nomes das quatro colunas do board (Project 7
+de `Essencis-Labs/GeoCloudAI`), para que pasta e coluna nunca precisem ser
+traduzidas uma na outra. `Blocker/` recebe as GTs cujas issues estiverem nessa
+coluna do board; antes dela, um item bloqueado não tinha onde morar no hub.
 
 Mover o arquivo de pasta **é** a transição de estado. O campo `status:` no
 frontmatter só espelha a pasta atual, nunca diverge dela.
 
 ## Numeração
 
-IDs `GT-NNNN`, sequenciais, escaneados nas três pastas (nunca reaproveitar um
+IDs `GT-NNNN`, sequenciais, escaneados nas quatro pastas (nunca reaproveitar um
 número já usado, mesmo de uma task movida ou arquivada). Nome do arquivo:
 `GT-NNNN-{achado-id-lower}-{slug}.md` (ex.: `GT-0001-sec-01-allowanonymous-address-add.md`)
 ou, para tasks originadas de um pedido de implementação direta,
@@ -33,14 +39,14 @@ ou, para tasks originadas de um pedido de implementação direta,
 
 ## Quem escreve aqui
 
-- **Tomás Ticket (task-curator)** — gera as tasks em `backlog/` (Step 07) e as
-  move para `active/` ao criar a issue correspondente (Step 10). Nunca decide
+- **Tomás Ticket (task-curator)** — gera as tasks em `Open/` (Step 07) e as
+  move para `Development/` ao criar a issue correspondente (Step 10). Nunca decide
   mérito arquitetural, só transcreve com fidelidade.
 - **Jarvis (chief-architect)** — preenche `camada`/`grupo_execucao` no
   roteamento (Step 09) e atualiza `related_adrs` quando redige um `GADR`
   (`squads/guardian/decisions/`).
 - **Breno / Flávia / Rui** — atualizam "Registro de execução" e "Validação"
   da própria task durante a implementação (Steps 11/13/15).
-- **Otávio (reviewer)** — move `active/ → completed/` no Step 17, só depois de
+- **Otávio (reviewer)** — move `Development/ → Done/` no Step 17, só depois de
   confirmar as 3 evidências reais (código, documentação, testes) — nunca em
-  silêncio; se faltar algo, a task fica em `active/` com a pendência registrada.
+  silêncio; se faltar algo, a task fica em `Development/` com a pendência registrada.
