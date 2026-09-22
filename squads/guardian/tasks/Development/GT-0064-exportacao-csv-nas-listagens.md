@@ -22,6 +22,15 @@ depende_de: []
 
 # GT-0064 — Exportação CSV nas listagens, com a importação deliberadamente fora
 
+## Pareamento por número aposentado em 2026-09-22
+
+O pareamento por número compartilhado com o lado produto (GeoCloudAI) foi aposentado em
+2026-09-22, por decisão de Sergio (GT-0714 Fase 2 — reconciliação do passivo histórico). O lado
+produto passou a **GT-0203**, o número da própria issue #203, sob a convenção que a GT-0714 define
+(GT e issue com numeração idêntica) — o front-matter do lado produto também migrou de `issue: 203`
+para `issue_url:` nesse mesmo commit. Este arquivo do hub mantém o número antigo, **GT-0064**, e o
+resto do seu conteúdo, sem alteração.
+
 ## Contexto
 Este arquivo foi criado pela **GT-0147** (reconciliação do acervo, Grupo B) em 12/09/2026, a partir
 do par que já existia em `GeoCloudAI/.agents/tasks/active/GT-0064-exportacao-csv-nas-listagens.md`. A GT nasceu direto no repositório de
