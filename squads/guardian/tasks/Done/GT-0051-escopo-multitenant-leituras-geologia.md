@@ -105,6 +105,7 @@ Skip=. Contraparte produto em completed/, 6/6 CAs [x] (CA-06 sincronizado agora)
 apontamentos de auditoria aceitos-e-nao-corrigidos estao declarados fora de escopo no proprio GT -
 nao tornam isto parcial.
 
-Mesmo defeito de forma do GT-0049/GT-0050: auto-ponteiro, catalogado na GT-0151.
+Mesmo defeito de forma do GT-0049/GT-0050: auto-ponteiro, catalogado na GT-0151 (produto: GT-0663
+desde 2026-09-22).
 
 Evidencia completa no relatorio da reconciliacao GT-0156.

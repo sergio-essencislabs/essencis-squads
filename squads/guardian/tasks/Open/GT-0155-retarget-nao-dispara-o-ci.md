@@ -22,6 +22,14 @@ contraparte: "GeoCloudAI/.agents/tasks/backlog/GT-0155-retarget-nao-dispara-o-ci
 
 # GT-0155 — PR empilhada chega ao merge com verde velho: retarget da base não dispara o CI
 
+## Pareamento por número aposentado em 2026-09-22
+
+O pareamento por número compartilhado com o lado produto (GeoCloudAI) foi aposentado em
+2026-09-22, por decisão de Sergio (GT-0714 Fase 2 — reconciliação do passivo histórico). O lado
+produto passou a **GT-0673**, o número da própria issue, sob a convenção que a GT-0714 define (GT
+e issue com numeração idêntica). Este arquivo do hub mantém o número antigo, **GT-0155**, e o
+resto do seu conteúdo, sem alteração.
+
 ## Contexto
 
 Neste repositório, **uma PR empilhada chega ao merge com verde velho e nada avisa.**

@@ -169,7 +169,8 @@ LLML: não consultada (branch de integração, não `main`).
 Contraparte produto em completed/, Registro preenchido.
 
 Nota: o Achado 1 do executor original (gravacao de omitted_kinds condicionada,
-`ChatService.cs:438/600`) nao e escopo desta GT - ja foi cunhado a parte como GT-0148 (hoje
-ainda aberta, ver relatorio da reconciliacao). Issue #620 continua OPEN apesar do merge.
+`ChatService.cs:438/600`) nao e escopo desta GT - ja foi cunhado a parte, no produto, como
+GT-0646 (renumerada de GT-0148 em 2026-09-22, GT-0714 Fase 2; hoje ainda aberta, ver relatorio
+da reconciliacao). Issue #620 continua OPEN apesar do merge.
 
 Evidencia completa no relatorio da reconciliacao GT-0156.

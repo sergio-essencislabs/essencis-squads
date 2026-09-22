@@ -18,6 +18,19 @@ related_adrs: []
 
 # GT-0048 — Profundidade de manobra em metros inteiros
 
+## Pareamento por número resolvido em 2026-09-22 (não apenas aposentado)
+
+Diferente dos pares GT-0148..0155/GT-0064 (aposentados sem mais nenhuma ação, GT-0714 Fase 2/3):
+este par foi **resolvido e fechado**. O lado produto (GeoCloudAI) já estava implementado e mesclado
+desde 09/09/2026 (PR #462 + PR #478, issue #461 fechada), mas o arquivo de task lá nunca tinha sido
+atualizado para refletir isso — ficou em `backlog/`/`Open/` com os critérios em aberto enquanto o
+código já estava em produção. Corrigido em 2026-09-22 (GT-0714 Fase 4): o lado produto teve seu
+Registro de Execução preenchido com evidência real (commits `80d38673`/`7dc4fe4a`, migração
+`M20260909223130_DepthColumnsKeepDecimals.cs`, ADR-009, `DepthPrecisionTests.cs`),
+`status: completed`, e moveu para `Done/` — mantendo `id: GT-0048`, sem renumeração (o `issue_url:`
+já apontava para a #461 dos dois lados; não havia campo antigo `issue:` a migrar aqui no hub). Este
+arquivo do hub mantém seu número e conteúdo sem alteração, além desta nota.
+
 ## Contexto
 
 Encontrado ao implementar a GT-0043, que passou a mapear caixa→manobra por sobreposição de

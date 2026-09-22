@@ -22,6 +22,14 @@ contraparte: "GeoCloudAI/.agents/tasks/backlog/GT-0152-o-acervo-nao-registra-que
 
 # GT-0152 — o acervo não registra quem executou: procedência é reconstruída, não lida
 
+## Pareamento por número aposentado em 2026-09-22
+
+O pareamento por número compartilhado com o lado produto (GeoCloudAI) foi aposentado em
+2026-09-22, por decisão de Sergio (GT-0714 Fase 2 — reconciliação do passivo histórico). O lado
+produto passou a **GT-0667**, o número da própria issue, sob a convenção que a GT-0714 define (GT
+e issue com numeração idêntica). Este arquivo do hub mantém o número antigo, **GT-0152**, e o
+resto do seu conteúdo, sem alteração.
+
 ## Contexto
 
 O front-matter de toda GT traz `owner: Sergio`. **Nenhuma GT registra qual janela executou o

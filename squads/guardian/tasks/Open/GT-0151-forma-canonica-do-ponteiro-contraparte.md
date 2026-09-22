@@ -22,6 +22,15 @@ contraparte: "GeoCloudAI/.agents/tasks/backlog/GT-0151-forma-canonica-do-ponteir
 
 # GT-0151 — forma canônica do ponteiro `contraparte:` e os 34 campos do lado produto
 
+## Pareamento por número aposentado em 2026-09-22
+
+O pareamento por número compartilhado com o lado produto (GeoCloudAI) foi aposentado em
+2026-09-22, por decisão de Sergio (GT-0714 Fase 2 — reconciliação do passivo histórico). O lado
+produto passou a **GT-0663**, o número da própria issue, sob a convenção que a GT-0714 define (GT
+e issue com numeração idêntica). Este arquivo do hub mantém o número antigo, **GT-0151**, e o
+resto do seu conteúdo, sem alteração — inclusive o `depende_de: ["GT-0149"]` acima, que continua
+descrevendo a dependência **deste lado hub** sobre o GT-0149 do hub (também não renomeado).
+
 ## Contexto
 
 A GT-0145 deixou o sentido **hub → produto** limpo. O sentido **produto → hub** nunca foi tocado, e

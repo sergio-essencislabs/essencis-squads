@@ -105,6 +105,7 @@ Contraparte produto em completed/, 7/7 CAs [x] (incluindo CA-07, teste manual - 
 [ ], sincronizado agora). Corroboracao estrutural: `TenantScopeReadApiTests.cs` e
 `TenantHijackApiTests.cs`, versionados, sem Skip=.
 
-Mesmo defeito de forma do GT-0049/GT-0051: auto-ponteiro no lado produto, catalogado na GT-0151.
+Mesmo defeito de forma do GT-0049/GT-0051: auto-ponteiro no lado produto, catalogado na GT-0151
+(produto: GT-0663 desde 2026-09-22).
 
 Evidencia completa no relatorio da reconciliacao GT-0156.

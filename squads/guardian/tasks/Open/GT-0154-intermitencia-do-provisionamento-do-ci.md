@@ -22,6 +22,14 @@ contraparte: "GeoCloudAI/.agents/tasks/backlog/GT-0154-intermitencia-do-provisio
 
 # GT-0154 — intermitência do provisionamento do CI: 28 MB de log de erro num passo só
 
+## Pareamento por número aposentado em 2026-09-22
+
+O pareamento por número compartilhado com o lado produto (GeoCloudAI) foi aposentado em
+2026-09-22, por decisão de Sergio (GT-0714 Fase 2 — reconciliação do passivo histórico). O lado
+produto passou a **GT-0668**, o número da própria issue, sob a convenção que a GT-0714 define (GT
+e issue com numeração idêntica). Este arquivo do hub mantém o número antigo, **GT-0154**, e o
+resto do seu conteúdo, sem alteração.
+
 ## Contexto
 
 O passo de provisionamento do CI cai de forma **intermitente** — 3 quedas no mesmo passo em cerca
