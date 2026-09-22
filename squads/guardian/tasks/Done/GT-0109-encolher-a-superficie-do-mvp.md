@@ -68,8 +68,9 @@ origin/main do produto no momento desta reconciliacao. A evidencia de codigo (co
 teste versionado, ambos em origin/main) ja e suficiente para o veredito, independente disso.
 
 Correcao a premissa original desta reconciliacao: o briefing citava GT-0109/GT-0110 como
-"ponteiros pendurados" pela GT-0151. Verificado: nao procede - a GT-0151 nunca cita GT-0109 nem
-GT-0110; os auto-ponteiros catalogados la sao outros (GT-0049/50/51). Os dois arquivos existem no
-hub com nome completo e os contraparte: resolvem nos dois sentidos hoje.
+"ponteiros pendurados" pela GT-0151 (produto: GT-0663 desde 2026-09-22). Verificado: nao procede -
+a GT-0151 nunca cita GT-0109 nem GT-0110; os auto-ponteiros catalogados la sao outros
+(GT-0049/50/51). Os dois arquivos existem no hub com nome completo e os contraparte: resolvem nos
+dois sentidos hoje.
 
 Evidencia completa no relatorio da reconciliacao GT-0156.

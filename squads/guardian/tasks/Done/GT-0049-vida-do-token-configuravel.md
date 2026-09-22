@@ -86,7 +86,7 @@ CAs [x].
 
 Defeito de forma, nao corrigido aqui: o `contraparte:` do lado produto aponta para o proprio
 repositorio do produto (`C:/Software/GeoCloud/GeoCloudAI/.agents/tasks/active/...`) em vez do hub -
-e um dos auto-ponteiros que a GT-0151 ja cataloga, travada aguardando decisao do Sergio sobre a
-forma canonica.
+e um dos auto-ponteiros que a GT-0151 (produto: GT-0663 desde 2026-09-22) ja cataloga, travada
+aguardando decisao do Sergio sobre a forma canonica.
 
 Evidencia completa no relatorio da reconciliacao GT-0156.

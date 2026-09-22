@@ -177,7 +177,8 @@ LLML: não consultada (branch de integração, não `main`).
 :128-151 (checagem de lower_case_table_names). Prova de execucao real: run 34711724092 @
 ed3d4f1f = success. Contraparte produto em completed/: 5/5 CAs [x], Registro preenchido
 (inclui achado de seguranca sobre a trava do datadir). TASK-062 marcada "Convertida em GT-0143".
-Issue #623 continua OPEN apesar do merge. Residuos de CI ja tem GT propria no backlog do hub:
-GT-0154 e GT-0155.
+Issue #623 continua OPEN apesar do merge. Residuos de CI ja tem GT propria no Open do hub:
+GT-0154 e GT-0155 (pareamento por numero com o produto aposentado em 2026-09-22, GT-0714 Fase 2 --
+o lado produto virou GT-0668/GT-0673).
 
 Evidencia completa no relatorio da reconciliacao GT-0156.

@@ -105,6 +105,7 @@ comentadas, citando nominalmente GT-0024/GT-0025 como a paridade que habilitou o
 GT-0023 -> GT-0024/GT-0025 fecha nos dois sentidos (GADR-0002 e anterior aos PRs #359/#365/#378).
 
 Nota: o "Registro de execucao" deste arquivo estava vazio apesar do trabalho estar feito - o que
-segue sendo o defeito de forma que a GT-0144/GT-0151 catalogam. Preenchido agora com esta evidencia.
+segue sendo o defeito de forma que a GT-0144/GT-0151 (produto: GT-0663 desde 2026-09-22) catalogam.
+Preenchido agora com esta evidencia.
 
 Evidencia completa no relatorio da reconciliacao GT-0156.

@@ -417,7 +417,9 @@ A distinção vale ser guardada, porque é a diferença entre um número errado 
 um universo menor do que se supunha: nenhum predicado sobre `.agents/tasks/` revela a falta,
 porque a falta está **dentro do conjunto que ele varre**.
 
-Continuação: **GT-0153** — `squads/guardian/tasks/backlog/GT-0153-as-29-entregas-sem-arquivo-de-task.md`.
+Continuação: **GT-0153** — `squads/guardian/tasks/Open/GT-0153-as-29-entregas-sem-arquivo-de-task.md`
+(pareamento por número com o produto aposentado em 2026-09-22, GT-0714 Fase 2 — o lado produto
+virou GT-0666).
 
 ## Handoff
 Cunhada e promovida no mesmo despacho. Decisão do Sergio, via Vision, em 12/09/2026: mapear agora,
