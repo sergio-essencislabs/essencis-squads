@@ -22,6 +22,14 @@ contraparte: "GeoCloudAI/.agents/tasks/active/GT-0150-teste-versionado-da-trava-
 
 # GT-0150 — a trava que impede apagar bancos não é exercitada por teste nenhum
 
+## Pareamento por número aposentado em 2026-09-22
+
+O pareamento por número compartilhado com o lado produto (GeoCloudAI) foi aposentado em
+2026-09-22, por decisão de Sergio (GT-0714 Fase 2 — reconciliação do passivo histórico). O lado
+produto passou a **GT-0648**, o número da própria issue, sob a convenção que a GT-0714 define (GT
+e issue com numeração idêntica). Este arquivo do hub mantém o número antigo, **GT-0150**, e o
+resto do seu conteúdo, sem alteração.
+
 > **Procedência do texto.** O escopo desta GT foi escrito pelo **Dante** ao executar a GT-0143, e
 > chegou a mim resumido no despacho da Vision — **não li a mensagem original dele**. Transcrevi o
 > que veio, preservando as formulações citadas. Se algum critério dele se perdeu no caminho, a

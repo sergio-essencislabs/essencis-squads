@@ -22,6 +22,14 @@ contraparte: "GeoCloudAI/.agents/tasks/active/GT-0149-vocabulario-divergente-ent
 
 # GT-0149 — os dois READMEs discordam sobre o que dois campos podem conter
 
+## Pareamento por número aposentado em 2026-09-22
+
+O pareamento por número compartilhado com o lado produto (GeoCloudAI) foi aposentado em
+2026-09-22, por decisão de Sergio (GT-0714 Fase 2 — reconciliação do passivo histórico). O lado
+produto passou a **GT-0647**, o número da própria issue, sob a convenção que a GT-0714 define (GT
+e issue com numeração idêntica). Este arquivo do hub mantém o número antigo, **GT-0149**, e o
+resto do seu conteúdo, sem alteração.
+
 ## Contexto
 São **duas** divergências, e vêm juntas por uma razão declarada, não por conveniência.
 

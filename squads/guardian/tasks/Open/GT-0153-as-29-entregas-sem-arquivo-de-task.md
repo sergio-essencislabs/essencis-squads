@@ -22,6 +22,14 @@ contraparte: "GeoCloudAI/.agents/tasks/backlog/GT-0153-as-29-entregas-sem-arquiv
 
 # GT-0153 — as 29 entregas sem arquivo de task: a célula que o censo não tem
 
+## Pareamento por número aposentado em 2026-09-22
+
+O pareamento por número compartilhado com o lado produto (GeoCloudAI) foi aposentado em
+2026-09-22, por decisão de Sergio (GT-0714 Fase 2 — reconciliação do passivo histórico). O lado
+produto passou a **GT-0666**, o número da própria issue, sob a convenção que a GT-0714 define (GT
+e issue com numeração idêntica). Este arquivo do hub mantém o número antigo, **GT-0153**, e o
+resto do seu conteúdo, sem alteração.
+
 ## Contexto
 
 O censo da GT-0144 classificou o acervo em **três células**:

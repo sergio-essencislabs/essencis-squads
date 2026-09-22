@@ -22,6 +22,14 @@ contraparte: "GeoCloudAI/.agents/tasks/active/GT-0148-gravacao-condicional-do-om
 
 # GT-0148 — o aviso de omissão não é gravado fora do modo relatório
 
+## Pareamento por número aposentado em 2026-09-22
+
+O pareamento por número compartilhado com o lado produto (GeoCloudAI) foi aposentado em
+2026-09-22, por decisão de Sergio (GT-0714 Fase 2 — reconciliação do passivo histórico). O lado
+produto passou a **GT-0646**, o número da própria issue, sob a convenção que a GT-0714 define (GT
+e issue com numeração idêntica). Este arquivo do hub mantém o número antigo, **GT-0148**, e o
+resto do seu conteúdo, sem alteração.
+
 ## Contexto
 A GT-0140 (#620) consertou as três camadas que faziam o aviso de omissão sumir ao recarregar a
 conversa: a query de releitura, o DTO e a remontagem do turno. **Com as três corrigidas, o aviso
