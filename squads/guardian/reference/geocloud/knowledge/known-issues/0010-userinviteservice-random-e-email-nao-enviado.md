@@ -2,7 +2,7 @@
 id: KI-0010
 title: "UserInviteService — código de convite com System.Random + e-mail comentado com método inexistente"
 severidade: média
-status: parcialmente decidida
+status: resolvida
 produto: GeoCloud
 ---
 
@@ -54,23 +54,44 @@ que tratava a fidelidade como prioridade temporária — não é. Ver KI-0011
 para a descrição correta do risco aceito (a versão antiga falava em semente
 de relógio, o que é falso no .NET 6+).
 
-**2. E-mail comentado com método inexistente — continua aberto.** A linha
-comentada chama `_emailService.EnviarEmailPadraoAsync(...)`, que não existe;
-a assinatura real é `SendAsync(recipient, subject, htmlBody, cancellationToken)`.
-Descomentar como está quebra o build. Isso é independente da decisão do CTO
-e continua aguardando a modelagem do fluxo de convite — mais o KI-0008, que
-é a mesma pendência em `UserPasswordResetService`.
+**2. E-mail comentado com método inexistente — resolvido pela issue #870
+(28/09/2026).** A linha comentada chamava `_emailService.EnviarEmailPadraoAsync(...)`,
+que não existe; a assinatura real é
+`SendAsync(recipient, subject, htmlBody, cancellationToken)`. O envio foi ligado
+de verdade (ver "Resolução"), e o KI-0008, que era a mesma pendência em
+`UserPasswordResetService`, fechou junto.
 
 ## Resolução
 
-**Parcial.** O item 1 (`System.Random`) está fechado por decisão do CTO em
-2026-09-10 — não reabrir. O item 2 (envio de e-mail) segue pendente,
-atrelado à modelagem do fluxo de convite.
+**Resolvida em 01/10/2026**, os dois itens por caminhos diferentes.
+
+O item 1 (`System.Random`) está fechado **por decisão do CTO** em 2026-09-10,
+não por correção — não reabrir. Em 01/10/2026, na `main` (`21021faf`), o código
+continua `new Random()` em `UserInviteService.cs:121` e `:427`, de propósito.
+
+O item 2 (envio de e-mail) está resolvido pela **issue #870, PR #919** (mesclado
+em 28/09/2026, commit de merge `c58ce682`): `UserInviteService.SendInviteEmail`
+(`UserInviteService.cs:451-473`) monta o link com `EmailLinks.Build` e chama
+`IEmailService.SendAsync` com o `InviteHtml`. Ele é chamado no `Add` (`:160`) e
+no reenvio (`:440`). O trecho comentado citado em "Evidência" acima não existe
+mais, e nenhum `EnviarEmailPadraoAsync` resta em `api/src`.
+
+Evidência:
+
+- Teste de API: `UserInviteEmailApiTests`, e `UserInviteResendApiTests` para o
+  reenvio.
+- Verificação ao vivo pelo Sergio em 28/09/2026: o e-mail de convite chegou, o
+  link abriu a tela certa, a senha foi definida e o login funcionou (comentário
+  na #870).
+
+Requisito de ambiente: `EmailSettings.Enabled=true` e `EmailSettings__AppBaseUrl`
+definida (URL pública do front); sem a segunda, o link do e-mail não pode ser
+montado.
 
 ## Dono
 
 Item 1: CTO (Luiz Ângelo D'Amore) — decidido.
-Item 2: Backend Architect (Breno), atrelado à modelagem do fluxo de convite.
+Item 2: Backend Architect (Breno); entregue pela issue #870.
 
 ---
 
