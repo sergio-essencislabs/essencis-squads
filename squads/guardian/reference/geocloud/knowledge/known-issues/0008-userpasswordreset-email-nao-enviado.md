@@ -2,7 +2,7 @@
 id: KI-0008
 title: "UserPasswordReset — e-mail do código de verificação não é enviado (deliberado)"
 severidade: média
-status: aberta
+status: resolvida
 produto: GeoCloud
 ---
 
@@ -54,7 +54,29 @@ antes de liberar o endpoint `add`/`reset` para tráfego real.
 
 ## Resolução
 
-_Pendente._
+**28/09/2026 — issue #870, PR #919 (mesclado, commit de merge `c58ce682`).** O envio
+real do e-mail do código foi ligado em `UserPasswordResetService`: o serviço monta o
+corpo com `PasswordResetHtml` (botão para
+`{EmailSettings.AppBaseUrl}/auth/forgot-password?email=…&code=…`, que abre a tela já
+no passo do código, com o código também no corpo) e chama `IEmailService.SendAsync`.
+O envio roda em segundo plano e a resposta de `Add` continua genérica mesmo quando o
+provedor falha (a falha vai para o log), para não revelar pelo tempo de resposta quais
+e-mails têm conta.
+
+Evidência:
+
+- Teste de API: `UserPasswordResetEmailApiTests` (PR #919; ApiTests 1119 aprovados,
+  0 falhas na época).
+- Verificação ao vivo pelo Sergio em 28/09/2026, com a API e o front da branch: o
+  e-mail de "Esqueci minha senha" chegou, o link abriu a tela certa, a senha foi
+  definida e o login funcionou (comentário na #870).
+- Estado em 30/09/2026 na `main` (`21021faf`): `UserPasswordResetService.cs:69-77`
+  com o envio ativo; o trecho comentado citado em "Evidência" acima não existe mais.
+
+Requisito de ambiente que continua valendo: `EmailSettings.Enabled=true` e
+`EmailSettings__AppBaseUrl` definida (URL pública do front); sem a segunda, o link
+do e-mail não pode ser montado. O gerador do código segue `System.Random` por decisão
+do CTO (KI-0011), não é parte deste item.
 
 ## Dono
 
